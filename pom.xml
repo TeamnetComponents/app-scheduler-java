@@ -3,32 +3,59 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-	
+    <properties>
+        <bootstrap.version>0.2-SNAPSHOT</bootstrap.version>
+        <quartz.version>2.2.1</quartz.version>
+    </properties>
+
     <parent>
         <groupId>ro.teamnet.bootstrap</groupId>
         <artifactId>bootstrap-dependencies</artifactId>
         <version>0.2-SNAPSHOT</version>
-        <relativePath />
+        <relativePath/>
     </parent>
-	
-	<groupId>ro.teamnet.scheduler</groupId>
+
+    <groupId>ro.teamnet.scheduler</groupId>
     <artifactId>app-scheduler-java</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
-	
+
     <dependencies>
-		<!-- Project dependencies -->
-		<dependency>
+        <!-- Project dependencies -->
+        <!--Bootstrap commons-->
+        <dependency>
             <groupId>ro.teamnet.bootstrap</groupId>
             <artifactId>app-bootstrap-commons</artifactId>
-            <version>0.2-SNAPSHOT</version>
+            <version>${bootstrap.version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>ro.teamnet.bootstrap</groupId>
+            <artifactId>app-bootstrap</artifactId>
+            <version>${bootstrap.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <!--Quartz-->
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>${quartz.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz-jobs</artifactId>
+            <version>${quartz.version}</version>
+        </dependency>
+        <!--Flyway-->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
     </dependencies>
-	
-	<build>
+
+    <build>
         <plugins>
-			<plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
                 <executions>
