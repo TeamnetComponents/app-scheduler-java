@@ -6,6 +6,7 @@
     <properties>
         <bootstrap.version>0.2-SNAPSHOT</bootstrap.version>
         <quartz.version>2.2.1</quartz.version>
+        <h2.version>1.4.182</h2.version>
     </properties>
 
     <parent>
@@ -35,6 +36,12 @@
             <version>${bootstrap.version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>ro.teamnet.bootstrap</groupId>
+            <artifactId>app-bootstrap-dictionary</artifactId>
+            <version>${bootstrap.version}</version>
+            <scope>provided</scope>
+        </dependency>
         <!--Quartz-->
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
@@ -47,9 +54,15 @@
             <version>${quartz.version}</version>
         </dependency>
         <!--Flyway-->
+        <!--<dependency>-->
+            <!--<groupId>org.flywaydb</groupId>-->
+            <!--<artifactId>flyway-core</artifactId>-->
+        <!--</dependency>-->
         <dependency>
-            <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-core</artifactId>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${h2.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
