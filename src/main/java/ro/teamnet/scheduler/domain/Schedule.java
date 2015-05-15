@@ -1,6 +1,6 @@
 
 package ro.teamnet.scheduler.domain;
-
+        
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -56,15 +56,15 @@ public class Schedule implements Serializable {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "T_SCHEDULE_T_MONTH",
-            inverseJoinColumns = {@JoinColumn(name = "month_id", referencedColumnName = "id")},
-            joinColumns = {@JoinColumn(name = "schedule_id", referencedColumnName = "id")})
+            joinColumns = {@JoinColumn(name = "schedule_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "month_id", referencedColumnName = "id")})
     private Set<Month> months = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "T_SCHEDULE_T_DAYOFWEEK",
-            inverseJoinColumns = {@JoinColumn(name = "dayofweek_id", referencedColumnName = "id")},
-            joinColumns = {@JoinColumn(name = "schedule_id", referencedColumnName = "id")})
+            joinColumns = {@JoinColumn(name = "schedule_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "dayofweek_id", referencedColumnName = "id")})
     private Set<DayOfWeek> dayOfWeeks = new HashSet<>();
 
     @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY)
@@ -185,8 +185,6 @@ public class Schedule implements Serializable {
     public int hashCode() {
         return (int) (id ^ (id >>> 32));
     }
-
-
 
     @Override
     public String toString() {

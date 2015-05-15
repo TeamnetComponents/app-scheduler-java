@@ -18,6 +18,7 @@ spring:
         properties:
             hibernate.cache.use_second_level_cache: false
             hibernate.cache.use_query_cache: false
+
     mail:
         host: localhost
         port: 25
