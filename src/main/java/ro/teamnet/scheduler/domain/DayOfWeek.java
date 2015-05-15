@@ -1,6 +1,5 @@
-
 package ro.teamnet.scheduler.domain;
-        
+
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -58,7 +57,6 @@ public class DayOfWeek implements Serializable {
     public void setValue(Integer value) {
         this.value = value;
     }
-
 
 
     //other entity methods relations

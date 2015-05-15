@@ -120,12 +120,12 @@ public class MonthResourceTest {
 
         // Get the month
         restMonthMockMvc.perform(get("/app/rest/month/{id}", month.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.id").value(month.getId().intValue()))
-            .andExpect(jsonPath("$.code").value(DEFAULT_CODE.toString()))
-            .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
-            .andExpect(jsonPath("$.value").value(DEFAULT_VALUE));
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value(month.getId().intValue()))
+                .andExpect(jsonPath("$.code").value(DEFAULT_CODE.toString()))
+                .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
+                .andExpect(jsonPath("$.value").value(DEFAULT_VALUE));
     }
 
     @Test

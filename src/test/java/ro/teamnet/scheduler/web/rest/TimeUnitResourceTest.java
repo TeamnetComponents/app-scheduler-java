@@ -125,13 +125,13 @@ public class TimeUnitResourceTest {
 
         // Get the timeUnit
         restTimeUnitMockMvc.perform(get("/app/rest/timeUnit/{id}", timeUnit.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.id").value(timeUnit.getId().intValue()))
-            .andExpect(jsonPath("$.code").value(DEFAULT_CODE.toString()))
-            .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
-            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()))
-            .andExpect(jsonPath("$.millis").value(DEFAULT_MILLIS.intValue()));
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value(timeUnit.getId().intValue()))
+                .andExpect(jsonPath("$.code").value(DEFAULT_CODE.toString()))
+                .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
+                .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()))
+                .andExpect(jsonPath("$.millis").value(DEFAULT_MILLIS.intValue()));
     }
 
     @Test

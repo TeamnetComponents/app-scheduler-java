@@ -1,29 +1,8 @@
-
 package ro.teamnet.scheduler.domain;
-        
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import ro.teamnet.bootstrap.domain.util.CustomDateTimeDeserializer;
-import ro.teamnet.bootstrap.domain.util.CustomDateTimeSerializer;
-import ro.teamnet.bootstrap.domain.util.CustomLocalDateSerializer;
-import ro.teamnet.bootstrap.domain.util.ISO8601LocalDateDeserializer;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Type;
-import org.joda.time.LocalDate;
-import org.joda.time.DateTime;
-
 
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * A RecurrentTimeUnit.

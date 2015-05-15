@@ -1,6 +1,5 @@
-
 package ro.teamnet.scheduler.domain;
-        
+
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -70,6 +69,9 @@ public class Schedule implements Serializable {
     @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<RecurrentTimeUnit> recurrentTimeUnits = new HashSet<>();
+
+    @ManyToOne
+    private SchedulableJob schedulableJob;
 
 
     //other entity fields relations
@@ -160,6 +162,14 @@ public class Schedule implements Serializable {
 
     public void setRecurrentTimeUnits(Set<RecurrentTimeUnit> recurrentTimeUnits) {
         this.recurrentTimeUnits = recurrentTimeUnits;
+    }
+
+    public SchedulableJob getSchedulableJob() {
+        return schedulableJob;
+    }
+
+    public void setSchedulableJob(SchedulableJob schedulableJob) {
+        this.schedulableJob = schedulableJob;
     }
 
 

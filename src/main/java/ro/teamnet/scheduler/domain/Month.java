@@ -1,4 +1,3 @@
-
 package ro.teamnet.scheduler.domain;
 
 

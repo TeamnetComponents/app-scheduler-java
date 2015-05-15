@@ -1,18 +1,14 @@
-
 package ro.teamnet.scheduler.repository;
 
 
-import ro.teamnet.bootstrap.extend.AppRepository;
-
-import ro.teamnet.scheduler.domain.RecurrentTimeUnit; 
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import ro.teamnet.bootstrap.extend.AppRepository;
+import ro.teamnet.scheduler.domain.RecurrentTimeUnit;
 
 /**
  * Spring Data JPA repository for the RecurrentTimeUnit entity.
  */
-public interface RecurrentTimeUnitRepository extends AppRepository<RecurrentTimeUnit,Long>{
+public interface RecurrentTimeUnitRepository extends AppRepository<RecurrentTimeUnit, Long> {
 
 
     @Override

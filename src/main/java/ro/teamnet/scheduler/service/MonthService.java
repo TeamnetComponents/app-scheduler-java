@@ -1,14 +1,11 @@
-
 package ro.teamnet.scheduler.service;
 
 
 import ro.teamnet.bootstrap.service.AbstractService;
-
 import ro.teamnet.scheduler.domain.Month;
-import java.util.List;
 
 
-public interface MonthService extends AbstractService<Month,Long>{
+public interface MonthService extends AbstractService<Month, Long> {
 
 
 }

@@ -110,10 +110,10 @@ public class RecurrentTimeUnitResourceTest {
 
         // Get the recurrentTimeUnit
         restRecurrentTimeUnitMockMvc.perform(get("/app/rest/recurrentTimeUnit/{id}", recurrentTimeUnit.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.id").value(recurrentTimeUnit.getId().intValue()))
-            .andExpect(jsonPath("$.value").value(DEFAULT_VALUE));
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value(recurrentTimeUnit.getId().intValue()))
+                .andExpect(jsonPath("$.value").value(DEFAULT_VALUE));
     }
 
     @Test

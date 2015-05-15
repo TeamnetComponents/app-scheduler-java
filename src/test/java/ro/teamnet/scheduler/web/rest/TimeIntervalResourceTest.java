@@ -127,13 +127,13 @@ public class TimeIntervalResourceTest {
 
         // Get the timeInterval
         restTimeIntervalMockMvc.perform(get("/app/rest/timeInterval/{id}", timeInterval.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.id").value(timeInterval.getId().intValue()))
-            .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
-            .andExpect(jsonPath("$.custom").value(DEFAULT_CUSTOM.booleanValue()))
-            .andExpect(jsonPath("$.intervalMillis").value(DEFAULT_INTERVAL_MILLIS.intValue()))
-            .andExpect(jsonPath("$.interval").value(DEFAULT_INTERVAL.intValue()));
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value(timeInterval.getId().intValue()))
+                .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
+                .andExpect(jsonPath("$.custom").value(DEFAULT_CUSTOM.booleanValue()))
+                .andExpect(jsonPath("$.intervalMillis").value(DEFAULT_INTERVAL_MILLIS.intValue()))
+                .andExpect(jsonPath("$.interval").value(DEFAULT_INTERVAL.intValue()));
     }
 
     @Test

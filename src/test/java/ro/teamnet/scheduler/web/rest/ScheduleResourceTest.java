@@ -1,4 +1,3 @@
-
 package ro.teamnet.scheduler.web.rest;
 
 
@@ -144,15 +143,15 @@ public class ScheduleResourceTest {
 
         // Get the schedule
         restScheduleMockMvc.perform(get("/app/rest/schedule/{id}", schedule.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.id").value(schedule.getId().intValue()))
-            .andExpect(jsonPath("$.active").value(DEFAULT_ACTIVE.booleanValue()))
-            .andExpect(jsonPath("$.recurrent").value(DEFAULT_RECURRENT.booleanValue()))
-            .andExpect(jsonPath("$.cron").value(DEFAULT_CRON.toString()))
-            .andExpect(jsonPath("$.startTime").value(DEFAULT_START_TIME_STR))
-            .andExpect(jsonPath("$.endTime").value(DEFAULT_END_TIME_STR))
-            .andExpect(jsonPath("$.repetitions").value(DEFAULT_REPETITIONS.intValue()));
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value(schedule.getId().intValue()))
+                .andExpect(jsonPath("$.active").value(DEFAULT_ACTIVE.booleanValue()))
+                .andExpect(jsonPath("$.recurrent").value(DEFAULT_RECURRENT.booleanValue()))
+                .andExpect(jsonPath("$.cron").value(DEFAULT_CRON.toString()))
+                .andExpect(jsonPath("$.startTime").value(DEFAULT_START_TIME_STR))
+                .andExpect(jsonPath("$.endTime").value(DEFAULT_END_TIME_STR))
+                .andExpect(jsonPath("$.repetitions").value(DEFAULT_REPETITIONS.intValue()));
     }
 
     @Test

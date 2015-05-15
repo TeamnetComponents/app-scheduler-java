@@ -1,4 +1,3 @@
-
 package ro.teamnet.scheduler.web.rest;
 
 
@@ -17,7 +16,7 @@ import javax.inject.Inject;
  */
 @RestController
 @RequestMapping("/app/rest/schedule")
-public class ScheduleResource extends AbstractResource<Schedule,Long>{
+public class ScheduleResource extends AbstractResource<Schedule, Long> {
 
     private final Logger log = LoggerFactory.getLogger(ScheduleResource.class);
 

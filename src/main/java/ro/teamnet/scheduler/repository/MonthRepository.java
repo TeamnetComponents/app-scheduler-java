@@ -1,4 +1,3 @@
-
 package ro.teamnet.scheduler.repository;
 
 
@@ -8,6 +7,6 @@ import ro.teamnet.scheduler.domain.Month;
 /**
  * Spring Data JPA repository for the Month entity.
  */
-public interface MonthRepository extends AppRepository<Month,Long>{
+public interface MonthRepository extends AppRepository<Month, Long> {
 
 }

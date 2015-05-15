@@ -1,6 +1,5 @@
-
 package ro.teamnet.scheduler.domain;
-        
+
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

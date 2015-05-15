@@ -1,20 +1,17 @@
-
 package ro.teamnet.scheduler.service;
 
 
-import ro.teamnet.bootstrap.service.AbstractServiceImpl;
-import org.springframework.stereotype.Service;
-
-import ro.teamnet.scheduler.domain.RecurrentTimeUnit;
-import ro.teamnet.scheduler.repository.RecurrentTimeUnitRepository;
-import org.springframework.transaction.annotation.Transactional;
-import javax.inject.Inject;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import ro.teamnet.bootstrap.service.AbstractServiceImpl;
+import ro.teamnet.scheduler.domain.RecurrentTimeUnit;
+import ro.teamnet.scheduler.repository.RecurrentTimeUnitRepository;
+
+import javax.inject.Inject;
 
 @Service
-public class RecurrentTimeUnitServiceImpl extends AbstractServiceImpl<RecurrentTimeUnit,Long> implements RecurrentTimeUnitService {
+public class RecurrentTimeUnitServiceImpl extends AbstractServiceImpl<RecurrentTimeUnit, Long> implements RecurrentTimeUnitService {
 
     private final Logger log = LoggerFactory.getLogger(RecurrentTimeUnitServiceImpl.class);
 
@@ -25,7 +22,6 @@ public class RecurrentTimeUnitServiceImpl extends AbstractServiceImpl<RecurrentT
     public RecurrentTimeUnitServiceImpl(RecurrentTimeUnitRepository repository) {
         super(repository);
     }
-
 
 
 }

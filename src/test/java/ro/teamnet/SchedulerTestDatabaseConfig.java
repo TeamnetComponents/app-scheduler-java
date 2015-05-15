@@ -1,8 +1,6 @@
 package ro.teamnet;
 
-import org.springframework.boot.bind.RelaxedPropertyResolver;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import ro.teamnet.bootstrap.config.DatabaseConfiguration;
 import ro.teamnet.bootstrap.extend.AppRepositoryFactoryBean;

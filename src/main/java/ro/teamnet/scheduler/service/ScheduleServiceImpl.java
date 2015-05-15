@@ -1,20 +1,17 @@
-
 package ro.teamnet.scheduler.service;
 
 
-import ro.teamnet.bootstrap.service.AbstractServiceImpl;
-import org.springframework.stereotype.Service;
-
-import ro.teamnet.scheduler.domain.Schedule;
-import ro.teamnet.scheduler.repository.ScheduleRepository;
-import org.springframework.transaction.annotation.Transactional;
-import javax.inject.Inject;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import ro.teamnet.bootstrap.service.AbstractServiceImpl;
+import ro.teamnet.scheduler.domain.Schedule;
+import ro.teamnet.scheduler.repository.ScheduleRepository;
+
+import javax.inject.Inject;
 
 @Service
-public class ScheduleServiceImpl extends AbstractServiceImpl<Schedule,Long> implements ScheduleService {
+public class ScheduleServiceImpl extends AbstractServiceImpl<Schedule, Long> implements ScheduleService {
 
     private final Logger log = LoggerFactory.getLogger(ScheduleServiceImpl.class);
 
@@ -25,7 +22,6 @@ public class ScheduleServiceImpl extends AbstractServiceImpl<Schedule,Long> impl
     public ScheduleServiceImpl(ScheduleRepository repository) {
         super(repository);
     }
-
 
 
 }
