@@ -65,6 +65,43 @@
 
     </changeSet>
 
-    
+    <changeSet id="20150515151435" author="teamnet">
+        <insert tableName="T_DAYOFWEEK">
+            <column name="code" value="MON"/>
+            <column name="name" value="Luni"/>
+            <column name="value" value="1"/>
+        </insert>
+        <insert tableName="T_DAYOFWEEK">
+            <column name="code" value="TUE"/>
+            <column name="name" value="Marti"/>
+            <column name="value" value="2"/>
+        </insert>
+        <insert tableName="T_DAYOFWEEK">
+            <column name="code" value="WED"/>
+            <column name="name" value="Miercuri"/>
+            <column name="value" value="3"/>
+        </insert>
+        <insert tableName="T_DAYOFWEEK">
+            <column name="code" value="THU"/>
+            <column name="name" value="Joi"/>
+            <column name="value" value="4"/>
+        </insert>
+        <insert tableName="T_DAYOFWEEK">
+            <column name="code" value="FRI"/>
+            <column name="name" value="Vineri"/>
+            <column name="value" value="5"/>
+        </insert>
+        <insert tableName="T_DAYOFWEEK">
+            <column name="code" value="SAT"/>
+            <column name="name" value="Sambata"/>
+            <column name="value" value="6"/>
+        </insert>
+        <insert tableName="T_DAYOFWEEK">
+            <column name="code" value="SUN"/>
+            <column name="name" value="Duminica"/>
+            <column name="value" value="7"/>
+        </insert>
+    </changeSet>
+
 
 </databaseChangeLog>

@@ -65,6 +65,67 @@
 
     </changeSet>
 
-    
+    <changeSet id="20150515151800" author="teamnet">
+        <insert tableName="T_MONTH">
+            <column name="code" value="JAN"/>
+            <column name="name" value="Ianuarie"/>
+            <column name="value" value="1"/>
+        </insert>
+        <insert tableName="T_MONTH">
+            <column name="code" value="FEB"/>
+            <column name="name" value="Februarie"/>
+            <column name="value" value="2"/>
+        </insert>
+        <insert tableName="T_MONTH">
+            <column name="code" value="MAR"/>
+            <column name="name" value="Martie"/>
+            <column name="value" value="3"/>
+        </insert>
+        <insert tableName="T_MONTH">
+            <column name="code" value="APR"/>
+            <column name="name" value="Aprilie"/>
+            <column name="value" value="4"/>
+        </insert>
+        <insert tableName="T_MONTH">
+            <column name="code" value="MAY"/>
+            <column name="name" value="Mai"/>
+            <column name="value" value="5"/>
+        </insert>
+        <insert tableName="T_MONTH">
+            <column name="code" value="JUN"/>
+            <column name="name" value="Iunie"/>
+            <column name="value" value="6"/>
+        </insert>
+        <insert tableName="T_MONTH">
+            <column name="code" value="JUL"/>
+            <column name="name" value="Iulie"/>
+            <column name="value" value="7"/>
+        </insert>
+        <insert tableName="T_MONTH">
+            <column name="code" value="AUG"/>
+            <column name="name" value="August"/>
+            <column name="value" value="8"/>
+        </insert>
+        <insert tableName="T_MONTH">
+            <column name="code" value="SEP"/>
+            <column name="name" value="Septembrie"/>
+            <column name="value" value="9"/>
+        </insert>
+        <insert tableName="T_MONTH">
+            <column name="code" value="OCT"/>
+            <column name="name" value="Octombrie"/>
+            <column name="value" value="10"/>
+        </insert>
+        <insert tableName="T_MONTH">
+            <column name="code" value="Nov"/>
+            <column name="name" value="Noiembrie"/>
+            <column name="value" value="11"/>
+        </insert>
+        <insert tableName="T_MONTH">
+            <column name="code" value="DEC"/>
+            <column name="name" value="Decembrie"/>
+            <column name="value" value="12"/>
+        </insert>
+    </changeSet>
 
 </databaseChangeLog>
