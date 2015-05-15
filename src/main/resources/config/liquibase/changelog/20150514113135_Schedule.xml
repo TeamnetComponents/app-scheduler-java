@@ -71,47 +71,6 @@
         </insert>
 
     </changeSet>
-
-    
-    <changeSet id="201505141131356" author="teamnet">
-
-        <addColumn tableName="T_SCHEDULE">
-            
-            <column name="years" type="varchar(255)"/>
-
-        </addColumn>
-
-    </changeSet>
-    
-    <changeSet id="201505141131357" author="teamnet">
-
-        <addColumn tableName="T_SCHEDULE">
-            
-            <column name="days_in_month" type="varchar(255)"/>
-
-        </addColumn>
-
-    </changeSet>
-    
-    <changeSet id="201505141131358" author="teamnet">
-
-        <addColumn tableName="T_SCHEDULE">
-            
-            <column name="hours" type="varchar(255)"/>
-
-        </addColumn>
-
-    </changeSet>
-    
-    <changeSet id="201505141131359" author="teamnet">
-
-        <addColumn tableName="T_SCHEDULE">
-            
-            <column name="minutes" type="varchar(255)"/>
-
-        </addColumn>
-
-    </changeSet>
     
 
 </databaseChangeLog>

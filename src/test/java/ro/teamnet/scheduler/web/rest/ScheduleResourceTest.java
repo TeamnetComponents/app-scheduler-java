@@ -65,14 +65,6 @@ public class ScheduleResourceTest {
 
     private static final Long DEFAULT_REPETITIONS = 0L;
     private static final Long UPDATED_REPETITIONS = 1L;
-    private static final String DEFAULT_YEARS = "SAMPLE_TEXT";
-    private static final String UPDATED_YEARS = "UPDATED_TEXT";
-    private static final String DEFAULT_DAYS_IN_MONTH = "SAMPLE_TEXT";
-    private static final String UPDATED_DAYS_IN_MONTH = "UPDATED_TEXT";
-    private static final String DEFAULT_HOURS = "SAMPLE_TEXT";
-    private static final String UPDATED_HOURS = "UPDATED_TEXT";
-    private static final String DEFAULT_MINUTES = "SAMPLE_TEXT";
-    private static final String UPDATED_MINUTES = "UPDATED_TEXT";
 
     @Inject
     private ScheduleRepository scheduleRepository;
@@ -100,10 +92,6 @@ public class ScheduleResourceTest {
         schedule.setStartTime(DEFAULT_START_TIME);
         schedule.setEndTime(DEFAULT_END_TIME);
         schedule.setRepetitions(DEFAULT_REPETITIONS);
-        schedule.setYears(DEFAULT_YEARS);
-        schedule.setDaysInMonth(DEFAULT_DAYS_IN_MONTH);
-        schedule.setHours(DEFAULT_HOURS);
-        schedule.setMinutes(DEFAULT_MINUTES);
     }
 
     @Test
@@ -128,10 +116,6 @@ public class ScheduleResourceTest {
         assertThat(testSchedule.getStartTime()).isEqualTo(DEFAULT_START_TIME);
         assertThat(testSchedule.getEndTime()).isEqualTo(DEFAULT_END_TIME);
         assertThat(testSchedule.getRepetitions()).isEqualTo(DEFAULT_REPETITIONS);
-        assertThat(testSchedule.getYears()).isEqualTo(DEFAULT_YEARS);
-        assertThat(testSchedule.getDaysInMonth()).isEqualTo(DEFAULT_DAYS_IN_MONTH);
-        assertThat(testSchedule.getHours()).isEqualTo(DEFAULT_HOURS);
-        assertThat(testSchedule.getMinutes()).isEqualTo(DEFAULT_MINUTES);
     }
 
     @Test
@@ -149,11 +133,7 @@ public class ScheduleResourceTest {
                 .andExpect(jsonPath("$.[0].cron").value(DEFAULT_CRON.toString()))
                 .andExpect(jsonPath("$.[0].startTime").value(DEFAULT_START_TIME_STR))
                 .andExpect(jsonPath("$.[0].endTime").value(DEFAULT_END_TIME_STR))
-                .andExpect(jsonPath("$.[0].repetitions").value(DEFAULT_REPETITIONS.intValue()))
-                .andExpect(jsonPath("$.[0].years").value(DEFAULT_YEARS.toString()))
-                .andExpect(jsonPath("$.[0].daysInMonth").value(DEFAULT_DAYS_IN_MONTH.toString()))
-                .andExpect(jsonPath("$.[0].hours").value(DEFAULT_HOURS.toString()))
-                .andExpect(jsonPath("$.[0].minutes").value(DEFAULT_MINUTES.toString()));
+                .andExpect(jsonPath("$.[0].repetitions").value(DEFAULT_REPETITIONS.intValue()));
     }
 
     @Test
@@ -172,11 +152,7 @@ public class ScheduleResourceTest {
                 .andExpect(jsonPath("$.cron").value(DEFAULT_CRON.toString()))
                 .andExpect(jsonPath("$.startTime").value(DEFAULT_START_TIME_STR))
                 .andExpect(jsonPath("$.endTime").value(DEFAULT_END_TIME_STR))
-                .andExpect(jsonPath("$.repetitions").value(DEFAULT_REPETITIONS.intValue()))
-                .andExpect(jsonPath("$.years").value(DEFAULT_YEARS.toString()))
-                .andExpect(jsonPath("$.daysInMonth").value(DEFAULT_DAYS_IN_MONTH.toString()))
-                .andExpect(jsonPath("$.hours").value(DEFAULT_HOURS.toString()))
-                .andExpect(jsonPath("$.minutes").value(DEFAULT_MINUTES.toString()));
+                .andExpect(jsonPath("$.repetitions").value(DEFAULT_REPETITIONS.intValue()));
     }
 
     @Test
@@ -200,10 +176,6 @@ public class ScheduleResourceTest {
         schedule.setStartTime(UPDATED_START_TIME);
         schedule.setEndTime(UPDATED_END_TIME);
         schedule.setRepetitions(UPDATED_REPETITIONS);
-        schedule.setYears(UPDATED_YEARS);
-        schedule.setDaysInMonth(UPDATED_DAYS_IN_MONTH);
-        schedule.setHours(UPDATED_HOURS);
-        schedule.setMinutes(UPDATED_MINUTES);
         restScheduleMockMvc.perform(post("/app/rest/schedule")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(schedule)))
@@ -219,10 +191,6 @@ public class ScheduleResourceTest {
         assertThat(testSchedule.getStartTime()).isEqualTo(UPDATED_START_TIME);
         assertThat(testSchedule.getEndTime()).isEqualTo(UPDATED_END_TIME);
         assertThat(testSchedule.getRepetitions()).isEqualTo(UPDATED_REPETITIONS);
-        assertThat(testSchedule.getYears()).isEqualTo(UPDATED_YEARS);
-        assertThat(testSchedule.getDaysInMonth()).isEqualTo(UPDATED_DAYS_IN_MONTH);
-        assertThat(testSchedule.getHours()).isEqualTo(UPDATED_HOURS);
-        assertThat(testSchedule.getMinutes()).isEqualTo(UPDATED_MINUTES);
     }
 
     @Test

@@ -50,18 +50,6 @@ public class Schedule implements Serializable {
     @Column(name = "repetitions")
     private Long repetitions;
 
-    @Column(name = "years")
-    private String years;
-
-    @Column(name = "days_in_month")
-    private String daysInMonth;
-
-    @Column(name = "hours")
-    private String hours;
-
-    @Column(name = "minutes")
-    private String minutes;
-
     @ManyToOne
     private TimeInterval timeInterval;
 
@@ -78,22 +66,6 @@ public class Schedule implements Serializable {
             inverseJoinColumns = {@JoinColumn(name = "dayofweek_id", referencedColumnName = "id")},
             joinColumns = {@JoinColumn(name = "schedule_id", referencedColumnName = "id")})
     private Set<DayOfWeek> dayOfWeeks = new HashSet<>();
-
-    @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY)
-    @JsonIgnore
-    private Set<RecurrentYear> recurrentYears = new HashSet<>();
-
-    @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY)
-    @JsonIgnore
-    private Set<RecurrentDay> recurrentDays = new HashSet<>();
-
-    @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY)
-    @JsonIgnore
-    private Set<RecurrentHour> recurrentHours = new HashSet<>();
-
-    @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY)
-    @JsonIgnore
-    private Set<RecurrentMinute> recurrentMinutes = new HashSet<>();
 
     @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY)
     @JsonIgnore
@@ -158,38 +130,6 @@ public class Schedule implements Serializable {
         this.repetitions = repetitions;
     }
 
-    public String getYears() {
-        return years;
-    }
-
-    public void setYears(String years) {
-        this.years = years;
-    }
-
-    public String getDaysInMonth() {
-        return daysInMonth;
-    }
-
-    public void setDaysInMonth(String daysInMonth) {
-        this.daysInMonth = daysInMonth;
-    }
-
-    public String getHours() {
-        return hours;
-    }
-
-    public void setHours(String hours) {
-        this.hours = hours;
-    }
-
-    public String getMinutes() {
-        return minutes;
-    }
-
-    public void setMinutes(String minutes) {
-        this.minutes = minutes;
-    }
-
     public TimeInterval getTimeInterval() {
         return timeInterval;
     }
@@ -212,38 +152,6 @@ public class Schedule implements Serializable {
 
     public void setDayOfWeeks(Set<DayOfWeek> dayOfWeeks) {
         this.dayOfWeeks = dayOfWeeks;
-    }
-
-    public Set<RecurrentYear> getRecurrentYears() {
-        return recurrentYears;
-    }
-
-    public void setRecurrentYears(Set<RecurrentYear> recurrentYears) {
-        this.recurrentYears = recurrentYears;
-    }
-
-    public Set<RecurrentDay> getRecurrentDays() {
-        return recurrentDays;
-    }
-
-    public void setRecurrentDays(Set<RecurrentDay> recurrentDays) {
-        this.recurrentDays = recurrentDays;
-    }
-
-    public Set<RecurrentHour> getRecurrentHours() {
-        return recurrentHours;
-    }
-
-    public void setRecurrentHours(Set<RecurrentHour> recurrentHours) {
-        this.recurrentHours = recurrentHours;
-    }
-
-    public Set<RecurrentMinute> getRecurrentMinutes() {
-        return recurrentMinutes;
-    }
-
-    public void setRecurrentMinutes(Set<RecurrentMinute> recurrentMinutes) {
-        this.recurrentMinutes = recurrentMinutes;
     }
 
     public Set<RecurrentTimeUnit> getRecurrentTimeUnits() {
@@ -290,10 +198,6 @@ public class Schedule implements Serializable {
                 ", startTime='" + startTime + "'" +
                 ", endTime='" + endTime + "'" +
                 ", repetitions='" + repetitions + "'" +
-                ", years='" + years + "'" +
-                ", daysInMonth='" + daysInMonth + "'" +
-                ", hours='" + hours + "'" +
-                ", minutes='" + minutes + "'" +
                 '}';
     }
 }
