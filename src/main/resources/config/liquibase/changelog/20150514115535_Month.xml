@@ -64,7 +64,7 @@
 
     </changeSet>
 
-    <changeSet id="20150515151800" author="teamnet">
+    <changeSet id="20150515151800" author="teamnet" dbms="!h2">
         <insert tableName="T_MONTH">
             <column name="code" value="JAN"/>
             <column name="name" value="Ianuarie"/>
