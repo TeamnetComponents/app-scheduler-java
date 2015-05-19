@@ -1,0 +1,8 @@
+code;name;description;millis
+SEC;secunde;Secunde;1000
+MIN;minute;Minute;60000
+H;ore;Ore;3600000
+D;zile;Zile;86400000
+Y;ani;Ani;null
+W;saptamani;Saptamani;604800000
+MON;luni;Luni calendaristice;null

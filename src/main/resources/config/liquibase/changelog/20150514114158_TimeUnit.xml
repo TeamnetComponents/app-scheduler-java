@@ -65,5 +65,13 @@
 
     </changeSet>
 
+    <changeSet id="20150519171500" author="oanam">
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/time_units.csv"
+                  separator=";"
+                  tableName="T_TIMEUNIT">
+            <column name="id" type="NUMERIC" />
+        </loadData>
+    </changeSet>
 
 </databaseChangeLog>
