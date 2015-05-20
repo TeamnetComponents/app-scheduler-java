@@ -2,8 +2,6 @@ package ro.teamnet.scheduler.domain;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,7 +11,7 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "T_TASK")
-public class Task implements Serializable, AppJob {
+public class Task implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -121,21 +119,4 @@ public class Task implements Serializable, AppJob {
                 '}';
     }
 
-    @Transient
-    private String optionValues;
-
-    @Override
-    @Transient
-    public void configure(String optionValues) {
-        this.optionValues = optionValues;
-    }
-
-    @Override
-    @Transient
-    public void execute(JobExecutionContext context) throws JobExecutionException {
-        //TODO do something meaningful
-        System.out.println("###############################");
-        System.out.println("S-a executat task-ul " + code + " cu optiunile ( " + options + " : " + optionValues + " )");
-        System.out.println("###############################");
-    }
 }
