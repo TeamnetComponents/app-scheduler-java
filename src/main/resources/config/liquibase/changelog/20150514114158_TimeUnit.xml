@@ -65,7 +65,7 @@
 
     </changeSet>
 
-    <changeSet id="20150519171500" author="oanam">
+    <changeSet id="20150519171500" author="oanam" dbms="!h2">
         <loadData encoding="UTF-8"
                   file="config/liquibase/time_units.csv"
                   separator=";"

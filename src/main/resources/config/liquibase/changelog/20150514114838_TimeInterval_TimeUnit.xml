@@ -18,7 +18,7 @@
                                  referencedTableName="T_TIMEUNIT"/>
     </changeSet>
 
-    <changeSet id="20150519172500" author="oanam">
+    <changeSet id="20150519172500" author="oanam" dbms="!h2">
         <insert tableName="T_TIMEINTERVAL">
             <column name="custom">false</column>
             <column name="name">Anual</column>
