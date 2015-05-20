@@ -9,6 +9,7 @@ import ro.teamnet.scheduler.domain.Schedule;
 import ro.teamnet.scheduler.repository.ScheduleRepository;
 
 import javax.inject.Inject;
+import java.util.List;
 
 @Service
 public class ScheduleServiceImpl extends AbstractServiceImpl<Schedule, Long> implements ScheduleService {
@@ -24,4 +25,8 @@ public class ScheduleServiceImpl extends AbstractServiceImpl<Schedule, Long> imp
     }
 
 
+    @Override
+    public List<Schedule> findByScheduledJobId(Long scheduledJobId) {
+        return scheduleRepository.findByScheduledJobId(scheduledJobId);
+    }
 }

@@ -5,6 +5,8 @@ import org.springframework.data.repository.query.Param;
 import ro.teamnet.bootstrap.extend.AppRepository;
 import ro.teamnet.scheduler.domain.Schedule;
 
+import java.util.List;
+
 /**
  * Spring Data JPA repository for the Schedule entity.
  */
@@ -15,4 +17,11 @@ public interface ScheduleRepository extends AppRepository<Schedule, Long> {
     @Query("select schedule from Schedule schedule left join fetch schedule.timeInterval left join fetch schedule.scheduledJob where schedule.id =:id")
     Schedule findOne(@Param("id") Long id);
 
+    /**
+     * Finds all schedules for the given job id.
+     *
+     * @param scheduledJobId - the scheduled job id
+     * @return all the schedules associated with the job with the given id
+     */
+    List<Schedule> findByScheduledJobId(Long scheduledJobId);
 }
