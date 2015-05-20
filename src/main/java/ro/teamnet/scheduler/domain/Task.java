@@ -15,14 +15,11 @@ public class Task implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name = "code")
-    private String code;
-
     @Column(name = "type")
     private String type;
 
-    @Column(name = "command")
-    private String command;
+    @Column(name = "qrtz_job_class")
+    private String quartzJobClassName;
 
     @Column(name = "options")
     private String options;
@@ -41,14 +38,6 @@ public class Task implements Serializable {
         this.id = id;
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
     public String getType() {
         return type;
     }
@@ -57,12 +46,12 @@ public class Task implements Serializable {
         this.type = type;
     }
 
-    public String getCommand() {
-        return command;
+    public String getQuartzJobClassName() {
+        return quartzJobClassName;
     }
 
-    public void setCommand(String command) {
-        this.command = command;
+    public void setQuartzJobClassName(String quartzJobClassName) {
+        this.quartzJobClassName = quartzJobClassName;
     }
 
     public String getOptions() {
@@ -109,9 +98,8 @@ public class Task implements Serializable {
     public String toString() {
         return "Task{" +
                 "id=" + id +
-                ", code='" + code + "'" +
                 ", type='" + type + "'" +
-                ", command='" + command + "'" +
+                ", quartzJobClassName='" + quartzJobClassName + "'" +
                 ", options='" + options + "'" +
                 '}';
     }

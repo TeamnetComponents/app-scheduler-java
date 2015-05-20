@@ -44,12 +44,10 @@ public class TaskResourceTest {
 
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss");
 
-    private static final String DEFAULT_CODE = "SAMPLE_TEXT";
-    private static final String UPDATED_CODE = "UPDATED_TEXT";
     private static final String DEFAULT_TYPE = "SAMPLE_TEXT";
     private static final String UPDATED_TYPE = "UPDATED_TEXT";
-    private static final String DEFAULT_COMMAND = "SAMPLE_TEXT";
-    private static final String UPDATED_COMMAND = "UPDATED_TEXT";
+    private static final String DEFAULT_QRTZ_JOB_CLASS = "SAMPLE_TEXT";
+    private static final String UPDATED_QRTZ_JOB_CLASS = "UPDATED_TEXT";
     private static final String DEFAULT_OPTIONS = "SAMPLE_TEXT";
     private static final String UPDATED_OPTIONS = "UPDATED_TEXT";
 
@@ -73,9 +71,8 @@ public class TaskResourceTest {
     @Before
     public void initTest() {
         task = new Task();
-        task.setCode(DEFAULT_CODE);
         task.setType(DEFAULT_TYPE);
-        task.setCommand(DEFAULT_COMMAND);
+        task.setQuartzJobClassName(DEFAULT_QRTZ_JOB_CLASS);
         task.setOptions(DEFAULT_OPTIONS);
     }
 
@@ -95,9 +92,8 @@ public class TaskResourceTest {
         List<Task> tasks = taskRepository.findAll();
         assertThat(tasks).hasSize(1);
         Task testTask = tasks.iterator().next();
-        assertThat(testTask.getCode()).isEqualTo(DEFAULT_CODE);
         assertThat(testTask.getType()).isEqualTo(DEFAULT_TYPE);
-        assertThat(testTask.getCommand()).isEqualTo(DEFAULT_COMMAND);
+        assertThat(testTask.getQuartzJobClassName()).isEqualTo(DEFAULT_QRTZ_JOB_CLASS);
         assertThat(testTask.getOptions()).isEqualTo(DEFAULT_OPTIONS);
     }
 
@@ -111,9 +107,8 @@ public class TaskResourceTest {
         restTaskMockMvc.perform(get("/app/rest/task"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.[0].code").value(DEFAULT_CODE.toString()))
                 .andExpect(jsonPath("$.[0].type").value(DEFAULT_TYPE.toString()))
-                .andExpect(jsonPath("$.[0].command").value(DEFAULT_COMMAND.toString()))
+                .andExpect(jsonPath("$.[0].quartzJobClassName").value(DEFAULT_QRTZ_JOB_CLASS.toString()))
                 .andExpect(jsonPath("$.[0].options").value(DEFAULT_OPTIONS.toString()));
     }
 
@@ -128,9 +123,8 @@ public class TaskResourceTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(task.getId().intValue()))
-                .andExpect(jsonPath("$.code").value(DEFAULT_CODE.toString()))
                 .andExpect(jsonPath("$.type").value(DEFAULT_TYPE.toString()))
-                .andExpect(jsonPath("$.command").value(DEFAULT_COMMAND.toString()))
+                .andExpect(jsonPath("$.quartzJobClassName").value(DEFAULT_QRTZ_JOB_CLASS.toString()))
                 .andExpect(jsonPath("$.options").value(DEFAULT_OPTIONS.toString()));
     }
 
@@ -149,9 +143,8 @@ public class TaskResourceTest {
         taskRepository.saveAndFlush(task);
 
         // Update the task
-        task.setCode(UPDATED_CODE);
         task.setType(UPDATED_TYPE);
-        task.setCommand(UPDATED_COMMAND);
+        task.setQuartzJobClassName(UPDATED_QRTZ_JOB_CLASS);
         task.setOptions(UPDATED_OPTIONS);
         restTaskMockMvc.perform(post("/app/rest/task")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -162,9 +155,8 @@ public class TaskResourceTest {
         List<Task> tasks = taskRepository.findAll();
         assertThat(tasks).hasSize(1);
         Task testTask = tasks.iterator().next();
-        assertThat(testTask.getCode()).isEqualTo(UPDATED_CODE);
         assertThat(testTask.getType()).isEqualTo(UPDATED_TYPE);
-        assertThat(testTask.getCommand()).isEqualTo(UPDATED_COMMAND);
+        assertThat(testTask.getQuartzJobClassName()).isEqualTo(UPDATED_QRTZ_JOB_CLASS);
         assertThat(testTask.getOptions()).isEqualTo(UPDATED_OPTIONS);
     }
 
