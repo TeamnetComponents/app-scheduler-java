@@ -8,7 +8,7 @@ import org.springframework.core.env.SimpleCommandLinePropertySource;
 import ro.teamnet.bootstrap.config.DatabaseConfiguration;
 
 /**
- * Configuration class for testing scheduler module.
+ * Configuration class for testing Scheduler  module.
  */
 @Configuration
 @ComponentScan({"ro.teamnet.bootstrap", "ro.teamnet"})

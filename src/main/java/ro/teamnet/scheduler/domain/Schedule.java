@@ -71,7 +71,7 @@ public class Schedule implements Serializable {
     private Set<RecurrentTimeUnit> recurrentTimeUnits = new HashSet<>();
 
     @ManyToOne
-    private SchedulableJob schedulableJob;
+    private ScheduledJob scheduledJob;
 
 
     //other entity fields relations
@@ -164,12 +164,12 @@ public class Schedule implements Serializable {
         this.recurrentTimeUnits = recurrentTimeUnits;
     }
 
-    public SchedulableJob getSchedulableJob() {
-        return schedulableJob;
+    public ScheduledJob getScheduledJob() {
+        return scheduledJob;
     }
 
-    public void setSchedulableJob(SchedulableJob schedulableJob) {
-        this.schedulableJob = schedulableJob;
+    public void setScheduledJob(ScheduledJob scheduledJob) {
+        this.scheduledJob = scheduledJob;
     }
 
 

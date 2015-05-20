@@ -17,6 +17,6 @@ public interface TimeIntervalRepository extends AppRepository<TimeInterval, Long
 
     @Override
     @Query("select timeInterval from TimeInterval timeInterval left join fetch timeInterval.timeUnit where timeInterval.id =:id")
-    TimeInterval findOne(Long id);
+    TimeInterval findOne(@Param("id") Long id);
 
 }

@@ -70,7 +70,7 @@
                   file="config/liquibase/time_units.csv"
                   separator=";"
                   tableName="T_TIMEUNIT">
-            <column name="id" type="NUMERIC" />
+            <column name="id" type="NUMERIC"/>
         </loadData>
     </changeSet>
 

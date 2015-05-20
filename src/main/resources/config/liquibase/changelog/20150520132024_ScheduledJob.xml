@@ -19,15 +19,15 @@
     <property name="pk_t_module_right" value="null" dbms="!oracle,!postgresql"/>
 
     <!--
-        Added the entity SchedulableJob.
+        Added the entity ScheduledJob.
     -->
-    <changeSet id="20150515161651" author="teamnet">
-        <createTable tableName="T_SCHEDULABLEJOB">
+    <changeSet id="20150520132024" author="teamnet">
+        <createTable tableName="T_SCHEDULEDJOB">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="name" type="varchar(255)"/>
-            <column name="options" type="varchar(255)"/>
+            <column name="description" type="varchar(255)"/>
             <column name="next_scheduled_execution" type="timestamp">
                 <constraints nullable="false"/>
             </column>
@@ -41,31 +41,31 @@
         <insert tableName="T_MODULE">
             <column name="ID_MODULE" valueComputed="${pk_t_module}"/>
             <column name="VERSION" value="1"/>
-            <column name="CODE" value="schedulable_job"/>
+            <column name="CODE" value="scheduled_job"/>
             <column name="TYPE" value="1"/>
-            <column name="DESCRIPTION" value="SchedulableJob"/>
+            <column name="DESCRIPTION" value="ScheduledJob"/>
             <column name="FK_PARENT_MODULE" valueComputed="(SELECT ID_MODULE from T_MODULE where code = 'scheduler')"/>
         </insert>
 
         <insert tableName="T_MENU">
             <column name="parent_id" valueComputed="(SELECT id from T_MENU where module_name = 'scheduler')"/>
-            <column name="name" value="SchedulableJob"/>
-            <column name="route" value="schedulableJob"/>
+            <column name="name" value="ScheduledJob"/>
+            <column name="route" value="scheduledJob"/>
             <column name="active" value="1"/>
-            <column name="module_id" valueComputed="(SELECT ID_MODULE from T_MODULE where code = 'schedulable_job')"/>
+            <column name="module_id" valueComputed="(SELECT ID_MODULE from T_MODULE where code = 'scheduled_job')"/>
         </insert>
 
         <insert tableName="T_MODULE_RIGHT">
             <column name="ID_MODULE_RIGHT" valueComputed="${pk_t_module_right}"/>
             <column name="MODULE_RIGHT" value="1"/>
             <column name="VERSION" value="1"/>
-            <column name="FK_MODULE" valueComputed="(SELECT ID_MODULE from T_MODULE where CODE = 'schedulable_job')"/>
+            <column name="FK_MODULE" valueComputed="(SELECT ID_MODULE from T_MODULE where CODE = 'scheduled_job')"/>
         </insert>
         <insert tableName="T_ROLE_MODULE_RIGHTS">
             <column name="fk_role" valueComputed="(SELECT ID_ROLE from T_ROLE where CODE = 'ROLE_ADMIN' )"/>
             <column name="fk_module_right"
                     valueComputed="(SELECT ID_MODULE_RIGHT from T_MODULE_RIGHT where  MODULE_RIGHT = 1
-                                    AND FK_MODULE = (SELECT ID_MODULE from T_MODULE where CODE = 'schedulable_job'))"/>
+                                    AND FK_MODULE = (SELECT ID_MODULE from T_MODULE where CODE = 'scheduled_job'))"/>
         </insert>
 
     </changeSet>

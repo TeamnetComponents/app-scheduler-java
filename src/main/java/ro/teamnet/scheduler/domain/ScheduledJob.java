@@ -15,11 +15,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * A SchedulableJob.
+ * A ScheduledJob.
  */
 @Entity
-@Table(name = "T_SCHEDULABLEJOB")
-public class SchedulableJob implements Serializable {
+@Table(name = "T_SCHEDULEDJOB")
+public class ScheduledJob implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,8 +28,8 @@ public class SchedulableJob implements Serializable {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "options")
-    private String options;
+    @Column(name = "description")
+    private String description;
 
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     @JsonSerialize(using = CustomDateTimeSerializer.class)
@@ -46,12 +46,13 @@ public class SchedulableJob implements Serializable {
     @Column(name = "last_execution_state")
     private String lastExecutionState;
 
-    @ManyToOne
-    private Task task;
-
-    @OneToMany(mappedBy = "schedulableJob", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "scheduledJob", fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<Schedule> schedules = new HashSet<>();
+
+    @OneToMany(mappedBy = "scheduledJob", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<Task> tasks = new HashSet<>();
 
 
     //other entity fields relations
@@ -72,12 +73,12 @@ public class SchedulableJob implements Serializable {
         this.name = name;
     }
 
-    public String getOptions() {
-        return options;
+    public String getDescription() {
+        return description;
     }
 
-    public void setOptions(String options) {
-        this.options = options;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public DateTime getNextScheduledExecution() {
@@ -104,20 +105,20 @@ public class SchedulableJob implements Serializable {
         this.lastExecutionState = lastExecutionState;
     }
 
-    public Task getTask() {
-        return task;
-    }
-
-    public void setTask(Task task) {
-        this.task = task;
-    }
-
     public Set<Schedule> getSchedules() {
         return schedules;
     }
 
     public void setSchedules(Set<Schedule> schedules) {
         this.schedules = schedules;
+    }
+
+    public Set<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(Set<Task> tasks) {
+        this.tasks = tasks;
     }
 
 
@@ -132,9 +133,9 @@ public class SchedulableJob implements Serializable {
             return false;
         }
 
-        SchedulableJob schedulableJob = (SchedulableJob) o;
+        ScheduledJob scheduledJob = (ScheduledJob) o;
 
-        if (id != null ? !id.equals(schedulableJob.id) : schedulableJob.id != null) return false;
+        if (id != null ? !id.equals(scheduledJob.id) : scheduledJob.id != null) return false;
 
         return true;
     }
@@ -146,10 +147,10 @@ public class SchedulableJob implements Serializable {
 
     @Override
     public String toString() {
-        return "SchedulableJob{" +
+        return "ScheduledJob{" +
                 "id=" + id +
                 ", name='" + name + "'" +
-                ", options='" + options + "'" +
+                ", description='" + description + "'" +
                 ", nextScheduledExecution='" + nextScheduledExecution + "'" +
                 ", lastExecutionTime='" + lastExecutionTime + "'" +
                 ", lastExecutionState='" + lastExecutionState + "'" +

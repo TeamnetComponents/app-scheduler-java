@@ -1,8 +1,6 @@
 package ro.teamnet.scheduler.domain;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -29,9 +27,8 @@ public class Task implements Serializable {
     @Column(name = "options")
     private String options;
 
-    @OneToOne(mappedBy = "task", fetch = FetchType.LAZY)
-    @JsonIgnore
-    private SchedulableJob schedulableJob;
+    @ManyToOne
+    private ScheduledJob scheduledJob;
 
 
     //other entity fields relations
@@ -76,12 +73,12 @@ public class Task implements Serializable {
         this.options = options;
     }
 
-    public SchedulableJob getSchedulableJob() {
-        return schedulableJob;
+    public ScheduledJob getScheduledJob() {
+        return scheduledJob;
     }
 
-    public void setSchedulableJob(SchedulableJob schedulableJob) {
-        this.schedulableJob = schedulableJob;
+    public void setScheduledJob(ScheduledJob scheduledJob) {
+        this.scheduledJob = scheduledJob;
     }
 
 
@@ -118,5 +115,4 @@ public class Task implements Serializable {
                 ", options='" + options + "'" +
                 '}';
     }
-
 }

@@ -5,17 +5,17 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
 
-    <changeSet id="20150515161859" author="teamnet">
+    <changeSet id="20150520132238" author="teamnet">
 
         <addColumn tableName="T_SCHEDULE">
-            <column name="schedulablejob_id" type="bigint"/>
+            <column name="scheduledjob_id" type="bigint"/>
         </addColumn>
 
-        <addForeignKeyConstraint baseColumnNames="schedulablejob_id"
+        <addForeignKeyConstraint baseColumnNames="scheduledjob_id"
                                  baseTableName="T_SCHEDULE"
-                                 constraintName="fk_schedule_schedulablejob_id"
+                                 constraintName="fk_schedule_scheduledjob_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="T_SCHEDULABLEJOB"/>
+                                 referencedTableName="T_SCHEDULEDJOB"/>
     </changeSet>
 
 </databaseChangeLog>
