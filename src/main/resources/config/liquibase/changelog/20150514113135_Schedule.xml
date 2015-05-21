@@ -32,9 +32,7 @@
             <column name="start_time" type="timestamp">
                 <constraints nullable="false"/>
             </column>
-            <column name="end_time" type="timestamp">
-                <constraints nullable="false"/>
-            </column>
+            <column name="end_time" type="timestamp"/>
             <column name="repetitions" type="bigint"/>
         </createTable>
 
@@ -76,7 +74,9 @@
 
         <addColumn tableName="T_SCHEDULE">
 
-            <column name="version" type="bigint"/>
+            <column name="version" type="bigint">
+                <constraints nullable="false"/>
+            </column>
 
         </addColumn>
 
@@ -86,8 +86,9 @@
 
         <addColumn tableName="T_SCHEDULE">
 
-            <column name="created" type="timestamp"/>
-
+            <column name="created" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
 
         </addColumn>
 
@@ -97,8 +98,9 @@
 
         <addColumn tableName="T_SCHEDULE">
 
-            <column name="last_updated" type="timestamp"/>
-
+            <column name="last_updated" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
 
         </addColumn>
 

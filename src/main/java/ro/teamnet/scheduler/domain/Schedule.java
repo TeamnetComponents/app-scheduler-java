@@ -43,12 +43,13 @@ public class Schedule implements Serializable {
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     @JsonSerialize(using = CustomDateTimeSerializer.class)
     @JsonDeserialize(using = CustomDateTimeDeserializer.class)
-    @Column(name = "end_time", nullable = false)
+    @Column(name = "end_time", nullable = true)
     private DateTime endTime;
 
     @Column(name = "repetitions")
     private Long repetitions;
 
+    @Version
     @Column(name = "version")
     private Long version;
 
@@ -261,5 +262,18 @@ public class Schedule implements Serializable {
                 ", lastUpdated='" + lastUpdated + "'" +
                 ", deleted='" + deleted + "'" +
                 '}';
+    }
+
+    @PrePersist
+    private void prePersist(){
+        DateTime currentTime = new DateTime();
+        setCreated(currentTime);
+        setLastUpdated(currentTime);
+        setDeleted(false);
+    }
+
+    @PreUpdate
+    private void preUpdate() {
+        setLastUpdated(new DateTime());
     }
 }

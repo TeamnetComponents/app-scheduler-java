@@ -31,7 +31,8 @@ public class Task implements Serializable {
     @Column(name = "options")
     private String options;
 
-    @Column(name = "version")
+    @Version
+    @Column(name = "version", nullable = false)
     private Long version;
 
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
@@ -163,5 +164,18 @@ public class Task implements Serializable {
                 ", lastUpdated='" + lastUpdated + "'" +
                 ", deleted='" + deleted + "'" +
                 '}';
+    }
+
+    @PrePersist
+    private void prePersist(){
+        DateTime currentTime = new DateTime();
+        setCreated(currentTime);
+        setLastUpdated(currentTime);
+        setDeleted(false);
+    }
+
+    @PreUpdate
+    private void preUpdate() {
+        setLastUpdated(new DateTime());
     }
 }

@@ -34,18 +34,19 @@ public class ScheduledJob implements Serializable {
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     @JsonSerialize(using = CustomDateTimeSerializer.class)
     @JsonDeserialize(using = CustomDateTimeDeserializer.class)
-    @Column(name = "next_scheduled_execution", nullable = false)
+    @Column(name = "next_scheduled_execution", nullable = true)
     private DateTime nextScheduledExecution;
 
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     @JsonSerialize(using = CustomDateTimeSerializer.class)
     @JsonDeserialize(using = CustomDateTimeDeserializer.class)
-    @Column(name = "last_execution_time", nullable = false)
+    @Column(name = "last_execution_time", nullable = true)
     private DateTime lastExecutionTime;
 
     @Column(name = "last_execution_state")
     private String lastExecutionState;
 
+    @Version
     @Column(name = "version")
     private Long version;
 
@@ -209,5 +210,18 @@ public class ScheduledJob implements Serializable {
                 ", lastUpdated='" + lastUpdated + "'" +
                 ", deleted='" + deleted + "'" +
                 '}';
+    }
+
+    @PrePersist
+    private void prePersist(){
+        DateTime currentTime = new DateTime();
+        setCreated(currentTime);
+        setLastUpdated(currentTime);
+        setDeleted(false);
+    }
+
+    @PreUpdate
+    private void preUpdate() {
+        setLastUpdated(new DateTime());
     }
 }

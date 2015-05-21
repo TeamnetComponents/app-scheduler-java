@@ -28,12 +28,8 @@
             </column>
             <column name="name" type="varchar(255)"/>
             <column name="description" type="varchar(255)"/>
-            <column name="next_scheduled_execution" type="timestamp">
-                <constraints nullable="false"/>
-            </column>
-            <column name="last_execution_time" type="timestamp">
-                <constraints nullable="false"/>
-            </column>
+            <column name="next_scheduled_execution" type="timestamp"/>
+            <column name="last_execution_time" type="timestamp"/>
             <column name="last_execution_state" type="varchar(255)"/>
         </createTable>
 
@@ -75,7 +71,9 @@
 
         <addColumn tableName="T_SCHEDULEDJOB">
 
-            <column name="version" type="bigint"/>
+            <column name="version" type="bigint">
+                <constraints nullable="false"/>
+            </column>
 
         </addColumn>
 
@@ -85,8 +83,9 @@
 
         <addColumn tableName="T_SCHEDULEDJOB">
 
-            <column name="created" type="timestamp"/>
-
+            <column name="created" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
 
         </addColumn>
 
@@ -96,8 +95,9 @@
 
         <addColumn tableName="T_SCHEDULEDJOB">
 
-            <column name="last_updated" type="timestamp"/>
-
+            <column name="last_updated" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
 
         </addColumn>
 

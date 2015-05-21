@@ -69,7 +69,9 @@
 
         <addColumn tableName="T_TASK">
 
-            <column name="version" type="bigint"/>
+            <column name="version" type="bigint">
+                <constraints nullable="false"/>
+            </column>
 
         </addColumn>
 
@@ -79,8 +81,9 @@
 
         <addColumn tableName="T_TASK">
 
-            <column name="created" type="timestamp"/>
-
+            <column name="created" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
 
         </addColumn>
 
@@ -90,8 +93,9 @@
 
         <addColumn tableName="T_TASK">
 
-            <column name="last_updated" type="timestamp"/>
-
+            <column name="last_updated" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
 
         </addColumn>
 
