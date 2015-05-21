@@ -72,4 +72,47 @@
     </changeSet>
 
 
+    <changeSet id="201505141131356" author="teamnet">
+
+        <addColumn tableName="T_SCHEDULE">
+
+            <column name="version" type="bigint"/>
+
+        </addColumn>
+
+    </changeSet>
+
+    <changeSet id="201505141131357" author="teamnet">
+
+        <addColumn tableName="T_SCHEDULE">
+
+            <column name="created" type="timestamp"/>
+
+
+        </addColumn>
+
+    </changeSet>
+
+    <changeSet id="201505141131358" author="teamnet">
+
+        <addColumn tableName="T_SCHEDULE">
+
+            <column name="last_updated" type="timestamp"/>
+
+
+        </addColumn>
+
+    </changeSet>
+
+    <changeSet id="201505141131359" author="teamnet">
+
+        <addColumn tableName="T_SCHEDULE">
+
+            <column name="deleted" type="bit"/>
+
+        </addColumn>
+
+    </changeSet>
+
+
 </databaseChangeLog>

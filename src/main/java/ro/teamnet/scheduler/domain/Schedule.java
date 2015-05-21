@@ -49,6 +49,24 @@ public class Schedule implements Serializable {
     @Column(name = "repetitions")
     private Long repetitions;
 
+    @Column(name = "version")
+    private Long version;
+
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    @JsonSerialize(using = CustomDateTimeSerializer.class)
+    @JsonDeserialize(using = CustomDateTimeDeserializer.class)
+    @Column(name = "created", nullable = false)
+    private DateTime created;
+
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    @JsonSerialize(using = CustomDateTimeSerializer.class)
+    @JsonDeserialize(using = CustomDateTimeDeserializer.class)
+    @Column(name = "last_updated", nullable = false)
+    private DateTime lastUpdated;
+
+    @Column(name = "deleted")
+    private Boolean deleted;
+
     @ManyToOne
     private TimeInterval timeInterval;
 
@@ -132,6 +150,38 @@ public class Schedule implements Serializable {
         this.repetitions = repetitions;
     }
 
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
+    }
+
+    public DateTime getCreated() {
+        return created;
+    }
+
+    public void setCreated(DateTime created) {
+        this.created = created;
+    }
+
+    public DateTime getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(DateTime lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
+
     public TimeInterval getTimeInterval() {
         return timeInterval;
     }
@@ -206,6 +256,10 @@ public class Schedule implements Serializable {
                 ", startTime='" + startTime + "'" +
                 ", endTime='" + endTime + "'" +
                 ", repetitions='" + repetitions + "'" +
+                ", version='" + version + "'" +
+                ", created='" + created + "'" +
+                ", lastUpdated='" + lastUpdated + "'" +
+                ", deleted='" + deleted + "'" +
                 '}';
     }
 }

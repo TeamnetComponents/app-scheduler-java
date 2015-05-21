@@ -60,6 +60,20 @@ public class ScheduledJobResourceTest {
     private static final String DEFAULT_LAST_EXECUTION_STATE = "SAMPLE_TEXT";
     private static final String UPDATED_LAST_EXECUTION_STATE = "UPDATED_TEXT";
 
+    private static final Long DEFAULT_VERSION = 0L;
+    private static final Long UPDATED_VERSION = 1L;
+
+    private static final DateTime DEFAULT_CREATED = new DateTime(0L);
+    private static final DateTime UPDATED_CREATED = new DateTime().withMillisOfSecond(0);
+    private static final String DEFAULT_CREATED_STR = dateTimeFormatter.print(DEFAULT_CREATED);
+
+    private static final DateTime DEFAULT_LAST_UPDATED = new DateTime(0L);
+    private static final DateTime UPDATED_LAST_UPDATED = new DateTime().withMillisOfSecond(0);
+    private static final String DEFAULT_LAST_UPDATED_STR = dateTimeFormatter.print(DEFAULT_LAST_UPDATED);
+
+    private static final Boolean DEFAULT_DELETED = false;
+    private static final Boolean UPDATED_DELETED = true;
+
     @Inject
     private ScheduledJobRepository scheduledJobRepository;
 
@@ -85,6 +99,10 @@ public class ScheduledJobResourceTest {
         scheduledJob.setNextScheduledExecution(DEFAULT_NEXT_SCHEDULED_EXECUTION);
         scheduledJob.setLastExecutionTime(DEFAULT_LAST_EXECUTION_TIME);
         scheduledJob.setLastExecutionState(DEFAULT_LAST_EXECUTION_STATE);
+        scheduledJob.setVersion(DEFAULT_VERSION);
+        scheduledJob.setCreated(DEFAULT_CREATED);
+        scheduledJob.setLastUpdated(DEFAULT_LAST_UPDATED);
+        scheduledJob.setDeleted(DEFAULT_DELETED);
     }
 
     @Test
@@ -108,6 +126,10 @@ public class ScheduledJobResourceTest {
         assertThat(testScheduledJob.getNextScheduledExecution()).isEqualTo(DEFAULT_NEXT_SCHEDULED_EXECUTION);
         assertThat(testScheduledJob.getLastExecutionTime()).isEqualTo(DEFAULT_LAST_EXECUTION_TIME);
         assertThat(testScheduledJob.getLastExecutionState()).isEqualTo(DEFAULT_LAST_EXECUTION_STATE);
+        assertThat(testScheduledJob.getVersion()).isEqualTo(DEFAULT_VERSION);
+        assertThat(testScheduledJob.getCreated()).isEqualTo(DEFAULT_CREATED);
+        assertThat(testScheduledJob.getLastUpdated()).isEqualTo(DEFAULT_LAST_UPDATED);
+        assertThat(testScheduledJob.getDeleted()).isEqualTo(DEFAULT_DELETED);
     }
 
     @Test
@@ -124,7 +146,11 @@ public class ScheduledJobResourceTest {
                 .andExpect(jsonPath("$.[0].description").value(DEFAULT_DESCRIPTION.toString()))
                 .andExpect(jsonPath("$.[0].nextScheduledExecution").value(DEFAULT_NEXT_SCHEDULED_EXECUTION_STR))
                 .andExpect(jsonPath("$.[0].lastExecutionTime").value(DEFAULT_LAST_EXECUTION_TIME_STR))
-                .andExpect(jsonPath("$.[0].lastExecutionState").value(DEFAULT_LAST_EXECUTION_STATE.toString()));
+                .andExpect(jsonPath("$.[0].lastExecutionState").value(DEFAULT_LAST_EXECUTION_STATE.toString()))
+                .andExpect(jsonPath("$.[0].version").value(DEFAULT_VERSION.intValue()))
+                .andExpect(jsonPath("$.[0].created").value(DEFAULT_CREATED_STR))
+                .andExpect(jsonPath("$.[0].lastUpdated").value(DEFAULT_LAST_UPDATED_STR))
+                .andExpect(jsonPath("$.[0].deleted").value(DEFAULT_DELETED.booleanValue()));
     }
 
     @Test
@@ -142,7 +168,11 @@ public class ScheduledJobResourceTest {
                 .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()))
                 .andExpect(jsonPath("$.nextScheduledExecution").value(DEFAULT_NEXT_SCHEDULED_EXECUTION_STR))
                 .andExpect(jsonPath("$.lastExecutionTime").value(DEFAULT_LAST_EXECUTION_TIME_STR))
-                .andExpect(jsonPath("$.lastExecutionState").value(DEFAULT_LAST_EXECUTION_STATE.toString()));
+                .andExpect(jsonPath("$.lastExecutionState").value(DEFAULT_LAST_EXECUTION_STATE.toString()))
+                .andExpect(jsonPath("$.version").value(DEFAULT_VERSION.intValue()))
+                .andExpect(jsonPath("$.created").value(DEFAULT_CREATED_STR))
+                .andExpect(jsonPath("$.lastUpdated").value(DEFAULT_LAST_UPDATED_STR))
+                .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED.booleanValue()));
     }
 
     @Test
@@ -165,6 +195,10 @@ public class ScheduledJobResourceTest {
         scheduledJob.setNextScheduledExecution(UPDATED_NEXT_SCHEDULED_EXECUTION);
         scheduledJob.setLastExecutionTime(UPDATED_LAST_EXECUTION_TIME);
         scheduledJob.setLastExecutionState(UPDATED_LAST_EXECUTION_STATE);
+        scheduledJob.setVersion(UPDATED_VERSION);
+        scheduledJob.setCreated(UPDATED_CREATED);
+        scheduledJob.setLastUpdated(UPDATED_LAST_UPDATED);
+        scheduledJob.setDeleted(UPDATED_DELETED);
         restScheduledJobMockMvc.perform(post("/app/rest/scheduledJob")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(scheduledJob)))
@@ -179,6 +213,10 @@ public class ScheduledJobResourceTest {
         assertThat(testScheduledJob.getNextScheduledExecution()).isEqualTo(UPDATED_NEXT_SCHEDULED_EXECUTION);
         assertThat(testScheduledJob.getLastExecutionTime()).isEqualTo(UPDATED_LAST_EXECUTION_TIME);
         assertThat(testScheduledJob.getLastExecutionState()).isEqualTo(UPDATED_LAST_EXECUTION_STATE);
+        assertThat(testScheduledJob.getVersion()).isEqualTo(UPDATED_VERSION);
+        assertThat(testScheduledJob.getCreated()).isEqualTo(UPDATED_CREATED);
+        assertThat(testScheduledJob.getLastUpdated()).isEqualTo(UPDATED_LAST_UPDATED);
+        assertThat(testScheduledJob.getDeleted()).isEqualTo(UPDATED_DELETED);
     }
 
     @Test

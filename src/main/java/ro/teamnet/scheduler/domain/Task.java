@@ -1,6 +1,13 @@
 package ro.teamnet.scheduler.domain;
 
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.hibernate.annotations.Type;
+import org.joda.time.DateTime;
+import ro.teamnet.bootstrap.domain.util.CustomDateTimeDeserializer;
+import ro.teamnet.bootstrap.domain.util.CustomDateTimeSerializer;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -23,6 +30,24 @@ public class Task implements Serializable {
 
     @Column(name = "options")
     private String options;
+
+    @Column(name = "version")
+    private Long version;
+
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    @JsonSerialize(using = CustomDateTimeSerializer.class)
+    @JsonDeserialize(using = CustomDateTimeDeserializer.class)
+    @Column(name = "created", nullable = false)
+    private DateTime created;
+
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    @JsonSerialize(using = CustomDateTimeSerializer.class)
+    @JsonDeserialize(using = CustomDateTimeDeserializer.class)
+    @Column(name = "last_updated", nullable = false)
+    private DateTime lastUpdated;
+
+    @Column(name = "deleted")
+    private Boolean deleted;
 
     @ManyToOne
     private ScheduledJob scheduledJob;
@@ -60,6 +85,38 @@ public class Task implements Serializable {
 
     public void setOptions(String options) {
         this.options = options;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
+    }
+
+    public DateTime getCreated() {
+        return created;
+    }
+
+    public void setCreated(DateTime created) {
+        this.created = created;
+    }
+
+    public DateTime getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(DateTime lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 
     public ScheduledJob getScheduledJob() {
@@ -101,6 +158,10 @@ public class Task implements Serializable {
                 ", type='" + type + "'" +
                 ", quartzJobClassName='" + quartzJobClassName + "'" +
                 ", options='" + options + "'" +
+                ", version='" + version + "'" +
+                ", created='" + created + "'" +
+                ", lastUpdated='" + lastUpdated + "'" +
+                ", deleted='" + deleted + "'" +
                 '}';
     }
 }

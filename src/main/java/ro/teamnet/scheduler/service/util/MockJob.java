@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by Oana.Mihai on 5/20/2015.
  */
-public class MockJob implements Job{
+public class MockJob implements Job {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
