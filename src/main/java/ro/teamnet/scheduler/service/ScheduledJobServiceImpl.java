@@ -23,5 +23,15 @@ public class ScheduledJobServiceImpl extends AbstractServiceImpl<ScheduledJob, L
         super(repository);
     }
 
-
+    /**
+     * Logical delete action.
+     *
+     * @param id - the element to delete
+     */
+    @Override
+    public void delete(Long id) {
+        ScheduledJob scheduledJob = findOne(id);
+        scheduledJob.setDeleted(true);
+        save(scheduledJob);
+    }
 }

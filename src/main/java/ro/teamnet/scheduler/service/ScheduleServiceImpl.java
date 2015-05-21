@@ -29,4 +29,16 @@ public class ScheduleServiceImpl extends AbstractServiceImpl<Schedule, Long> imp
     public List<Schedule> findByScheduledJobId(Long scheduledJobId) {
         return scheduleRepository.findByScheduledJobId(scheduledJobId);
     }
+
+    /**
+     * Logical delete action.
+     *
+     * @param id - the element to delete
+     */
+    @Override
+    public void delete(Long id) {
+        Schedule schedule = findOne(id);
+        schedule.setDeleted(true);
+        save(schedule);
+    }
 }

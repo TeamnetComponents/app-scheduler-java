@@ -28,4 +28,16 @@ public class TaskServiceImpl extends AbstractServiceImpl<Task, Long> implements 
     public List<Task> findByScheduledJobId(Long id) {
         return taskRepository.findByScheduledJobId(id);
     }
+
+    /**
+     * Logical delete action.
+     *
+     * @param id - the element to delete
+     */
+    @Override
+    public void delete(Long id) {
+        Task task = findOne(id);
+        task.setDeleted(true);
+        save(task);
+    }
 }
