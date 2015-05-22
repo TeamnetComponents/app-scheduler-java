@@ -18,10 +18,16 @@ public interface TaskRepository extends AppRepository<Task, Long> {
     Task findOne(@Param("id") Long id);
 
     /**
-     * Finds all tasks for the given scheduled job id.
+     * Finds all tasks for the given scheduled job id (skips deleted tasks).
      *
      * @param scheduledJobId - the scheduled job id
      * @return all the tasks associated with the scheduled job with the given id
      */
-    List<Task> findByScheduledJobId(Long scheduledJobId);
+    List<Task> findByDeletedFalseAndScheduledJobId(Long scheduledJobId);
+
+    /**
+     * Finds all tasks (skips deleted).
+     * @return all tasks (minus the ones marked as deleted)
+     */
+    List<Task> findByDeletedFalse();
 }

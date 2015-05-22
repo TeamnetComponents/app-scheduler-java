@@ -73,7 +73,7 @@ public class QuartzService {
             List<Schedule> schedules = scheduleService.findByScheduledJobId(scheduledJob.getId());
             for (Schedule schedule : schedules) {
                 log.info(schedule.toString());
-                if (!schedule.getActive() || schedule.getCron() == null) {
+                if (schedule.getDeleted() || !schedule.getActive() || schedule.getCron() == null) {
                     log.info("Schedule not active! Scheduling skipped.");
                     continue;
                 }

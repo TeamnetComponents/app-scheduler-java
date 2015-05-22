@@ -18,10 +18,16 @@ public interface ScheduleRepository extends AppRepository<Schedule, Long> {
     Schedule findOne(@Param("id") Long id);
 
     /**
-     * Finds all schedules for the given job id.
+     * Finds all schedules for the given job id (skips deleted schedules).
      *
      * @param scheduledJobId - the scheduled job id
      * @return all the schedules associated with the job with the given id
      */
-    List<Schedule> findByScheduledJobId(Long scheduledJobId);
+    List<Schedule> findByDeletedFalseAndScheduledJobId(Long scheduledJobId);
+
+    /**
+     * Finds all schedules (skips deleted).
+     * @return all schedules (minus the ones marked as deleted)
+     */
+    List<Schedule> findByDeletedFalse();
 }
