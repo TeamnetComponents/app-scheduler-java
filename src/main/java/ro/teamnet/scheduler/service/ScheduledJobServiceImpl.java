@@ -41,7 +41,7 @@ public class ScheduledJobServiceImpl extends AbstractServiceImpl<ScheduledJob, L
 
     @Override
     public List<ScheduledJob> findAll() {
-        return scheduledJobRepository.findAll();
+        return scheduledJobRepository.findByDeletedFalse();
     }
 
     @Override
