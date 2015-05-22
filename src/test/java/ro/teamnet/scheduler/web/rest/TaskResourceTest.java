@@ -1,7 +1,6 @@
 package ro.teamnet.scheduler.web.rest;
 
 
-import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.junit.Before;
@@ -55,14 +54,6 @@ public class TaskResourceTest {
     private static final Long DEFAULT_VERSION = 0L;
     private static final Long UPDATED_VERSION = 1L;
 
-    private static final DateTime DEFAULT_CREATED = new DateTime(0L);
-    private static final DateTime UPDATED_CREATED = new DateTime().withMillisOfSecond(0);
-    private static final String DEFAULT_CREATED_STR = dateTimeFormatter.print(DEFAULT_CREATED);
-
-    private static final DateTime DEFAULT_LAST_UPDATED = new DateTime(0L);
-    private static final DateTime UPDATED_LAST_UPDATED = new DateTime().withMillisOfSecond(0);
-    private static final String DEFAULT_LAST_UPDATED_STR = dateTimeFormatter.print(DEFAULT_LAST_UPDATED);
-
     private static final Boolean DEFAULT_DELETED = false;
     private static final Boolean UPDATED_DELETED = true;
 
@@ -89,10 +80,6 @@ public class TaskResourceTest {
         task.setType(DEFAULT_TYPE);
         task.setQuartzJobClassName(DEFAULT_QRTZ_JOB_CLASS);
         task.setOptions(DEFAULT_OPTIONS);
-        task.setVersion(DEFAULT_VERSION);
-        task.setCreated(DEFAULT_CREATED);
-        task.setLastUpdated(DEFAULT_LAST_UPDATED);
-        task.setDeleted(DEFAULT_DELETED);
     }
 
     @Test
@@ -115,8 +102,6 @@ public class TaskResourceTest {
         assertThat(testTask.getQuartzJobClassName()).isEqualTo(DEFAULT_QRTZ_JOB_CLASS);
         assertThat(testTask.getOptions()).isEqualTo(DEFAULT_OPTIONS);
         assertThat(testTask.getVersion()).isEqualTo(DEFAULT_VERSION);
-        assertThat(testTask.getCreated()).isEqualTo(DEFAULT_CREATED);
-        assertThat(testTask.getLastUpdated()).isEqualTo(DEFAULT_LAST_UPDATED);
         assertThat(testTask.getDeleted()).isEqualTo(DEFAULT_DELETED);
     }
 
@@ -134,8 +119,6 @@ public class TaskResourceTest {
                 .andExpect(jsonPath("$.[0].quartzJobClassName").value(DEFAULT_QRTZ_JOB_CLASS.toString()))
                 .andExpect(jsonPath("$.[0].options").value(DEFAULT_OPTIONS.toString()))
                 .andExpect(jsonPath("$.[0].version").value(DEFAULT_VERSION.intValue()))
-                .andExpect(jsonPath("$.[0].created").value(DEFAULT_CREATED_STR))
-                .andExpect(jsonPath("$.[0].lastUpdated").value(DEFAULT_LAST_UPDATED_STR))
                 .andExpect(jsonPath("$.[0].deleted").value(DEFAULT_DELETED.booleanValue()));
     }
 
@@ -143,7 +126,7 @@ public class TaskResourceTest {
     @Transactional
     public void getTask() throws Exception {
         // Initialize the database
-        taskRepository.saveAndFlush(task);
+        Task task = taskRepository.saveAndFlush(this.task);
 
         // Get the task
         restTaskMockMvc.perform(get("/app/rest/task/{id}", task.getId()))
@@ -154,8 +137,6 @@ public class TaskResourceTest {
                 .andExpect(jsonPath("$.quartzJobClassName").value(DEFAULT_QRTZ_JOB_CLASS.toString()))
                 .andExpect(jsonPath("$.options").value(DEFAULT_OPTIONS.toString()))
                 .andExpect(jsonPath("$.version").value(DEFAULT_VERSION.intValue()))
-                .andExpect(jsonPath("$.created").value(DEFAULT_CREATED_STR))
-                .andExpect(jsonPath("$.lastUpdated").value(DEFAULT_LAST_UPDATED_STR))
                 .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED.booleanValue()));
     }
 
@@ -171,15 +152,12 @@ public class TaskResourceTest {
     @Transactional
     public void updateTask() throws Exception {
         // Initialize the database
-        taskRepository.saveAndFlush(task);
+        Task task = taskRepository.saveAndFlush(this.task);
 
         // Update the task
         task.setType(UPDATED_TYPE);
         task.setQuartzJobClassName(UPDATED_QRTZ_JOB_CLASS);
         task.setOptions(UPDATED_OPTIONS);
-        task.setVersion(UPDATED_VERSION);
-        task.setCreated(UPDATED_CREATED);
-        task.setLastUpdated(UPDATED_LAST_UPDATED);
         task.setDeleted(UPDATED_DELETED);
         restTaskMockMvc.perform(post("/app/rest/task")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -194,8 +172,6 @@ public class TaskResourceTest {
         assertThat(testTask.getQuartzJobClassName()).isEqualTo(UPDATED_QRTZ_JOB_CLASS);
         assertThat(testTask.getOptions()).isEqualTo(UPDATED_OPTIONS);
         assertThat(testTask.getVersion()).isEqualTo(UPDATED_VERSION);
-        assertThat(testTask.getCreated()).isEqualTo(UPDATED_CREATED);
-        assertThat(testTask.getLastUpdated()).isEqualTo(UPDATED_LAST_UPDATED);
         assertThat(testTask.getDeleted()).isEqualTo(UPDATED_DELETED);
     }
 
@@ -203,7 +179,7 @@ public class TaskResourceTest {
     @Transactional
     public void deleteTask() throws Exception {
         // Initialize the database
-        taskRepository.saveAndFlush(task);
+        Task task = taskRepository.saveAndFlush(this.task);
 
         // Get the task
         restTaskMockMvc.perform(delete("/app/rest/task/{id}", task.getId())
@@ -211,7 +187,9 @@ public class TaskResourceTest {
                 .andExpect(status().isOk());
 
         // Validate the database is empty
-        List<Task> tasks = taskRepository.findAll();
+        List<Task> tasks = service.findAll();
         assertThat(tasks).hasSize(0);
+        List<Task> tasksDeleted = taskRepository.findByDeletedFalse();
+        assertThat(tasksDeleted).hasSize(0);
     }
 }

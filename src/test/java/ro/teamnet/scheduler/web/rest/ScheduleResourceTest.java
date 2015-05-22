@@ -68,14 +68,6 @@ public class ScheduleResourceTest {
     private static final Long DEFAULT_VERSION = 0L;
     private static final Long UPDATED_VERSION = 1L;
 
-    private static final DateTime DEFAULT_CREATED = new DateTime(0L);
-    private static final DateTime UPDATED_CREATED = new DateTime().withMillisOfSecond(0);
-    private static final String DEFAULT_CREATED_STR = dateTimeFormatter.print(DEFAULT_CREATED);
-
-    private static final DateTime DEFAULT_LAST_UPDATED = new DateTime(0L);
-    private static final DateTime UPDATED_LAST_UPDATED = new DateTime().withMillisOfSecond(0);
-    private static final String DEFAULT_LAST_UPDATED_STR = dateTimeFormatter.print(DEFAULT_LAST_UPDATED);
-
     private static final Boolean DEFAULT_DELETED = false;
     private static final Boolean UPDATED_DELETED = true;
 
@@ -105,10 +97,6 @@ public class ScheduleResourceTest {
         schedule.setStartTime(DEFAULT_START_TIME);
         schedule.setEndTime(DEFAULT_END_TIME);
         schedule.setRepetitions(DEFAULT_REPETITIONS);
-        schedule.setVersion(DEFAULT_VERSION);
-        schedule.setCreated(DEFAULT_CREATED);
-        schedule.setLastUpdated(DEFAULT_LAST_UPDATED);
-        schedule.setDeleted(DEFAULT_DELETED);
     }
 
     @Test
@@ -134,8 +122,6 @@ public class ScheduleResourceTest {
         assertThat(testSchedule.getEndTime()).isEqualTo(DEFAULT_END_TIME);
         assertThat(testSchedule.getRepetitions()).isEqualTo(DEFAULT_REPETITIONS);
         assertThat(testSchedule.getVersion()).isEqualTo(DEFAULT_VERSION);
-        assertThat(testSchedule.getCreated()).isEqualTo(DEFAULT_CREATED);
-        assertThat(testSchedule.getLastUpdated()).isEqualTo(DEFAULT_LAST_UPDATED);
         assertThat(testSchedule.getDeleted()).isEqualTo(DEFAULT_DELETED);
     }
 
@@ -156,8 +142,6 @@ public class ScheduleResourceTest {
                 .andExpect(jsonPath("$.[0].endTime").value(DEFAULT_END_TIME_STR))
                 .andExpect(jsonPath("$.[0].repetitions").value(DEFAULT_REPETITIONS.intValue()))
                 .andExpect(jsonPath("$.[0].version").value(DEFAULT_VERSION.intValue()))
-                .andExpect(jsonPath("$.[0].created").value(DEFAULT_CREATED_STR))
-                .andExpect(jsonPath("$.[0].lastUpdated").value(DEFAULT_LAST_UPDATED_STR))
                 .andExpect(jsonPath("$.[0].deleted").value(DEFAULT_DELETED.booleanValue()));
     }
 
@@ -165,7 +149,7 @@ public class ScheduleResourceTest {
     @Transactional
     public void getSchedule() throws Exception {
         // Initialize the database
-        scheduleRepository.saveAndFlush(schedule);
+        Schedule schedule = scheduleRepository.saveAndFlush(this.schedule);
 
         // Get the schedule
         restScheduleMockMvc.perform(get("/app/rest/schedule/{id}", schedule.getId()))
@@ -179,8 +163,6 @@ public class ScheduleResourceTest {
                 .andExpect(jsonPath("$.endTime").value(DEFAULT_END_TIME_STR))
                 .andExpect(jsonPath("$.repetitions").value(DEFAULT_REPETITIONS.intValue()))
                 .andExpect(jsonPath("$.version").value(DEFAULT_VERSION.intValue()))
-                .andExpect(jsonPath("$.created").value(DEFAULT_CREATED_STR))
-                .andExpect(jsonPath("$.lastUpdated").value(DEFAULT_LAST_UPDATED_STR))
                 .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED.booleanValue()));
     }
 
@@ -196,7 +178,7 @@ public class ScheduleResourceTest {
     @Transactional
     public void updateSchedule() throws Exception {
         // Initialize the database
-        scheduleRepository.saveAndFlush(schedule);
+        Schedule schedule = scheduleRepository.saveAndFlush(this.schedule);
 
         // Update the schedule
         schedule.setActive(UPDATED_ACTIVE);
@@ -205,9 +187,7 @@ public class ScheduleResourceTest {
         schedule.setStartTime(UPDATED_START_TIME);
         schedule.setEndTime(UPDATED_END_TIME);
         schedule.setRepetitions(UPDATED_REPETITIONS);
-        schedule.setVersion(UPDATED_VERSION);
-        schedule.setCreated(UPDATED_CREATED);
-        schedule.setLastUpdated(UPDATED_LAST_UPDATED);
+
         schedule.setDeleted(UPDATED_DELETED);
         restScheduleMockMvc.perform(post("/app/rest/schedule")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -225,8 +205,6 @@ public class ScheduleResourceTest {
         assertThat(testSchedule.getEndTime()).isEqualTo(UPDATED_END_TIME);
         assertThat(testSchedule.getRepetitions()).isEqualTo(UPDATED_REPETITIONS);
         assertThat(testSchedule.getVersion()).isEqualTo(UPDATED_VERSION);
-        assertThat(testSchedule.getCreated()).isEqualTo(UPDATED_CREATED);
-        assertThat(testSchedule.getLastUpdated()).isEqualTo(UPDATED_LAST_UPDATED);
         assertThat(testSchedule.getDeleted()).isEqualTo(UPDATED_DELETED);
     }
 
@@ -234,7 +212,7 @@ public class ScheduleResourceTest {
     @Transactional
     public void deleteSchedule() throws Exception {
         // Initialize the database
-        scheduleRepository.saveAndFlush(schedule);
+        Schedule schedule = scheduleRepository.saveAndFlush(this.schedule);
 
         // Get the schedule
         restScheduleMockMvc.perform(delete("/app/rest/schedule/{id}", schedule.getId())
@@ -242,7 +220,9 @@ public class ScheduleResourceTest {
                 .andExpect(status().isOk());
 
         // Validate the database is empty
-        List<Schedule> schedules = scheduleRepository.findAll();
+        List<Schedule> schedules = service.findAll();
         assertThat(schedules).hasSize(0);
+        List<Schedule> schedulesNotDeleted = scheduleRepository.findByDeletedFalse();
+        assertThat(schedulesNotDeleted).hasSize(0);
     }
 }
