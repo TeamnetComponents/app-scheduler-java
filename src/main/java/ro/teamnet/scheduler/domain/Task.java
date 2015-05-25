@@ -22,11 +22,8 @@ public class Task implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name = "type")
-    private String type;
-
-    @Column(name = "qrtz_job_class")
-    private String quartzJobClassName;
+    @Column(name = "queue_position")
+    private Integer queuePosition;
 
     @Column(name = "options")
     private String options;
@@ -64,20 +61,12 @@ public class Task implements Serializable {
         this.id = id;
     }
 
-    public String getType() {
-        return type;
+    public Integer getQueuePosition() {
+        return queuePosition;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getQuartzJobClassName() {
-        return quartzJobClassName;
-    }
-
-    public void setQuartzJobClassName(String quartzJobClassName) {
-        this.quartzJobClassName = quartzJobClassName;
+    public void setQueuePosition(Integer queuePosition) {
+        this.queuePosition = queuePosition;
     }
 
     public String getOptions() {
@@ -156,8 +145,7 @@ public class Task implements Serializable {
     public String toString() {
         return "Task{" +
                 "id=" + id +
-                ", type='" + type + "'" +
-                ", quartzJobClassName='" + quartzJobClassName + "'" +
+                ", queuePosition='" + queuePosition + "'" +
                 ", options='" + options + "'" +
                 ", version='" + version + "'" +
                 ", created='" + created + "'" +

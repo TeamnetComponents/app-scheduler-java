@@ -1,5 +1,6 @@
 package ro.teamnet.scheduler.service;
 
+import org.json.JSONObject;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +11,9 @@ import ro.teamnet.scheduler.domain.ScheduledJob;
 import ro.teamnet.scheduler.domain.Task;
 
 import javax.inject.Inject;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Scheduling service. Reads stored jobs from the database and passes them to the Quartz scheduler.
@@ -43,24 +46,22 @@ public class QuartzService {
         List<ScheduledJob> scheduledJobs = scheduledJobService.findAll();
         for (ScheduledJob scheduledJob : scheduledJobs) {
             log.info(scheduledJob.toString());
-            List<Task> tasks = taskService.findByScheduledJobId(scheduledJob.getId());
-            if (tasks.size() == 0) {
+            Map<Integer, String> taskOptions = getTaskOptions(scheduledJob);
+            if (taskOptions.size() == 0) {
                 log.info("Job has no tasks! Scheduling skipped.");
                 continue;
             }
-            Task task = tasks.get(0); // multiple tasks not yet supported; FIXME in a future version
-            log.info(task.toString());
 
             JobDetail jobDetail;
             try {
-                Class<? extends Job> jobClass = (Class<? extends Job>) Class.forName(task.getQuartzJobClassName());
+                Class<? extends Job> jobClass = (Class<? extends Job>) Class.forName(scheduledJob.getQuartzJobClassName());
                 jobDetail = JobBuilder.newJob()
                         .ofType(jobClass)
-                        .withIdentity(scheduledJob.getId() + "." + task.getId())
-                        .usingJobData("options", task.getOptions())
+                        .withIdentity(scheduledJob.getId().toString())
+                        .usingJobData("options", new JSONObject(taskOptions).toString())
                         .build();
             } catch (ClassNotFoundException e) {
-                log.info("Class " + task.getQuartzJobClassName() + " was not found! Scheduling skipped.");
+                log.info("Class " + scheduledJob.getQuartzJobClassName() + " was not found! Scheduling skipped.");
                 continue;
             }
 
@@ -95,5 +96,14 @@ public class QuartzService {
                 }
             }
         }
+    }
+
+    private Map<Integer, String> getTaskOptions(ScheduledJob scheduledJob) {
+        Map<Integer, String> taskOptions = new HashMap<>();
+        List<Task> tasks = taskService.findByScheduledJobId(scheduledJob.getId());
+        for (Task task : tasks) {
+            taskOptions.put(task.getQueuePosition(), task.getOptions());
+        }
+        return taskOptions;
     }
 }

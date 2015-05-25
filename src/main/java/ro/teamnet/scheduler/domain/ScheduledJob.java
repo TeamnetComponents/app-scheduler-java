@@ -31,6 +31,12 @@ public class ScheduledJob implements Serializable {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "type")
+    private String type;
+
+    @Column(name = "quartz_job_class_name")
+    private String quartzJobClassName;
+
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     @JsonSerialize(using = CustomDateTimeSerializer.class)
     @JsonDeserialize(using = CustomDateTimeDeserializer.class)
@@ -98,6 +104,22 @@ public class ScheduledJob implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getQuartzJobClassName() {
+        return quartzJobClassName;
+    }
+
+    public void setQuartzJobClassName(String quartzJobClassName) {
+        this.quartzJobClassName = quartzJobClassName;
     }
 
     public DateTime getNextScheduledExecution() {
@@ -202,6 +224,8 @@ public class ScheduledJob implements Serializable {
                 "id=" + id +
                 ", name='" + name + "'" +
                 ", description='" + description + "'" +
+                ", type='" + type + "'" +
+                ", quartzJobClassName='" + quartzJobClassName + "'" +
                 ", nextScheduledExecution='" + nextScheduledExecution + "'" +
                 ", lastExecutionTime='" + lastExecutionTime + "'" +
                 ", lastExecutionState='" + lastExecutionState + "'" +

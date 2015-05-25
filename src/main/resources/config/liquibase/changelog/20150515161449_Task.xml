@@ -26,8 +26,7 @@
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="type" type="varchar(255)"/>
-            <column name="qrtz_job_class" type="varchar(255)"/>
+            <column name="queue_position" type="integer"/>
             <column name="options" type="varchar(255)"/>
         </createTable>
 

@@ -44,10 +44,8 @@ public class TaskResourceTest {
 
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss");
 
-    private static final String DEFAULT_TYPE = "SAMPLE_TEXT";
-    private static final String UPDATED_TYPE = "UPDATED_TEXT";
-    private static final String DEFAULT_QRTZ_JOB_CLASS = "SAMPLE_TEXT";
-    private static final String UPDATED_QRTZ_JOB_CLASS = "UPDATED_TEXT";
+    private static final Integer DEFAULT_QUEUE_POSITION = 0;
+    private static final Integer UPDATED_QUEUE_POSITION = 1;
     private static final String DEFAULT_OPTIONS = "SAMPLE_TEXT";
     private static final String UPDATED_OPTIONS = "UPDATED_TEXT";
 
@@ -77,8 +75,7 @@ public class TaskResourceTest {
     @Before
     public void initTest() {
         task = new Task();
-        task.setType(DEFAULT_TYPE);
-        task.setQuartzJobClassName(DEFAULT_QRTZ_JOB_CLASS);
+        task.setQueuePosition(DEFAULT_QUEUE_POSITION);
         task.setOptions(DEFAULT_OPTIONS);
     }
 
@@ -98,8 +95,7 @@ public class TaskResourceTest {
         List<Task> tasks = taskRepository.findAll();
         assertThat(tasks).hasSize(1);
         Task testTask = tasks.iterator().next();
-        assertThat(testTask.getType()).isEqualTo(DEFAULT_TYPE);
-        assertThat(testTask.getQuartzJobClassName()).isEqualTo(DEFAULT_QRTZ_JOB_CLASS);
+        assertThat(testTask.getQueuePosition()).isEqualTo(DEFAULT_QUEUE_POSITION);
         assertThat(testTask.getOptions()).isEqualTo(DEFAULT_OPTIONS);
         assertThat(testTask.getVersion()).isEqualTo(DEFAULT_VERSION);
         assertThat(testTask.getDeleted()).isEqualTo(DEFAULT_DELETED);
@@ -115,8 +111,7 @@ public class TaskResourceTest {
         restTaskMockMvc.perform(get("/app/rest/task"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.[0].type").value(DEFAULT_TYPE.toString()))
-                .andExpect(jsonPath("$.[0].quartzJobClassName").value(DEFAULT_QRTZ_JOB_CLASS.toString()))
+                .andExpect(jsonPath("$.[0].queuePosition").value(DEFAULT_QUEUE_POSITION))
                 .andExpect(jsonPath("$.[0].options").value(DEFAULT_OPTIONS.toString()))
                 .andExpect(jsonPath("$.[0].version").value(DEFAULT_VERSION.intValue()))
                 .andExpect(jsonPath("$.[0].deleted").value(DEFAULT_DELETED.booleanValue()));
@@ -133,8 +128,7 @@ public class TaskResourceTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(task.getId().intValue()))
-                .andExpect(jsonPath("$.type").value(DEFAULT_TYPE.toString()))
-                .andExpect(jsonPath("$.quartzJobClassName").value(DEFAULT_QRTZ_JOB_CLASS.toString()))
+                .andExpect(jsonPath("$.queuePosition").value(DEFAULT_QUEUE_POSITION))
                 .andExpect(jsonPath("$.options").value(DEFAULT_OPTIONS.toString()))
                 .andExpect(jsonPath("$.version").value(DEFAULT_VERSION.intValue()))
                 .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED.booleanValue()));
@@ -155,8 +149,7 @@ public class TaskResourceTest {
         Task task = taskRepository.saveAndFlush(this.task);
 
         // Update the task
-        task.setType(UPDATED_TYPE);
-        task.setQuartzJobClassName(UPDATED_QRTZ_JOB_CLASS);
+        task.setQueuePosition(UPDATED_QUEUE_POSITION);
         task.setOptions(UPDATED_OPTIONS);
         task.setDeleted(UPDATED_DELETED);
         restTaskMockMvc.perform(post("/app/rest/task")
@@ -168,8 +161,7 @@ public class TaskResourceTest {
         List<Task> tasks = taskRepository.findAll();
         assertThat(tasks).hasSize(1);
         Task testTask = tasks.iterator().next();
-        assertThat(testTask.getType()).isEqualTo(UPDATED_TYPE);
-        assertThat(testTask.getQuartzJobClassName()).isEqualTo(UPDATED_QRTZ_JOB_CLASS);
+        assertThat(testTask.getQueuePosition()).isEqualTo(UPDATED_QUEUE_POSITION);
         assertThat(testTask.getOptions()).isEqualTo(UPDATED_OPTIONS);
         assertThat(testTask.getVersion()).isEqualTo(UPDATED_VERSION);
         assertThat(testTask.getDeleted()).isEqualTo(UPDATED_DELETED);
