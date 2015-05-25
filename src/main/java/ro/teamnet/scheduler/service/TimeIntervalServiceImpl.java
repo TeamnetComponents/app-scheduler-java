@@ -9,6 +9,7 @@ import ro.teamnet.scheduler.domain.TimeInterval;
 import ro.teamnet.scheduler.repository.TimeIntervalRepository;
 
 import javax.inject.Inject;
+import java.util.List;
 
 @Service
 public class TimeIntervalServiceImpl extends AbstractServiceImpl<TimeInterval, Long> implements TimeIntervalService {
@@ -24,4 +25,8 @@ public class TimeIntervalServiceImpl extends AbstractServiceImpl<TimeInterval, L
     }
 
 
+    @Override
+    public TimeInterval findById(Long id) {
+        return timeIntervalRepository.findOne(id);
+    }
 }

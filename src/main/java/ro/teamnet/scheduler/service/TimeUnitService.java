@@ -7,5 +7,5 @@ import ro.teamnet.scheduler.domain.TimeUnit;
 
 public interface TimeUnitService extends AbstractService<TimeUnit, Long> {
 
-
+    TimeUnit findById(Long id);
 }

@@ -24,4 +24,8 @@ public class TimeUnitServiceImpl extends AbstractServiceImpl<TimeUnit, Long> imp
     }
 
 
+    @Override
+    public TimeUnit findById(Long id) {
+        return timeUnitRepository.findOne(id);
+    }
 }
