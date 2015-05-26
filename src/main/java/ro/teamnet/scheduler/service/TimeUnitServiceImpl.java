@@ -9,6 +9,7 @@ import ro.teamnet.scheduler.domain.TimeUnit;
 import ro.teamnet.scheduler.repository.TimeUnitRepository;
 
 import javax.inject.Inject;
+import java.util.List;
 
 @Service
 public class TimeUnitServiceImpl extends AbstractServiceImpl<TimeUnit, Long> implements TimeUnitService {
@@ -23,9 +24,8 @@ public class TimeUnitServiceImpl extends AbstractServiceImpl<TimeUnit, Long> imp
         super(repository);
     }
 
-
     @Override
-    public TimeUnit findById(Long id) {
-        return timeUnitRepository.findOne(id);
+    public TimeUnit findByCode(String code) {
+        return timeUnitRepository.findByCode(code);
     }
 }

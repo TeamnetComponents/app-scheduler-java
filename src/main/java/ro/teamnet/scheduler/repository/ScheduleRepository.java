@@ -1,5 +1,6 @@
 package ro.teamnet.scheduler.repository;
 
+import org.joda.time.DateTime;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import ro.teamnet.bootstrap.extend.AppRepository;
@@ -30,4 +31,6 @@ public interface ScheduleRepository extends AppRepository<Schedule, Long> {
      * @return all schedules (minus the ones marked as deleted)
      */
     List<Schedule> findByDeletedFalse();
+
+    Schedule findByStartTime(DateTime startTime);
 }

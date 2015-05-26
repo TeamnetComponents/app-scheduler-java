@@ -2,94 +2,186 @@ package ro.teamnet.scheduler.service;
 
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Service;
+import ro.teamnet.scheduler.domain.RecurrentTimeUnit;
 import ro.teamnet.scheduler.domain.Schedule;
 import ro.teamnet.scheduler.domain.TimeInterval;
 import ro.teamnet.scheduler.domain.TimeUnit;
-import ro.teamnet.scheduler.repository.ScheduleRepository;
 
-import javax.inject.Inject;
+import java.util.*;
 
 @Service
 public class CronExpressionServiceImpl implements CronExpressionService {
 
-    @Inject
-    private ScheduleRepository scheduleRepository;
-
-    @Inject
-    private TimeIntervalService timeIntervalService;
-
-    @Inject
-    private TimeUnitService timeUnitService;
-
     public String buildCronExpression(Schedule schedule) {
         StringBuilder stringBuilder = new StringBuilder();
-        if(schedule.getRecurrent() == false) {
+        DateTime startDate = schedule.getStartTime();
 
-            DateTime startdate = schedule.getStartTime();
-            stringBuilder.append("0 ");
-            stringBuilder.append(startdate.getMinuteOfHour() + " ");
-            stringBuilder.append(startdate.getHourOfDay() + " ");
-            stringBuilder.append(startdate.getDayOfMonth() + " ");
-            stringBuilder.append(startdate.getMonthOfYear() + " ");
-            //stringBuilder.append(startdate.getDayOfWeek() + " ");
-            stringBuilder.append("? ");
-            stringBuilder.append(startdate.getYear() + " ");
+        if(!schedule.getRecurrent()) {
+
+            stringBuilder = createStringBuilderForRecurrentFalse(startDate);
         } else {
             if(schedule.getTimeInterval() != null) {
-                //intervale
-                //TimeInterval timeInterval = timeIntervalService.findById(schedule.getTimeInterval().getId());
-                //TimeUnit timeUnit = timeUnitService.findById(schedule.getTimeInterval().getTimeUnit().getId());
 
-                stringBuilder = createStringBuilder(schedule, schedule.getTimeInterval());
+                stringBuilder = createStringBuilder(startDate, schedule.getTimeInterval(), schedule.getTimeInterval().getTimeUnit());
             } else {
-                //fara intervale
 
+                Set<RecurrentTimeUnit> recurrentTimeUnits = schedule.getRecurrentTimeUnits();
+                stringBuilder.append(createListForEveryTimeUnit(recurrentTimeUnits, "SEC"));
+                stringBuilder.append(" ");
+                stringBuilder.append(createListForEveryTimeUnit(recurrentTimeUnits, "MIN"));
+                stringBuilder.append(" ");
+                stringBuilder.append(createListForEveryTimeUnit(recurrentTimeUnits, "H"));
+                stringBuilder.append(" ");
+                stringBuilder.append(createListForEveryTimeUnit(recurrentTimeUnits, "D"));
+                stringBuilder.append(" ");
+                stringBuilder.append(createListForEveryTimeUnit(recurrentTimeUnits, "M"));
+                stringBuilder.append(" ");
+                stringBuilder.append(createListForEveryTimeUnit(recurrentTimeUnits, "W"));
+                stringBuilder.append(" ");
+                stringBuilder.append(createListForEveryTimeUnit(recurrentTimeUnits, "Y"));
+                stringBuilder.append(" ");
             }
         }
 
         return stringBuilder.toString();
     }
 
-    private StringBuilder createStringBuilder(Schedule schedule, TimeInterval timeInterval) {
+    private String createListForEveryTimeUnit(Set<RecurrentTimeUnit> recurrentTimeUnits, String typeOfTimeUnit) {
         StringBuilder stringBuilder = new StringBuilder();
-        DateTime startdate = schedule.getStartTime();
 
-        stringBuilder.append("0 ");
-
-        if(timeInterval.getName().equals("In fiecare minut")) {
-            stringBuilder.append("* ");
-        } else {
-            stringBuilder.append(startdate.getMinuteOfHour() + " ");
+        for(RecurrentTimeUnit recurrentTimeUnit : recurrentTimeUnits) {
+            if(recurrentTimeUnit.getTimeUnit().getCode().equals(typeOfTimeUnit)) {
+                stringBuilder.append(recurrentTimeUnit.getValue());
+                stringBuilder.append(",");
+            }
         }
-
-        if(timeInterval.getName().equals("In fiecare ora")) {
-            stringBuilder.append(startdate.getHourOfDay() + " ");
-        } else {
-            stringBuilder.append("* ");
-        }
-
-        if(timeInterval.getName().equals("Zilnic")) {
-            stringBuilder.append(startdate.getDayOfMonth() + " ");
-        } else {
-            stringBuilder.append("* ");
-        }
-
-        if(timeInterval.getName().equals("Lunar")) {
-            stringBuilder.append(startdate.getMonthOfYear() + " ");
-        } else {
-            stringBuilder.append("* ");
-        }
-
-        if(timeInterval.getName().equals("Saptamanal")) {
-            stringBuilder.append(startdate.getDayOfWeek() + " ");
-        } else {
-            stringBuilder.append(startdate.getDayOfWeek() + "/7 ");
-        }
-
-        if(timeInterval.getName().equals("Anual")) {
-            stringBuilder.append(startdate.getYear() + " ");
+        if(stringBuilder.length() != 0) {
+            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
         } else {
             stringBuilder.append("*");
+        }
+
+        return stringBuilder.toString();
+    }
+
+    private StringBuilder createStringBuilderForRecurrentFalse(DateTime startDate) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append(startDate.getSecondOfMinute());
+        stringBuilder.append(" ");
+        stringBuilder.append(startDate.getMinuteOfHour());
+        stringBuilder.append(" ");
+        stringBuilder.append(startDate.getHourOfDay());
+        stringBuilder.append(" ");
+        stringBuilder.append(startDate.getDayOfMonth());
+        stringBuilder.append(" ");
+        stringBuilder.append(startDate.getMonthOfYear());
+        stringBuilder.append(" ");
+
+        stringBuilder.append("? ");
+        stringBuilder.append(startDate.getYear());
+
+        return stringBuilder;
+    }
+
+    private StringBuilder createStringBuilder(DateTime startDate, TimeInterval timeInterval, TimeUnit timeUnit) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        if(timeUnit.getCode().equals("SEC")) {
+            if(timeInterval.getInterval() != null) {
+                stringBuilder.append(startDate.getSecondOfMinute());
+                stringBuilder.append("/");
+                stringBuilder.append(timeInterval.getInterval());
+                stringBuilder.append(" ");
+            } else {
+                stringBuilder.append("0 ");
+            }
+        } else {
+            stringBuilder.append(startDate.getSecondOfMinute());
+            stringBuilder.append(" ");
+        }
+
+        if(timeUnit.getCode().equals("MIN")) {
+            if(timeInterval.getInterval() != null) {
+                stringBuilder.append(startDate.getMinuteOfHour());
+                stringBuilder.append("/");
+                stringBuilder.append(timeInterval.getInterval());
+                stringBuilder.append(" ");
+            } else {
+                stringBuilder.append("* ");
+            }
+        } else {
+            stringBuilder.append(startDate.getMinuteOfHour());
+            stringBuilder.append(" ");
+        }
+
+        if(timeUnit.getCode().equals("H")) {
+            if(timeInterval.getInterval() != null) {
+                stringBuilder.append(startDate.getHourOfDay());
+                stringBuilder.append("/");
+                stringBuilder.append(timeInterval.getInterval());
+                stringBuilder.append(" ");
+            } else {
+                stringBuilder.append("* ");
+            }
+        } else {
+            stringBuilder.append(startDate.getHourOfDay());
+            stringBuilder.append(" ");
+        }
+
+        if(timeUnit.getCode().equals("D")) {
+            if(timeInterval.getInterval() != null) {
+                stringBuilder.append(startDate.getDayOfMonth());
+                stringBuilder.append("/");
+                stringBuilder.append(timeInterval.getInterval());
+                stringBuilder.append(" ");
+            } else {
+                stringBuilder.append("* ");
+            }
+        } else {
+            stringBuilder.append(startDate.getDayOfMonth());
+            stringBuilder.append(" ");
+        }
+
+        if(timeUnit.getCode().equals("M")) {
+            if(timeInterval.getInterval() != null) {
+                stringBuilder.append(startDate.getMonthOfYear());
+                stringBuilder.append("/");
+                stringBuilder.append(timeInterval.getInterval());
+                stringBuilder.append(" ");
+            } else {
+                stringBuilder.append("* ");
+            }
+        } else {
+            stringBuilder.append(startDate.getMonthOfYear());
+            stringBuilder.append(" ");
+        }
+
+        if(timeUnit.getCode().equals("W")) {
+            if(timeInterval.getInterval() != null) {
+                stringBuilder.append(startDate.getMinuteOfHour());
+                stringBuilder.append("/");
+                stringBuilder.append(timeInterval.getInterval());
+                stringBuilder.append(" ");
+            } else {
+                stringBuilder.append(startDate.getDayOfWeek());
+                stringBuilder.append("/7 ");
+            }
+        } else {
+            stringBuilder.append(startDate.getDayOfWeek());
+            stringBuilder.append(" ");
+        }
+
+        if(timeUnit.getCode().equals("Y")) {
+            if(timeInterval.getInterval() != null) {
+                stringBuilder.append(startDate.getYear());
+                stringBuilder.append("/");
+                stringBuilder.append(timeInterval.getInterval());
+            } else {
+                stringBuilder.append("*");
+            }
+        } else {
+            stringBuilder.append(startDate.getYear());
         }
 
         return stringBuilder;

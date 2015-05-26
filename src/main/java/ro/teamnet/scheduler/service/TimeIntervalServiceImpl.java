@@ -24,9 +24,8 @@ public class TimeIntervalServiceImpl extends AbstractServiceImpl<TimeInterval, L
         super(repository);
     }
 
-
     @Override
-    public TimeInterval findById(Long id) {
-        return timeIntervalRepository.findOne(id);
+    public TimeInterval findByName(String name) {
+        return timeIntervalRepository.findByName(name);
     }
 }

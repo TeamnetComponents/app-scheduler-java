@@ -1,6 +1,7 @@
 package ro.teamnet.scheduler.service;
 
 
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,11 @@ public class ScheduleServiceImpl extends AbstractServiceImpl<Schedule, Long> imp
     @Override
     public List<Schedule> findByScheduledJobId(Long scheduledJobId) {
         return scheduleRepository.findByDeletedFalseAndScheduledJobId(scheduledJobId);
+    }
+
+    @Override
+    public Schedule findByStartDate(DateTime startDate) {
+        return scheduleRepository.findByStartTime(startDate);
     }
 
     /**

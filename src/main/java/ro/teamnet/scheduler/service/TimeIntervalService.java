@@ -9,5 +9,5 @@ import java.util.List;
 
 public interface TimeIntervalService extends AbstractService<TimeInterval, Long> {
 
-    TimeInterval findById(Long id);
+    TimeInterval findByName(String name);
 }
