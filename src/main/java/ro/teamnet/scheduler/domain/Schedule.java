@@ -71,20 +71,6 @@ public class Schedule implements Serializable {
     @ManyToOne
     private TimeInterval timeInterval;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "T_SCHEDULE_T_MONTH",
-            joinColumns = {@JoinColumn(name = "schedule_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "month_id", referencedColumnName = "id")})
-    private Set<Month> months = new HashSet<>();
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "T_SCHEDULE_T_DAYOFWEEK",
-            joinColumns = {@JoinColumn(name = "schedule_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "dayofweek_id", referencedColumnName = "id")})
-    private Set<DayOfWeek> dayOfWeeks = new HashSet<>();
-
     @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<RecurrentTimeUnit> recurrentTimeUnits = new HashSet<>();
@@ -189,22 +175,6 @@ public class Schedule implements Serializable {
 
     public void setTimeInterval(TimeInterval timeInterval) {
         this.timeInterval = timeInterval;
-    }
-
-    public Set<Month> getMonths() {
-        return months;
-    }
-
-    public void setMonths(Set<Month> months) {
-        this.months = months;
-    }
-
-    public Set<DayOfWeek> getDayOfWeeks() {
-        return dayOfWeeks;
-    }
-
-    public void setDayOfWeeks(Set<DayOfWeek> dayOfWeeks) {
-        this.dayOfWeeks = dayOfWeeks;
     }
 
     public Set<RecurrentTimeUnit> getRecurrentTimeUnits() {
