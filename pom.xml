@@ -73,11 +73,7 @@
             <artifactId>quartz-jobs</artifactId>
             <version>${quartz.version}</version>
         </dependency>
-        <!--Flyway-->
-        <!--<dependency>-->
-        <!--<groupId>org.flywaydb</groupId>-->
-        <!--<artifactId>flyway-core</artifactId>-->
-        <!--</dependency>-->
+        <!--H2-->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
