@@ -12,7 +12,9 @@ import ro.teamnet.scheduler.domain.Task;
 import ro.teamnet.scheduler.repository.TaskRepository;
 
 import javax.inject.Inject;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class TaskServiceImpl extends AbstractServiceImpl<Task, Long> implements TaskService {
@@ -53,5 +55,15 @@ public class TaskServiceImpl extends AbstractServiceImpl<Task, Long> implements 
     public AppPage<Task> findAll(AppPageable appPageable) {
         appPageable.getFilters().addFilter(new Filter("deleted", "false", Filter.FilterType.EQUAL));
         return super.findAll(appPageable);
+    }
+
+    @Override
+    public Map<Integer, String> getTaskOptionsByQueuePosition(Long scheduledJobId) {
+        Map<Integer, String> taskOptions = new HashMap<>();
+        List<Task> tasks = findByScheduledJobId(scheduledJobId);
+        for (Task task : tasks) {
+            taskOptions.put(task.getQueuePosition(), task.getOptions());
+        }
+        return taskOptions;
     }
 }

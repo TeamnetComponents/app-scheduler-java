@@ -8,10 +8,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import ro.teamnet.scheduler.domain.Schedule;
 import ro.teamnet.scheduler.domain.ScheduledJob;
-import ro.teamnet.scheduler.domain.Task;
 
 import javax.inject.Inject;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +44,7 @@ public class QuartzService {
         List<ScheduledJob> scheduledJobs = scheduledJobService.findAll();
         for (ScheduledJob scheduledJob : scheduledJobs) {
             log.info(scheduledJob.toString());
-            Map<Integer, String> taskOptions = getTaskOptions(scheduledJob);
+            Map<Integer, String> taskOptions = taskService.getTaskOptionsByQueuePosition(scheduledJob.getId());
             if (taskOptions.size() == 0) {
                 log.info("Job has no tasks! Scheduling skipped.");
                 continue;
@@ -98,12 +96,4 @@ public class QuartzService {
         }
     }
 
-    private Map<Integer, String> getTaskOptions(ScheduledJob scheduledJob) {
-        Map<Integer, String> taskOptions = new HashMap<>();
-        List<Task> tasks = taskService.findByScheduledJobId(scheduledJob.getId());
-        for (Task task : tasks) {
-            taskOptions.put(task.getQueuePosition(), task.getOptions());
-        }
-        return taskOptions;
-    }
 }
