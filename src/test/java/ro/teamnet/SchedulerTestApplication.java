@@ -4,14 +4,23 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.core.env.SimpleCommandLinePropertySource;
 import ro.teamnet.bootstrap.config.DatabaseConfiguration;
+import ro.teamnet.scheduler.config.QuartzConfiguration;
+import ro.teamnet.scheduler.service.QuartzService;
 
 /**
  * Configuration class for testing Scheduler  module.
  */
 @Configuration
-@ComponentScan({"ro.teamnet.bootstrap", "ro.teamnet"})
+@ComponentScan(
+        basePackages = {"ro.teamnet.bootstrap", "ro.teamnet"},
+        excludeFilters = @ComponentScan.Filter(
+                type = FilterType.ASSIGNABLE_TYPE,
+                value = {QuartzConfiguration.class, QuartzService.class}
+        )
+)
 @EnableAutoConfiguration(exclude = DatabaseConfiguration.class)
 public class SchedulerTestApplication {
 
