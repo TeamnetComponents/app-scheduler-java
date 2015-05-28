@@ -246,4 +246,19 @@ public class Schedule implements Serializable {
     private void preUpdate() {
         setLastUpdated(new DateTime());
     }
+
+    @Transient
+    public String getTriggerName(){
+        return "Schedule_" + id;
+    }
+
+    @Transient
+    public String getTriggerGroup(){
+        return scheduledJob.getTriggerGroup();
+    }
+
+    @Transient
+    public boolean isValid() {
+        return !deleted && active && (cron != null);
+    }
 }

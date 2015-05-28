@@ -8,7 +8,7 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.core.env.SimpleCommandLinePropertySource;
 import ro.teamnet.bootstrap.config.DatabaseConfiguration;
 import ro.teamnet.scheduler.config.QuartzConfiguration;
-import ro.teamnet.scheduler.service.QuartzService;
+import ro.teamnet.scheduler.service.QuartzSchedulingService;
 
 /**
  * Configuration class for testing Scheduler  module.
@@ -18,7 +18,7 @@ import ro.teamnet.scheduler.service.QuartzService;
         basePackages = {"ro.teamnet.bootstrap", "ro.teamnet"},
         excludeFilters = @ComponentScan.Filter(
                 type = FilterType.ASSIGNABLE_TYPE,
-                value = {QuartzConfiguration.class, QuartzService.class}
+                value = {QuartzConfiguration.class, QuartzSchedulingService.class}
         )
 )
 @EnableAutoConfiguration(exclude = DatabaseConfiguration.class)

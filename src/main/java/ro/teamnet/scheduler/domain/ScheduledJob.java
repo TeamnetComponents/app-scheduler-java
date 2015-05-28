@@ -248,4 +248,15 @@ public class ScheduledJob implements Serializable {
     private void preUpdate() {
         setLastUpdated(new DateTime());
     }
+
+    @Transient
+    public String getJobName(){
+        return "Job_" + id;
+    }
+
+    @Transient
+    public String getTriggerGroup(){
+        return getJobName();
+    }
+
 }
