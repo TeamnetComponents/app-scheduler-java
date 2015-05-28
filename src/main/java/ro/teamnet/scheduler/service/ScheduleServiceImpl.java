@@ -10,6 +10,7 @@ import ro.teamnet.bootstrap.extend.AppPageable;
 import ro.teamnet.bootstrap.extend.Filter;
 import ro.teamnet.bootstrap.service.AbstractServiceImpl;
 import ro.teamnet.scheduler.domain.Schedule;
+import ro.teamnet.scheduler.domain.TimeInterval;
 import ro.teamnet.scheduler.repository.ScheduleRepository;
 
 import javax.inject.Inject;
@@ -37,6 +38,26 @@ public class ScheduleServiceImpl extends AbstractServiceImpl<Schedule, Long> imp
     @Override
     public Schedule findByStartDate(DateTime startDate) {
         return scheduleRepository.findByStartTime(startDate);
+    }
+
+    @Override
+    public Schedule findByStartTimeAndRecurrent(DateTime startTime, Boolean recurrent) {
+        return scheduleRepository.findByStartTimeAndRecurrent(startTime, recurrent);
+    }
+
+    @Override
+    public Schedule findByStartTimeAndRecurrentAndTimeInterval(DateTime startTime, Boolean recurrent, TimeInterval timeInterval) {
+        return scheduleRepository.findByStartTimeAndRecurrentAndTimeInterval(startTime, recurrent, timeInterval);
+    }
+
+    @Override
+    public Schedule findByIdAndStartTimeAndRecurrent(Long id, DateTime startTime, Boolean recurrent) {
+        return scheduleRepository.findByIdAndStartTimeAndRecurrent(id, startTime, recurrent);
+    }
+
+    @Override
+    public Schedule findByStartTimeAndRecurrentAndLastUpdated(DateTime startTime, Boolean recurrent, DateTime lastUpdated) {
+        return scheduleRepository.findByStartTimeAndRecurrentAndLastUpdated(startTime, recurrent, lastUpdated);
     }
 
     /**

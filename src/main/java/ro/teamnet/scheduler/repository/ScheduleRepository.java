@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import ro.teamnet.bootstrap.extend.AppRepository;
 import ro.teamnet.scheduler.domain.Schedule;
+import ro.teamnet.scheduler.domain.TimeInterval;
 
 import java.util.List;
 
@@ -33,4 +34,8 @@ public interface ScheduleRepository extends AppRepository<Schedule, Long> {
     List<Schedule> findByDeletedFalse();
 
     Schedule findByStartTime(DateTime startTime);
+    Schedule findByStartTimeAndRecurrent(DateTime startTime, Boolean recurrent);
+    Schedule findByStartTimeAndRecurrentAndTimeInterval(DateTime startTime, Boolean recurrent, TimeInterval timeInterval);
+    Schedule findByIdAndStartTimeAndRecurrent(Long id, DateTime startTime, Boolean recurrent);
+    Schedule findByStartTimeAndRecurrentAndLastUpdated(DateTime startTime, Boolean recurrent, DateTime lastUpdated);
 }

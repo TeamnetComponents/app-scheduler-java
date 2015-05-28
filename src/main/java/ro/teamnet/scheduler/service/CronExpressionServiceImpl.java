@@ -36,7 +36,7 @@ public class CronExpressionServiceImpl implements CronExpressionService {
                 List<String> codeOfTimeUnits = Arrays.asList("SEC", "MIN", "H", "D", "MON", "W", "Y");
                 for (String codeOfTimeUnit : codeOfTimeUnits) {
                     StringBuilder sb = createStringBuilderForEveryTimeUnit(schedule, codeOfTimeUnit);
-                    if(codeOfTimeUnit.equals("W")) {
+                    if (codeOfTimeUnit.equals("W")) {
                         if (createStringBuilderForEveryTimeUnit(schedule, "D").toString().equals("*") &&
                                 sb.toString().equals("*")) {
                             stringBuilder.append("? ");
@@ -64,22 +64,41 @@ public class CronExpressionServiceImpl implements CronExpressionService {
         StringBuilder stringBuilder = new StringBuilder();
         TimeUnit timeUnit = timeUnitService.findByCode(codeOfTimeUnit);
         Set<RecurrentTimeUnit> recurrentTimeUnits = recurrentTimeUnitService.findByScheduleAndTimeUnit(schedule, timeUnit);
-        if (codeOfTimeUnit.equals("W")) {
-            for (RecurrentTimeUnit recurrentTimeUnit : recurrentTimeUnits) {
-                int weekDayCode = getCronWeekDayCode(recurrentTimeUnit.getValue());
-                stringBuilder.append(weekDayCode);
-                stringBuilder.append(",");
+
+        if(recurrentTimeUnits.size() != 1) {
+            if (codeOfTimeUnit.equals("W")) {
+                for (RecurrentTimeUnit recurrentTimeUnit : recurrentTimeUnits) {
+                    buildStringBuilderForDayOfWeek(stringBuilder, recurrentTimeUnit);
+                }
+            } else {
+                for (RecurrentTimeUnit recurrentTimeUnit : recurrentTimeUnits) {
+                    buildStringBuilderForTheRestOfTimeUnit(stringBuilder, recurrentTimeUnit);
+                }
             }
         } else {
-            for (RecurrentTimeUnit recurrentTimeUnit : recurrentTimeUnits) {
-                stringBuilder.append(recurrentTimeUnit.getValue());
-                stringBuilder.append(",");
+            if (codeOfTimeUnit.equals("W")) {
+                for (RecurrentTimeUnit recurrentTimeUnit : recurrentTimeUnits) {
+                    if(recurrentTimeUnit.getValue() == -1) {
+                        stringBuilder.append("* ");
+                    } else {
+                        buildStringBuilderForDayOfWeek(stringBuilder, recurrentTimeUnit);
+                    }
+                }
+            } else {
+                for (RecurrentTimeUnit recurrentTimeUnit : recurrentTimeUnits) {
+                    if(recurrentTimeUnit.getValue() == -1) {
+                        stringBuilder.append("* ");
+                    } else {
+                        buildStringBuilderForTheRestOfTimeUnit(stringBuilder, recurrentTimeUnit);
+                    }
+                }
             }
         }
+
         if (stringBuilder.length() != 0) {
             stringBuilder.deleteCharAt(stringBuilder.length() - 1);
         } else {
-            if(codeOfTimeUnit.equals("SEC")) {
+            if (codeOfTimeUnit.equals("SEC")) {
                 stringBuilder.append("0");
             } else {
                 stringBuilder.append("*");
@@ -87,6 +106,17 @@ public class CronExpressionServiceImpl implements CronExpressionService {
         }
 
         return stringBuilder;
+    }
+
+    private void buildStringBuilderForTheRestOfTimeUnit(StringBuilder stringBuilder, RecurrentTimeUnit recurrentTimeUnit) {
+        stringBuilder.append(recurrentTimeUnit.getValue());
+        stringBuilder.append(",");
+    }
+
+    private void buildStringBuilderForDayOfWeek(StringBuilder stringBuilder, RecurrentTimeUnit recurrentTimeUnit) {
+        int weekDayCode = getCronWeekDayCode(recurrentTimeUnit.getValue());
+        stringBuilder.append(weekDayCode);
+        stringBuilder.append(",");
     }
 
     private StringBuilder createStringBuilderForRecurrentFalse(DateTime startDate) {
@@ -181,7 +211,7 @@ public class CronExpressionServiceImpl implements CronExpressionService {
 
         if (timeUnit.getCode().equals("W")) {
             Integer cronWeekDayValue = startDate.getDayOfWeek();
-            Integer cronWeekDayCode = ((cronWeekDayValue + 1) % 7) != 0 ? ((cronWeekDayValue + 1) % 7) : 7;
+            Integer cronWeekDayCode = getCronWeekDayCode(cronWeekDayValue);
             stringBuilder.append(cronWeekDayCode);
             stringBuilder.append("/7 ");
         } else {

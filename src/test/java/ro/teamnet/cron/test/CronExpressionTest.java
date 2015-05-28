@@ -20,19 +20,21 @@ import ro.teamnet.scheduler.domain.TimeInterval;
 import ro.teamnet.scheduler.domain.TimeUnit;
 import ro.teamnet.scheduler.service.*;
 
-import static junit.framework.Assert.assertEquals;
-
 import javax.inject.Inject;
 import java.util.HashSet;
 import java.util.Set;
+
+import static junit.framework.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = SchedulerTestApplication.class)
 @WebAppConfiguration
 @IntegrationTest
 @ActiveProfiles("test-scheduler")
+@Transactional
 public class CronExpressionTest {
 
+    public static final DateTime DATE_TIME = new DateTime(2016, 2, 3, 13, 55, 0);
     @Inject
     private CronExpressionService cronExpressionService;
 
@@ -53,78 +55,8 @@ public class CronExpressionTest {
     @Before
     public void preparePersistenceForTestingCronExpression() {
 
-    }
-
-    @Test
-    @Transactional
-    public void testCronExpressionWithoutTimeInterval() {
-
-        DateTime dateTime = new DateTime(2016, 2, 3, 13, 55, 0);
-        Schedule schedule = new Schedule();
-        schedule.setActive(true);
-        schedule.setRecurrent(false);
-        schedule.setStartTime(dateTime);
-        schedule.setVersion(1l);
-        schedule.setCreated(dateTime);
-        schedule.setLastUpdated(dateTime);
-        scheduleService.save(schedule);
-
-        Schedule scheduleSaved = scheduleService.findByStartDate(dateTime);
-        assertEquals("Schedule: start time different values", schedule.getStartTime(), dateTime);
-
-        String expression = cronExpressionService.buildCronExpression(scheduleSaved);
-        assertEquals("Cron expression without time interval: different", "0 55 13 3 2 ? 2016", expression);
-
-        log.info("Cron expression without time interval: {}", expression);
-    }
-
-    @Test
-    @Transactional
-    public void testCronWithTimeIntervalNotNull() {
-
-        DateTime dateTime = new DateTime(2016, 2, 3, 13, 55, 0);
-        TimeUnit weeksTimeUnit = new TimeUnit();
-        weeksTimeUnit.setCode("W");
-        timeUnitService.save(weeksTimeUnit);
-        TimeUnit week = timeUnitService.findByCode("W");
-
-        TimeInterval weekTimeInterval = new TimeInterval();
-        weekTimeInterval.setName("Saptamanal");
-        weekTimeInterval.setTimeUnit(week);
-        weekTimeInterval.setInterval(7l);
-        timeIntervalService.save(weekTimeInterval);
-        TimeInterval weekTimeIntervalSaved = timeIntervalService.findByName("Saptamanal");
-
-        Schedule schedule = new Schedule();
-        schedule.setStartTime(dateTime);
-        schedule.setRecurrent(true);
-        schedule.setTimeInterval(weekTimeIntervalSaved);
-        scheduleService.save(schedule);
-
-        Schedule scheduleSaved = scheduleService.findByStartDate(dateTime);
-        assertEquals("Schedule: start time different values", schedule.getStartTime(), dateTime);
-
-        String expression = cronExpressionService.buildCronExpression(scheduleSaved);
-        assertEquals("Cron expression with time interval: different", "0 55 13 3 2 4/7 2016", expression);
-
-        log.info("Cron expression with time interval: {}", expression);
-    }
-
-    @Test
-    @Transactional
-    public void testCronWithTimeIntervalNull() {
-
-        DateTime dateTime = new DateTime(2016, 2, 3, 13, 55, 0);
-        Schedule schedule = new Schedule();
-        schedule.setActive(true);
-        schedule.setRecurrent(true);
-        schedule.setStartTime(dateTime);
-        schedule.setVersion(1l);
-        schedule.setCreated(dateTime);
-        schedule.setLastUpdated(dateTime);
-        scheduleService.save(schedule);
-        Schedule scheduleSaved = scheduleService.findByStartDate(dateTime);
-        assertEquals("Schedule: start time different values", schedule.getStartTime(), dateTime);
+        createSchedule(true);
+        createSchedule(false);
 
         TimeUnit secondsTimeUnit = new TimeUnit();
         secondsTimeUnit.setCode("SEC");
@@ -147,6 +79,63 @@ public class CronExpressionTest {
         TimeUnit yearsTimeUnit = new TimeUnit();
         yearsTimeUnit.setCode("Y");
         timeUnitService.save(yearsTimeUnit);
+    }
+
+    private void createSchedule(boolean recurrent) {
+        Schedule scheduleWithInterval = new Schedule();
+        scheduleWithInterval.setActive(true);
+        scheduleWithInterval.setRecurrent(recurrent);
+        scheduleWithInterval.setStartTime(DATE_TIME);
+        scheduleService.save(scheduleWithInterval);
+    }
+
+    @Test
+    public void testCronExpressionWithoutTimeInterval() {
+
+
+        Schedule scheduleSaved = scheduleService.findByStartTimeAndRecurrent(DATE_TIME, false);
+        assertEquals("Schedule: start time different values", scheduleSaved.getStartTime(), DATE_TIME);
+
+        String expression = cronExpressionService.buildCronExpression(scheduleSaved);
+        assertEquals("Cron expression without time interval: different", "0 55 13 3 2 ? 2016", expression);
+
+        log.info("Cron expression without time interval: {}", expression);
+    }
+
+    @Test
+    public void testCronWithTimeIntervalNotNull() {
+        DateTime lastUpdated = DateTime.now();
+        Schedule scheduleSaved = scheduleService.findByStartTimeAndRecurrent(DATE_TIME, true);
+        assertEquals("Schedule: start time different values", scheduleSaved.getStartTime(), DATE_TIME);
+
+        TimeUnit week = timeUnitService.findByCode("W");
+        TimeInterval weekTimeInterval = new TimeInterval();
+        weekTimeInterval.setName("Saptamanal");
+        weekTimeInterval.setTimeUnit(week);
+        weekTimeInterval.setInterval(7l);
+        timeIntervalService.save(weekTimeInterval);
+        TimeInterval weekTimeIntervalSaved = timeIntervalService.findByName("Saptamanal");
+        assertEquals("TimeInterval: name is different", weekTimeIntervalSaved.getName(), "Saptamanal");
+
+        scheduleSaved.setTimeInterval(weekTimeIntervalSaved);
+        scheduleSaved.setLastUpdated(lastUpdated);
+        scheduleService.save(scheduleSaved);
+
+        Schedule scheduleSavedSecondTime = scheduleService.findByStartTimeAndRecurrent(DATE_TIME, true);
+        assertEquals("Schedule: start time different values", scheduleSavedSecondTime.getStartTime(), DATE_TIME);
+
+        String expression = cronExpressionService.buildCronExpression(scheduleSavedSecondTime);
+        assertEquals("Cron expression with time interval: different", "0 55 13 3 2 4/7 2016", expression);
+
+        log.info("Cron expression with time interval: {}", expression);
+    }
+
+    @Test
+    public void testCronWithTimeIntervalNull() {
+
+        DateTime lastUpdated = DateTime.now();
+        Schedule scheduleSaved = scheduleService.findByStartTimeAndRecurrent(DATE_TIME, true);
+        assertEquals("Schedule: start time different values", scheduleSaved.getStartTime(), DATE_TIME);
 
         TimeUnit sec = timeUnitService.findByCode("SEC");
         log.info("TimeUnit seconds: {}", sec.getCode());
@@ -230,10 +219,11 @@ public class CronExpressionTest {
         recurrentTimeUnitHashSet.add(recurrentTimeUnit4Saved);
         recurrentTimeUnitHashSet.add(recurrentTimeUnit5Saved);
         scheduleSaved.setRecurrentTimeUnits(recurrentTimeUnitHashSet);
+        scheduleSaved.setLastUpdated(lastUpdated);
         scheduleService.save(scheduleSaved);
 
-        Schedule newScheduleWithSet = scheduleService.findByStartDate(dateTime);
-        assertEquals("Schedule after update start date: different value", newScheduleWithSet.getStartTime(), dateTime);
+        Schedule newScheduleWithSet = scheduleService.findByStartTimeAndRecurrent(DATE_TIME, true);
+        assertEquals("Schedule after update start date: different value", newScheduleWithSet.getStartTime(), DATE_TIME);
 
         String expression = cronExpressionService.buildCronExpression(newScheduleWithSet);
         assertEquals("Cron expression with time interval: different", "12,14 13 2 * 2 4 *", expression);
@@ -261,27 +251,12 @@ public class CronExpressionTest {
     }
 
     @Test
-    @Transactional
     public void testDayOfWeekVsDayOfMonth() {
 
-        DateTime dateTime = new DateTime(2016, 2, 3, 13, 55, 0);
-        Schedule schedule = new Schedule();
-        schedule.setActive(true);
-        schedule.setRecurrent(true);
-        schedule.setStartTime(dateTime);
-        schedule.setVersion(1l);
-        schedule.setCreated(dateTime);
-        schedule.setLastUpdated(dateTime);
-        scheduleService.save(schedule);
-        Schedule scheduleSaved = scheduleService.findByStartDate(dateTime);
-        assertEquals("Schedule: start time different values", schedule.getStartTime(), dateTime);
-
-        TimeUnit daysTimeUnit = new TimeUnit();
-        daysTimeUnit.setCode("D");
-        timeUnitService.save(daysTimeUnit);
-        TimeUnit weeksTimeUnit = new TimeUnit();
-        weeksTimeUnit.setCode("W");
-        timeUnitService.save(weeksTimeUnit);
+        DateTime DATE_TIME = new DateTime(2016, 2, 3, 13, 55, 0);
+        DateTime lastUpdated = DateTime.now();
+        Schedule scheduleSaved = scheduleService.findByStartTimeAndRecurrent(DATE_TIME, true);
+        assertEquals("Schedule: start time different values", scheduleSaved.getStartTime(), DATE_TIME);
 
         TimeUnit day = timeUnitService.findByCode("D");
         log.info("TimeUnit days: {}", day.getCode());
@@ -298,10 +273,11 @@ public class CronExpressionTest {
         Set<RecurrentTimeUnit> recurrentTimeUnitHashSet = new HashSet<>();
         recurrentTimeUnitHashSet.add(recurrentTimeUnitSaved);
         scheduleSaved.setRecurrentTimeUnits(recurrentTimeUnitHashSet);
+        scheduleSaved.setLastUpdated(lastUpdated);
         scheduleService.save(scheduleSaved);
 
-        Schedule newScheduleWithSet = scheduleService.findByStartDate(dateTime);
-        assertEquals("Schedule after update start date: different value", newScheduleWithSet.getStartTime(), dateTime);
+        Schedule newScheduleWithSet = scheduleService.findByStartTimeAndRecurrent(DATE_TIME, true);
+        assertEquals("Schedule after update start date: different value", newScheduleWithSet.getStartTime(), DATE_TIME);
 
         String expression = cronExpressionService.buildCronExpression(newScheduleWithSet);
         assertEquals("Cron expression with time interval: different", "0 * * 12 * * *", expression);
@@ -310,23 +286,11 @@ public class CronExpressionTest {
     }
 
     @Test
-    @Transactional
     public void testDayOfMonthVsDayOfWeek() {
-        DateTime dateTime = new DateTime(2016, 2, 3, 13, 55, 0);
-        Schedule schedule = new Schedule();
-        schedule.setActive(true);
-        schedule.setRecurrent(true);
-        schedule.setStartTime(dateTime);
-        schedule.setVersion(1l);
-        schedule.setCreated(dateTime);
-        schedule.setLastUpdated(dateTime);
-        scheduleService.save(schedule);
-        Schedule scheduleSaved = scheduleService.findByStartDate(dateTime);
-        assertEquals("Schedule: start time different values", schedule.getStartTime(), dateTime);
-
-        TimeUnit weeksTimeUnit = new TimeUnit();
-        weeksTimeUnit.setCode("W");
-        timeUnitService.save(weeksTimeUnit);
+        DateTime DATE_TIME = new DateTime(2016, 2, 3, 13, 55, 0);
+        DateTime lastUpdated = DateTime.now();
+        Schedule scheduleSaved = scheduleService.findByStartTimeAndRecurrent(DATE_TIME, true);
+        assertEquals("Schedule: start time different values", scheduleSaved.getStartTime(), DATE_TIME);
 
         TimeUnit week = timeUnitService.findByCode("W");
         assertEquals("TimeUnit week: different", week.getCode(), "W");
@@ -342,10 +306,11 @@ public class CronExpressionTest {
         Set<RecurrentTimeUnit> recurrentTimeUnitHashSet = new HashSet<>();
         recurrentTimeUnitHashSet.add(recurrentTimeUnitSaved);
         scheduleSaved.setRecurrentTimeUnits(recurrentTimeUnitHashSet);
+        scheduleSaved.setLastUpdated(lastUpdated);
         scheduleService.save(scheduleSaved);
 
-        Schedule newScheduleWithSet = scheduleService.findByStartDate(dateTime);
-        assertEquals("Schedule after update start date: different value", newScheduleWithSet.getStartTime(), dateTime);
+        Schedule newScheduleWithSet = scheduleService.findByStartTimeAndRecurrent(DATE_TIME, true);
+        assertEquals("Schedule after update start date: different value", newScheduleWithSet.getStartTime(), DATE_TIME);
 
         String expression = cronExpressionService.buildCronExpression(newScheduleWithSet);
         assertEquals("Cron expression with time interval: different", "0 * * * * 7 *", expression);
@@ -354,26 +319,11 @@ public class CronExpressionTest {
     }
 
     @Test
-    @Transactional
     public void testDayOfMonthVsDayOfWeekBothTheSame() {
-        DateTime dateTime = new DateTime(2016, 2, 3, 13, 55, 0);
-        Schedule schedule = new Schedule();
-        schedule.setActive(true);
-        schedule.setRecurrent(true);
-        schedule.setStartTime(dateTime);
-        schedule.setVersion(1l);
-        schedule.setCreated(dateTime);
-        schedule.setLastUpdated(dateTime);
-        scheduleService.save(schedule);
-        Schedule scheduleSaved = scheduleService.findByStartDate(dateTime);
-        assertEquals("Schedule: start time different values", schedule.getStartTime(), dateTime);
-
-        TimeUnit daysTimeUnit = new TimeUnit();
-        daysTimeUnit.setCode("MIN");
-        timeUnitService.save(daysTimeUnit);
-        TimeUnit weeksTimeUnit = new TimeUnit();
-        weeksTimeUnit.setCode("H");
-        timeUnitService.save(weeksTimeUnit);
+        DateTime DATE_TIME = new DateTime(2016, 2, 3, 13, 55, 0);
+        DateTime lastUpdated = DateTime.now();
+        Schedule scheduleSaved = scheduleService.findByStartTimeAndRecurrent(DATE_TIME, true);
+        assertEquals("Schedule: start time different values", scheduleSaved.getStartTime(), DATE_TIME);
 
         TimeUnit min = timeUnitService.findByCode("MIN");
         assertEquals("TimeUnit minutes: different", min.getCode(), "MIN");
@@ -399,10 +349,11 @@ public class CronExpressionTest {
         recurrentTimeUnitHashSet.add(recurrentTimeUnitSaved);
         recurrentTimeUnitHashSet.add(recurrentTimeUnit1Saved);
         scheduleSaved.setRecurrentTimeUnits(recurrentTimeUnitHashSet);
+        scheduleSaved.setLastUpdated(lastUpdated);
         scheduleService.save(scheduleSaved);
 
-        Schedule newScheduleWithSet = scheduleService.findByStartDate(dateTime);
-        assertEquals("Schedule after update start date: different value", newScheduleWithSet.getStartTime(), dateTime);
+        Schedule newScheduleWithSet = scheduleService.findByStartTimeAndRecurrent(DATE_TIME, true);
+        assertEquals("Schedule after update start date: different value", newScheduleWithSet.getStartTime(), DATE_TIME);
 
         String expression = cronExpressionService.buildCronExpression(newScheduleWithSet);
         assertEquals("Cron expression with time interval: different", "0 15 5 * * ? *", expression);
@@ -411,29 +362,11 @@ public class CronExpressionTest {
     }
 
     @Test
-    @Transactional
     public void testValueDayOfMonthVsDayOfWeek() {
-        DateTime dateTime = new DateTime(2016, 2, 3, 13, 55, 0);
-        Schedule schedule = new Schedule();
-        schedule.setActive(true);
-        schedule.setRecurrent(true);
-        schedule.setStartTime(dateTime);
-        schedule.setVersion(1l);
-        schedule.setCreated(dateTime);
-        schedule.setLastUpdated(dateTime);
-        scheduleService.save(schedule);
-        Schedule scheduleSaved = scheduleService.findByStartDate(dateTime);
-        assertEquals("Schedule: start time different values", schedule.getStartTime(), dateTime);
-
-        TimeUnit minTimeUnit = new TimeUnit();
-        minTimeUnit.setCode("MIN");
-        timeUnitService.save(minTimeUnit);
-        TimeUnit weeksTimeUnit = new TimeUnit();
-        weeksTimeUnit.setCode("H");
-        timeUnitService.save(weeksTimeUnit);
-        TimeUnit daysTimeUnit = new TimeUnit();
-        daysTimeUnit.setCode("D");
-        timeUnitService.save(daysTimeUnit);
+        DateTime DATE_TIME = new DateTime(2016, 2, 3, 13, 55, 0);
+        DateTime lastUpdated = DateTime.now();
+        Schedule scheduleSaved = scheduleService.findByStartTimeAndRecurrent(DATE_TIME, true);
+        assertEquals("Schedule: start time different values", scheduleSaved.getStartTime(), DATE_TIME);
 
         TimeUnit min = timeUnitService.findByCode("MIN");
         assertEquals("TimeUnit minutes: different", min.getCode(), "MIN");
@@ -469,13 +402,102 @@ public class CronExpressionTest {
         recurrentTimeUnitHashSet.add(recurrentTimeUnit1Saved);
         recurrentTimeUnitHashSet.add(recurrentTimeUnit2Saved);
         scheduleSaved.setRecurrentTimeUnits(recurrentTimeUnitHashSet);
+        scheduleSaved.setLastUpdated(lastUpdated);
         scheduleService.save(scheduleSaved);
 
-        Schedule newScheduleWithSet = scheduleService.findByStartDate(dateTime);
-        assertEquals("Schedule after update start date: different value", newScheduleWithSet.getStartTime(), dateTime);
+        Schedule newScheduleWithSet = scheduleService.findByStartTimeAndRecurrent(DATE_TIME, true);
+        assertEquals("Schedule after update start date: different value", newScheduleWithSet.getStartTime(), DATE_TIME);
 
         String expression = cronExpressionService.buildCronExpression(newScheduleWithSet);
         assertEquals("Cron expression with time interval: different", "0 15 5 21 * * *", expression);
+
+        log.info("Cron expression with recurrent time unit: {}", expression);
+    }
+
+    @Test
+    public void testCronExpressionWithAllDays() {
+        DateTime DATE_TIME = new DateTime(2016, 2, 3, 13, 55, 0);
+        DateTime lastUpdated = DateTime.now();
+        Schedule scheduleSaved = scheduleService.findByStartTimeAndRecurrent(DATE_TIME, true);
+        assertEquals("Schedule: start time different values", scheduleSaved.getStartTime(), DATE_TIME);
+
+        TimeUnit day = timeUnitService.findByCode("D");
+        assertEquals("TimeUnit hours: different", day.getCode(), "D");
+
+        RecurrentTimeUnit recurrentTimeUnit = new RecurrentTimeUnit();
+        recurrentTimeUnit.setValue(-1);
+        recurrentTimeUnit.setTimeUnit(day);
+        recurrentTimeUnit.setSchedule(scheduleSaved);
+        recurrentTimeUnitService.save(recurrentTimeUnit);
+        RecurrentTimeUnit recurrentTimeUnitSaved = recurrentTimeUnitService.findByTimeUnitAndValueAndSchedule(day, -1, scheduleSaved);
+        assertEquals("RecurrentTimeUnit days: different value", recurrentTimeUnitSaved.getValue().intValue(), -1);
+
+        Set<RecurrentTimeUnit> recurrentTimeUnitHashSet = new HashSet<>();
+        recurrentTimeUnitHashSet.add(recurrentTimeUnitSaved);
+        scheduleSaved.setRecurrentTimeUnits(recurrentTimeUnitHashSet);
+        scheduleSaved.setLastUpdated(lastUpdated);
+        scheduleService.save(scheduleSaved);
+
+        Schedule newScheduleWithSet = scheduleService.findByStartTimeAndRecurrent(DATE_TIME, true);
+        assertEquals("Schedule after update start date: different value", newScheduleWithSet.getStartTime(), DATE_TIME);
+
+        String expression = cronExpressionService.buildCronExpression(newScheduleWithSet);
+        assertEquals("Cron expression with time interval: different", "0 * * * * ? *", expression);
+
+        log.info("Cron expression with recurrent time unit: {}", expression);
+    }
+
+    @Test
+    public void testCronExpressionWithAllDaysAndMonths() {
+        DateTime DATE_TIME = new DateTime(2016, 2, 3, 13, 55, 0);
+        DateTime lastUpdated = DateTime.now();
+        Schedule scheduleSaved = scheduleService.findByStartTimeAndRecurrent(DATE_TIME, true);
+        assertEquals("Schedule: start time different values", scheduleSaved.getStartTime(), DATE_TIME);
+
+        TimeUnit hour = timeUnitService.findByCode("H");
+        assertEquals("TimeUnit hours: different", hour.getCode(), "H");
+        TimeUnit day = timeUnitService.findByCode("D");
+        assertEquals("TimeUnit hours: different", day.getCode(), "D");
+        TimeUnit month = timeUnitService.findByCode("MON");
+        assertEquals("TimeUnit hours: different", month.getCode(), "MON");
+
+        RecurrentTimeUnit recurrentTimeUnitHour = new RecurrentTimeUnit();
+        recurrentTimeUnitHour.setValue(18);
+        recurrentTimeUnitHour.setTimeUnit(hour);
+        recurrentTimeUnitHour.setSchedule(scheduleSaved);
+        recurrentTimeUnitService.save(recurrentTimeUnitHour);
+        RecurrentTimeUnit recurrentTimeUnitHourSaved = recurrentTimeUnitService.findByTimeUnitAndValueAndSchedule(hour, 18, scheduleSaved);
+        assertEquals("RecurrentTimeUnit days: different value", recurrentTimeUnitHourSaved.getValue().intValue(), 18);
+
+        RecurrentTimeUnit recurrentTimeUnit = new RecurrentTimeUnit();
+        recurrentTimeUnit.setValue(-1);
+        recurrentTimeUnit.setTimeUnit(day);
+        recurrentTimeUnit.setSchedule(scheduleSaved);
+        recurrentTimeUnitService.save(recurrentTimeUnit);
+        RecurrentTimeUnit recurrentTimeUnitSaved = recurrentTimeUnitService.findByTimeUnitAndValueAndSchedule(day, -1, scheduleSaved);
+        assertEquals("RecurrentTimeUnit days: different value", recurrentTimeUnitSaved.getValue().intValue(), -1);
+
+        RecurrentTimeUnit recurrentTimeUnitMonth = new RecurrentTimeUnit();
+        recurrentTimeUnitMonth.setValue(-1);
+        recurrentTimeUnitMonth.setTimeUnit(month);
+        recurrentTimeUnitMonth.setSchedule(scheduleSaved);
+        recurrentTimeUnitService.save(recurrentTimeUnitMonth);
+        RecurrentTimeUnit recurrentTimeUnitMonthSaved = recurrentTimeUnitService.findByTimeUnitAndValueAndSchedule(month, -1, scheduleSaved);
+        assertEquals("RecurrentTimeUnit days: different value", recurrentTimeUnitMonthSaved.getValue().intValue(), -1);
+
+        Set<RecurrentTimeUnit> recurrentTimeUnitHashSet = new HashSet<>();
+        recurrentTimeUnitHashSet.add(recurrentTimeUnitSaved);
+        recurrentTimeUnitHashSet.add(recurrentTimeUnitMonthSaved);
+        scheduleSaved.setRecurrentTimeUnits(recurrentTimeUnitHashSet);
+        scheduleSaved.setLastUpdated(lastUpdated);
+        scheduleService.save(scheduleSaved);
+
+        Schedule newScheduleWithSet = scheduleService.findByStartTimeAndRecurrent(DATE_TIME, true);
+        //Schedule newScheduleWithSet = scheduleService.findByStartTimeAndRecurrentAndLastUpdated(DATE_TIME, true, lastUpdated);
+        assertEquals("Schedule after update start date: different value", newScheduleWithSet.getStartTime(), DATE_TIME);
+
+        String expression = cronExpressionService.buildCronExpression(newScheduleWithSet);
+        assertEquals("Cron expression with time interval: different", "0 * 18 * * ? *", expression);
 
         log.info("Cron expression with recurrent time unit: {}", expression);
     }
