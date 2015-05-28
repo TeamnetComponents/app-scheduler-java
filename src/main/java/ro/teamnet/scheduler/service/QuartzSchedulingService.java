@@ -200,7 +200,7 @@ public class QuartzSchedulingService {
      * @param schedule   the schedule
      * @param jobKey     Quartz job key
      * @param triggerKey Quartz trigger key
-     * @return
+     * @return a trigger created for the schedule
      */
     private CronTrigger createTrigger(Schedule schedule, JobKey jobKey, TriggerKey triggerKey) {
         TriggerBuilder<CronTrigger> triggerBuilder = TriggerBuilder.newTrigger()
