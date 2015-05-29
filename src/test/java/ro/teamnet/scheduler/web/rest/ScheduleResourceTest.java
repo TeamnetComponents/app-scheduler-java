@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import ro.teamnet.SchedulerTestApplication;
+import ro.teamnet.scheduler.domain.RecurrentTimeUnit;
 import ro.teamnet.scheduler.domain.Schedule;
 import ro.teamnet.scheduler.repository.ScheduleRepository;
 import ro.teamnet.scheduler.service.ScheduleService;
@@ -25,7 +26,9 @@ import ro.teamnet.web.rest.TestUtil;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -104,6 +107,8 @@ public class ScheduleResourceTest {
     public void createSchedule() throws Exception {
         // Validate the database is empty
         assertThat(scheduleRepository.findAll()).hasSize(0);
+        Schedule schedule = this.schedule;
+        add3RecurrentTimeUnits(schedule);
 
         // Create the Schedule
         restScheduleMockMvc.perform(post("/app/rest/schedule")
@@ -123,6 +128,21 @@ public class ScheduleResourceTest {
         assertThat(testSchedule.getRepetitions()).isEqualTo(DEFAULT_REPETITIONS);
         assertThat(testSchedule.getVersion()).isEqualTo(DEFAULT_VERSION);
         assertThat(testSchedule.getDeleted()).isEqualTo(DEFAULT_DELETED);
+        assertThat(testSchedule.getRecurrentTimeUnits().size()).isEqualTo(3);
+    }
+
+    private void add3RecurrentTimeUnits(Schedule schedule) {
+        HashSet<RecurrentTimeUnit> recurrentTimeUnits = new HashSet<RecurrentTimeUnit>();
+        RecurrentTimeUnit rtu1 = new RecurrentTimeUnit();
+        rtu1.setValue(1);
+        recurrentTimeUnits.add(rtu1);
+        RecurrentTimeUnit rtu2 = new RecurrentTimeUnit();
+        rtu2.setValue(2);
+        recurrentTimeUnits.add(rtu2);
+        RecurrentTimeUnit rtu3 = new RecurrentTimeUnit();
+        rtu3.setValue(3);
+        recurrentTimeUnits.add(rtu3);
+        schedule.setRecurrentTimeUnits(recurrentTimeUnits);
     }
 
     @Test
@@ -178,7 +198,10 @@ public class ScheduleResourceTest {
     @Transactional
     public void updateSchedule() throws Exception {
         // Initialize the database
-        Schedule schedule = scheduleRepository.saveAndFlush(this.schedule);
+        Schedule schedule = this.schedule;
+        add3RecurrentTimeUnits(schedule);
+        schedule = scheduleRepository.saveAndFlush(schedule);
+        assertThat(schedule.getRecurrentTimeUnits().size()).isEqualTo(3);
 
         // Update the schedule
         schedule.setActive(UPDATED_ACTIVE);
@@ -187,6 +210,14 @@ public class ScheduleResourceTest {
         schedule.setStartTime(UPDATED_START_TIME);
         schedule.setEndTime(UPDATED_END_TIME);
         schedule.setRepetitions(UPDATED_REPETITIONS);
+
+        RecurrentTimeUnit recurrentTimeUnit = new RecurrentTimeUnit();
+        recurrentTimeUnit.setValue(3);
+
+        Set<RecurrentTimeUnit> recurrentTimeUnits = new HashSet<>();
+        recurrentTimeUnits.add(recurrentTimeUnit);
+        recurrentTimeUnits.add(schedule.getRecurrentTimeUnits().iterator().next());
+        schedule.setRecurrentTimeUnits(recurrentTimeUnits);
 
         schedule.setDeleted(UPDATED_DELETED);
         restScheduleMockMvc.perform(post("/app/rest/schedule")
@@ -206,6 +237,7 @@ public class ScheduleResourceTest {
         assertThat(testSchedule.getRepetitions()).isEqualTo(UPDATED_REPETITIONS);
         assertThat(testSchedule.getVersion()).isEqualTo(UPDATED_VERSION);
         assertThat(testSchedule.getDeleted()).isEqualTo(UPDATED_DELETED);
+        assertThat(testSchedule.getRecurrentTimeUnits().size()).isEqualTo(2);
     }
 
     @Test

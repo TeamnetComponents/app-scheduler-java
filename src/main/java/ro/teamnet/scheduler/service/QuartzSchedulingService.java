@@ -41,6 +41,8 @@ public class QuartzSchedulingService {
 
     /**
      * Scans the db for jobs and schedules them.
+     * TODO: handle exceptions
+     * TODO: handle failing jobs
      */
     @Scheduled(fixedRate = JOB_SCHEDULING_INTERVAL)
     private void setupScheduledJobs() throws SchedulerException, ClassNotFoundException {
