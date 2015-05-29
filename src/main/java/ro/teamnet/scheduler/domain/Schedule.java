@@ -1,6 +1,7 @@
 package ro.teamnet.scheduler.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -248,16 +249,19 @@ public class Schedule implements Serializable {
     }
 
     @Transient
+    @JsonIgnore
     public String getTriggerName(){
         return "Schedule_" + id;
     }
 
     @Transient
+    @JsonIgnore
     public String getTriggerGroup(){
         return scheduledJob.getTriggerGroup();
     }
 
     @Transient
+    @JsonIgnore
     public boolean isValid() {
         return !deleted && active && (cron != null);
     }

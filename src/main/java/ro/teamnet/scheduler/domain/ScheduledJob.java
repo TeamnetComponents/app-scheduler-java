@@ -250,11 +250,13 @@ public class ScheduledJob implements Serializable {
     }
 
     @Transient
+    @JsonIgnore
     public String getJobName(){
         return "Job_" + id;
     }
 
     @Transient
+    @JsonIgnore
     public String getTriggerGroup(){
         return getJobName();
     }
