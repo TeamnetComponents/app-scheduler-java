@@ -79,7 +79,7 @@ public class ScheduleServiceImpl extends AbstractServiceImpl<Schedule, Long> imp
 
     @Override
     public AppPage<Schedule> findAll(AppPageable appPageable) {
-        appPageable.getFilters().addFilter(new Filter("deleted", Boolean.TRUE.toString(), Filter.FilterType.EQUAL));
+        appPageable.getFilters().addFilter(new Filter("deleted", Boolean.FALSE.toString(), Filter.FilterType.EQUAL));
         return super.findAll(appPageable);
     }
 }
