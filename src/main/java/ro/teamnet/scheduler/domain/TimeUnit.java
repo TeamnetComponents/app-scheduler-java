@@ -116,20 +116,4 @@ public class TimeUnit implements Serializable {
 
         return true;
     }
-
-    @Override
-    public int hashCode() {
-        return (int) (id ^ (id >>> 32));
-    }
-
-    @Override
-    public String toString() {
-        return "TimeUnit{" +
-                "id=" + id +
-                ", code='" + code + "'" +
-                ", name='" + name + "'" +
-                ", description='" + description + "'" +
-                ", millis='" + millis + "'" +
-                '}';
-    }
 }

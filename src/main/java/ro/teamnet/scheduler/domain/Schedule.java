@@ -213,28 +213,6 @@ public class Schedule implements Serializable {
         return true;
     }
 
-    @Override
-    public int hashCode() {
-        return (int) (id ^ (id >>> 32));
-    }
-
-    @Override
-    public String toString() {
-        return "Schedule{" +
-                "id=" + id +
-                ", active='" + active + "'" +
-                ", recurrent='" + recurrent + "'" +
-                ", cron='" + cron + "'" +
-                ", startTime='" + startTime + "'" +
-                ", endTime='" + endTime + "'" +
-                ", repetitions='" + repetitions + "'" +
-                ", version='" + version + "'" +
-                ", created='" + created + "'" +
-                ", lastUpdated='" + lastUpdated + "'" +
-                ", deleted='" + deleted + "'" +
-                '}';
-    }
-
     @PrePersist
     private void prePersist(){
         DateTime currentTime = new DateTime();

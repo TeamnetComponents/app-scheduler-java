@@ -116,19 +116,4 @@ public class TimeInterval implements Serializable {
         return true;
     }
 
-    @Override
-    public int hashCode() {
-        return (int) (id ^ (id >>> 32));
-    }
-
-    @Override
-    public String toString() {
-        return "TimeInterval{" +
-                "id=" + id +
-                ", name='" + name + "'" +
-                ", custom='" + custom + "'" +
-                ", intervalMillis='" + intervalMillis + "'" +
-                ", interval='" + interval + "'" +
-                '}';
-    }
 }

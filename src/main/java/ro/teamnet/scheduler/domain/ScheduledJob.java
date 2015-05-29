@@ -213,29 +213,6 @@ public class ScheduledJob implements Serializable {
         return true;
     }
 
-    @Override
-    public int hashCode() {
-        return (int) (id ^ (id >>> 32));
-    }
-
-    @Override
-    public String toString() {
-        return "ScheduledJob{" +
-                "id=" + id +
-                ", name='" + name + "'" +
-                ", description='" + description + "'" +
-                ", type='" + type + "'" +
-                ", quartzJobClassName='" + quartzJobClassName + "'" +
-                ", nextScheduledExecution='" + nextScheduledExecution + "'" +
-                ", lastExecutionTime='" + lastExecutionTime + "'" +
-                ", lastExecutionState='" + lastExecutionState + "'" +
-                ", version='" + version + "'" +
-                ", created='" + created + "'" +
-                ", lastUpdated='" + lastUpdated + "'" +
-                ", deleted='" + deleted + "'" +
-                '}';
-    }
-
     @PrePersist
     private void prePersist(){
         DateTime currentTime = new DateTime();

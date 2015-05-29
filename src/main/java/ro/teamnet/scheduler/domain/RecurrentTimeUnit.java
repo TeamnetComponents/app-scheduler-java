@@ -80,17 +80,4 @@ public class RecurrentTimeUnit implements Serializable {
 
         return true;
     }
-
-    @Override
-    public int hashCode() {
-        return (int) (id ^ (id >>> 32));
-    }
-
-    @Override
-    public String toString() {
-        return "RecurrentTimeUnit{" +
-                "id=" + id +
-                ", value='" + value + "'" +
-                '}';
-    }
 }

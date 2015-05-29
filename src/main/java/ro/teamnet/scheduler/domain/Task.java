@@ -136,24 +136,6 @@ public class Task implements Serializable {
         return true;
     }
 
-    @Override
-    public int hashCode() {
-        return (int) (id ^ (id >>> 32));
-    }
-
-    @Override
-    public String toString() {
-        return "Task{" +
-                "id=" + id +
-                ", queuePosition='" + queuePosition + "'" +
-                ", options='" + options + "'" +
-                ", version='" + version + "'" +
-                ", created='" + created + "'" +
-                ", lastUpdated='" + lastUpdated + "'" +
-                ", deleted='" + deleted + "'" +
-                '}';
-    }
-
     @PrePersist
     private void prePersist(){
         DateTime currentTime = new DateTime();
