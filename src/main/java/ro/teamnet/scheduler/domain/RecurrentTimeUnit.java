@@ -1,6 +1,8 @@
 package ro.teamnet.scheduler.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -21,7 +23,8 @@ public class RecurrentTimeUnit implements Serializable {
     @ManyToOne
     private TimeUnit timeUnit;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonBackReference
     private Schedule schedule;
 
 

@@ -1,7 +1,7 @@
 package ro.teamnet.scheduler.domain;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.hibernate.annotations.Type;
@@ -71,8 +71,8 @@ public class Schedule implements Serializable {
     @ManyToOne
     private TimeInterval timeInterval;
 
-    @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY)
-    @JsonIgnore
+    @OneToMany(mappedBy = "schedule", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonManagedReference
     private Set<RecurrentTimeUnit> recurrentTimeUnits = new HashSet<>();
 
     @ManyToOne
