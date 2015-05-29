@@ -100,20 +100,4 @@ public class TimeInterval implements Serializable {
 
     //other entity methods relations
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        TimeInterval timeInterval = (TimeInterval) o;
-
-        if (id != null ? !id.equals(timeInterval.id) : timeInterval.id != null) return false;
-
-        return true;
-    }
-
 }

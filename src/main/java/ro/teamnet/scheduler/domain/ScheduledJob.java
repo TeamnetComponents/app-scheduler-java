@@ -197,22 +197,6 @@ public class ScheduledJob implements Serializable {
 
     //other entity methods relations
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        ScheduledJob scheduledJob = (ScheduledJob) o;
-
-        if (id != null ? !id.equals(scheduledJob.id) : scheduledJob.id != null) return false;
-
-        return true;
-    }
-
     @PrePersist
     private void prePersist(){
         DateTime currentTime = new DateTime();
