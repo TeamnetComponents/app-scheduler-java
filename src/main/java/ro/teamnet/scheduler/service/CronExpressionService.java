@@ -5,6 +5,8 @@ import ro.teamnet.scheduler.domain.Schedule;
 
 public interface CronExpressionService {
 
-    String buildCronExpression(Schedule schedule);
     int getCronWeekDayCode(Integer dateWeekDayCode);
+    String buildCronExpressionForRecurrentFalse(Schedule schedule);
+    String buildCronExpressionForRecurrentTrueWithTimeInterval(Schedule schedule);
+    String buildCronExpressionForRecurrentTrueWithRecurrentTimeUnit(Schedule schedule);
 }
