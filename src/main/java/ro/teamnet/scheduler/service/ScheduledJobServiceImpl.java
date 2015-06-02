@@ -46,7 +46,7 @@ public class ScheduledJobServiceImpl extends AbstractServiceImpl<ScheduledJob, L
 
     @Override
     public AppPage<ScheduledJob> findAll(AppPageable appPageable) {
-        appPageable.getFilters().addFilter(new Filter("deleted", "false", Filter.FilterType.EQUAL));
+        appPageable.getFilters().addFilter(new Filter("deleted", Boolean.FALSE.toString(), Filter.FilterType.EQUAL));
         return super.findAll(appPageable);
     }
 }

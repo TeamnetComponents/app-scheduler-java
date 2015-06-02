@@ -53,7 +53,7 @@ public class TaskServiceImpl extends AbstractServiceImpl<Task, Long> implements 
 
     @Override
     public AppPage<Task> findAll(AppPageable appPageable) {
-        appPageable.getFilters().addFilter(new Filter("deleted", "false", Filter.FilterType.EQUAL));
+        appPageable.getFilters().addFilter(new Filter("deleted", Boolean.FALSE.toString(), Filter.FilterType.EQUAL));
         return super.findAll(appPageable);
     }
 
