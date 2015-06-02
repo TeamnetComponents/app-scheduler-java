@@ -78,7 +78,7 @@ public class ScheduleResourceTest {
     private ScheduleRepository scheduleRepository;
 
     @Inject
-    ScheduleService service;
+    private ScheduleService service;
 
     private MockMvc restScheduleMockMvc;
 
@@ -101,10 +101,35 @@ public class ScheduleResourceTest {
         schedule.setEndTime(DEFAULT_END_TIME);
         schedule.setRepetitions(DEFAULT_REPETITIONS);
     }
-
     @Test
     @Transactional
     public void createSchedule() throws Exception {
+        // Validate the database is empty
+        assertThat(scheduleRepository.findAll()).hasSize(0);
+
+        // Create the Schedule
+        restScheduleMockMvc.perform(post("/app/rest/schedule")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(schedule)))
+                .andExpect(status().isOk());
+
+        // Validate the Schedule in the database
+        List<Schedule> schedules = scheduleRepository.findAll();
+        assertThat(schedules).hasSize(1);
+        Schedule testSchedule = schedules.iterator().next();
+        assertThat(testSchedule.getActive()).isEqualTo(DEFAULT_ACTIVE);
+        assertThat(testSchedule.getRecurrent()).isEqualTo(DEFAULT_RECURRENT);
+        assertThat(testSchedule.getCron()).isEqualTo(DEFAULT_CRON);
+        assertThat(testSchedule.getStartTime()).isEqualTo(DEFAULT_START_TIME);
+        assertThat(testSchedule.getEndTime()).isEqualTo(DEFAULT_END_TIME);
+        assertThat(testSchedule.getRepetitions()).isEqualTo(DEFAULT_REPETITIONS);
+        assertThat(testSchedule.getVersion()).isEqualTo(DEFAULT_VERSION);
+        assertThat(testSchedule.getDeleted()).isEqualTo(DEFAULT_DELETED);
+    }
+
+    @Test
+    @Transactional
+    public void createScheduleWithRecurrentTimeUnits() throws Exception {
         // Validate the database is empty
         assertThat(scheduleRepository.findAll()).hasSize(0);
         Schedule schedule = this.schedule;
@@ -197,6 +222,40 @@ public class ScheduleResourceTest {
     @Test
     @Transactional
     public void updateSchedule() throws Exception {
+        // Initialize the database
+        Schedule schedule = scheduleRepository.saveAndFlush(this.schedule);
+
+        // Update the schedule
+        schedule.setActive(UPDATED_ACTIVE);
+        schedule.setRecurrent(UPDATED_RECURRENT);
+        schedule.setCron(UPDATED_CRON);
+        schedule.setStartTime(UPDATED_START_TIME);
+        schedule.setEndTime(UPDATED_END_TIME);
+        schedule.setRepetitions(UPDATED_REPETITIONS);
+
+        schedule.setDeleted(UPDATED_DELETED);
+        restScheduleMockMvc.perform(post("/app/rest/schedule")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(schedule)))
+                .andExpect(status().isOk());
+
+        // Validate the Schedule in the database
+        List<Schedule> schedules = scheduleRepository.findAll();
+        assertThat(schedules).hasSize(1);
+        Schedule testSchedule = schedules.iterator().next();
+        assertThat(testSchedule.getActive()).isEqualTo(UPDATED_ACTIVE);
+        assertThat(testSchedule.getRecurrent()).isEqualTo(UPDATED_RECURRENT);
+        assertThat(testSchedule.getCron()).isEqualTo(UPDATED_CRON);
+        assertThat(testSchedule.getStartTime()).isEqualTo(UPDATED_START_TIME);
+        assertThat(testSchedule.getEndTime()).isEqualTo(UPDATED_END_TIME);
+        assertThat(testSchedule.getRepetitions()).isEqualTo(UPDATED_REPETITIONS);
+        assertThat(testSchedule.getVersion()).isEqualTo(UPDATED_VERSION);
+        assertThat(testSchedule.getDeleted()).isEqualTo(UPDATED_DELETED);
+    }
+
+    @Test
+    @Transactional
+    public void updateScheduleWithRecurrentTimeUnits() throws Exception {
         // Initialize the database
         Schedule schedule = this.schedule;
         add3RecurrentTimeUnits(schedule);
