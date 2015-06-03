@@ -38,14 +38,14 @@ public abstract class AppJob implements Job {
 
         try {
             run(context);
-            updateExecutionStatus(execution, "finished");
+            updateExecutionStatus(execution, JobExecutionStatus.FINISHED);
         } catch (RuntimeException e) {
-            updateExecutionStatus(execution, "failed");
+            updateExecutionStatus(execution, JobExecutionStatus.FAILED);
             throw new JobExecutionException(e);
         }
     }
 
-    private void updateExecutionStatus(ScheduledJobExecution execution, String status) {
+    private void updateExecutionStatus(ScheduledJobExecution execution, JobExecutionStatus status) {
         execution.setStatus(status);
         scheduledJobExecutionService.save(execution);
     }
@@ -57,7 +57,7 @@ public abstract class AppJob implements Job {
         execution.setLastFireTime(new DateTime(context.getPreviousFireTime()));
         execution.setNextFireTime(new DateTime(context.getNextFireTime()));
         execution.setState(new JSONObject(context.getMergedJobDataMap()).toString());
-        execution.setStatus("started");
+        execution.setStatus(JobExecutionStatus.RUNNING);
         execution.setScheduledJob(scheduledJobService.findOne(scheduledJobId));
         return scheduledJobExecutionService.save(execution);
     }

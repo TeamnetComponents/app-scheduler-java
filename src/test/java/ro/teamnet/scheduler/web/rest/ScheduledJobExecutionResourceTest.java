@@ -2,6 +2,9 @@
 package ro.teamnet.scheduler.web.rest;
 
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,27 +15,20 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import ro.teamnet.SchedulerTestApplication;
+import ro.teamnet.scheduler.domain.ScheduledJobExecution;
+import ro.teamnet.scheduler.job.JobExecutionStatus;
+import ro.teamnet.scheduler.repository.ScheduledJobExecutionRepository;
+import ro.teamnet.scheduler.service.ScheduledJobExecutionService;
+import ro.teamnet.web.rest.TestUtil;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import org.joda.time.LocalDate;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-import java.math.BigDecimal;
 import java.util.List;
 
-import ro.teamnet.SchedulerTestApplication;
-
-import ro.teamnet.scheduler.domain.ScheduledJobExecution;
-import ro.teamnet.scheduler.repository.ScheduledJobExecutionRepository;
-import ro.teamnet.scheduler.service.ScheduledJobExecutionService;
-import ro.teamnet.scheduler.web.rest.ScheduledJobExecutionResource; 
-import ro.teamnet.web.rest.TestUtil;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -69,8 +65,8 @@ public class ScheduledJobExecutionResourceTest {
     private static final String DEFAULT_NEXT_FIRE_TIME_STR = dateTimeFormatter.print(DEFAULT_NEXT_FIRE_TIME);
     private static final String DEFAULT_STATE = "SAMPLE_TEXT";
     private static final String UPDATED_STATE = "UPDATED_TEXT";
-    private static final String DEFAULT_STATUS = "SAMPLE_TEXT";
-    private static final String UPDATED_STATUS = "UPDATED_TEXT";
+    private static final JobExecutionStatus DEFAULT_STATUS = JobExecutionStatus.RUNNING;
+    private static final JobExecutionStatus UPDATED_STATUS = JobExecutionStatus.FINISHED;
 
     @Inject
     private ScheduledJobExecutionRepository scheduledJobExecutionRepository;

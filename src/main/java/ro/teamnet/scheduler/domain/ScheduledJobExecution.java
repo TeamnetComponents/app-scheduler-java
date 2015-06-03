@@ -9,6 +9,7 @@ import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 import ro.teamnet.bootstrap.domain.util.CustomDateTimeDeserializer;
 import ro.teamnet.bootstrap.domain.util.CustomDateTimeSerializer;
+import ro.teamnet.scheduler.job.JobExecutionStatus;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -52,7 +53,8 @@ public class ScheduledJobExecution implements Serializable {
     private String state;
 
     @Column(name = "status")
-    private String status;
+    @Enumerated(value = EnumType.STRING)
+    private JobExecutionStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
@@ -109,11 +111,11 @@ public class ScheduledJobExecution implements Serializable {
         this.state = state;
     }
 
-    public String getStatus() {
+    public JobExecutionStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(JobExecutionStatus status) {
         this.status = status;
     }
 
