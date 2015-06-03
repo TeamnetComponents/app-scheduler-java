@@ -71,6 +71,9 @@ public class ScheduledJob implements Serializable {
     @Column(name = "deleted")
     private Boolean deleted;
 
+    @Column(name = "owner_id")
+    private Long ownerId;
+
     @OneToMany(mappedBy = "scheduledJob", fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<Schedule> schedules = new HashSet<>();
@@ -176,6 +179,14 @@ public class ScheduledJob implements Serializable {
 
     public void setDeleted(Boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public Long getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
     }
 
     public Set<Schedule> getSchedules() {

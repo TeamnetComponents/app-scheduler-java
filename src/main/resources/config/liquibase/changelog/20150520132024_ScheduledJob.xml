@@ -115,4 +115,14 @@
 
     </changeSet>
 
+    <changeSet id="20150603150000" author="oanam">
+
+        <addColumn tableName="T_SCHEDULEDJOB">
+
+            <column name="owner_id" type="bigint"/>
+
+        </addColumn>
+
+    </changeSet>
+
 </databaseChangeLog>
