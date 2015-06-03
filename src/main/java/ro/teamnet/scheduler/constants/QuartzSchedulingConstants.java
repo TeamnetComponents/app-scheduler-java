@@ -14,6 +14,11 @@ public class QuartzSchedulingConstants {
     public static final String JOB_GROUP = "SCHEDULED_JOBS";
 
     /**
+     * Job data map property key for the scheduled job id.
+     */
+    public static final String JOB_ID = "JOB_ID";
+
+    /**
      * Job data map property key for the job version.
      */
     public static final String JOB_VERSION = "JOB_VERSION";
@@ -29,7 +34,12 @@ public class QuartzSchedulingConstants {
     public static final String JOB_OPTIONS = "JOB_OPTIONS";
 
     /**
-     * Trigger data map property key for the trigger version.
+     * Trigger data map property key for the trigger (schedule) id.
+     */
+    public static final String TRIGGER_ID = "TRIGGER_ID";
+
+    /**
+     * Trigger data map property key for the trigger (schedule) version.
      */
     public static final String TRIGGER_VERSION = "TRIGGER_VERSION";
 }

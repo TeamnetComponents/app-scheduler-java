@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.bind.RelaxedPropertyResolver;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -34,11 +35,18 @@ public class QuartzConfiguration {
     private DataSource dataSource;
     @Inject
     private PlatformTransactionManager transactionManager;
+    @Inject
+    private ApplicationContext applicationContext;
 
     @Bean
     public SchedulerFactoryBean quartzScheduler() {
         log.debug("Configuring Quartz Scheduler");
         SchedulerFactoryBean quartzScheduler = new SchedulerFactoryBean();
+
+        AutowiringSpringBeanJobFactory jobFactory = new AutowiringSpringBeanJobFactory();
+        jobFactory.setApplicationContext(applicationContext);
+        quartzScheduler.setJobFactory(jobFactory);
+
         quartzScheduler.setSchedulerName("app-scheduler");
         quartzScheduler.setOverwriteExistingJobs(true);
         quartzScheduler.setDataSource(dataSource);

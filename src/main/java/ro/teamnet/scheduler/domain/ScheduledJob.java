@@ -1,7 +1,9 @@
+
 package ro.teamnet.scheduler.domain;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.hibernate.annotations.Type;
@@ -81,6 +83,10 @@ public class ScheduledJob implements Serializable {
     @OneToMany(mappedBy = "scheduledJob", fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<Task> tasks = new HashSet<>();
+
+    @OneToMany(mappedBy = "scheduledJob", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Set<ScheduledJobExecution> scheduledJobExecutions = new HashSet<>();
 
 
     //other entity fields relations
@@ -203,6 +209,14 @@ public class ScheduledJob implements Serializable {
 
     public void setTasks(Set<Task> tasks) {
         this.tasks = tasks;
+    }
+
+    public Set<ScheduledJobExecution> getScheduledJobExecutions() {
+        return scheduledJobExecutions;
+    }
+
+    public void setScheduledJobExecutions(Set<ScheduledJobExecution> scheduledJobExecutions) {
+        this.scheduledJobExecutions = scheduledJobExecutions;
     }
 
 

@@ -118,6 +118,7 @@ public class QuartzSchedulingService {
                 JobBuilder.newJob()
                         .ofType(jobClass)
                         .withIdentity(jobKey)
+                        .usingJobData(JOB_ID, scheduledJob.getId())
                         .usingJobData(JOB_OPTIONS, new JSONObject(taskOptions).toString())
                         .usingJobData(JOB_CLASS, scheduledJob.getQuartzJobClassName())
                         .usingJobData(JOB_VERSION, scheduledJob.getVersion())
@@ -210,6 +211,7 @@ public class QuartzSchedulingService {
                 .withIdentity(triggerKey)
                 .withSchedule(CronScheduleBuilder.cronSchedule(schedule.getCron()))
                 .startAt(schedule.getStartTime().toDate())
+                .usingJobData(TRIGGER_ID, schedule.getId())
                 .usingJobData(TRIGGER_VERSION, schedule.getVersion());
 
         Date triggerEndDate = getTriggerEndDate(schedule, (OperableTrigger) triggerBuilder.build());
