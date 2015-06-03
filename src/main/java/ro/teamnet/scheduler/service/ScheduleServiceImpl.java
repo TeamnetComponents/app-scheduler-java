@@ -25,6 +25,9 @@ public class ScheduleServiceImpl extends AbstractServiceImpl<Schedule, Long> imp
     private ScheduleRepository scheduleRepository;
 
     @Inject
+    private CronExpressionService cronExpressionService;
+
+    @Inject
     public ScheduleServiceImpl(ScheduleRepository repository) {
         super(repository);
     }
@@ -81,5 +84,25 @@ public class ScheduleServiceImpl extends AbstractServiceImpl<Schedule, Long> imp
     public AppPage<Schedule> findAll(AppPageable appPageable) {
         appPageable.getFilters().addFilter(new Filter("deleted", Boolean.FALSE.toString(), Filter.FilterType.EQUAL));
         return super.findAll(appPageable);
+    }
+
+    @Override
+    public Schedule save(Schedule schedule) {
+        schedule.setCron(getCronExpression(schedule));
+        return super.save(schedule);
+    }
+
+    private String getCronExpression(Schedule schedule) {
+        String cronExpression = "";
+        if (!schedule.getRecurrent()) {
+            cronExpression = cronExpressionService.buildCronExpressionForRecurrentFalse(schedule);
+        } else {
+            if (schedule.getTimeInterval() != null) {
+                cronExpression = cronExpressionService.buildCronExpressionForRecurrentTrueWithTimeInterval(schedule);
+            } else {
+                cronExpression = cronExpressionService.buildCronExpressionForRecurrentTrueWithRecurrentTimeUnit(schedule);
+            }
+        }
+        return cronExpression;
     }
 }

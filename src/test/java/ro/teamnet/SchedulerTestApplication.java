@@ -6,7 +6,11 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.core.env.SimpleCommandLinePropertySource;
-import ro.teamnet.bootstrap.config.DatabaseConfiguration;
+import ro.teamnet.bootstrap.config.*;
+import ro.teamnet.bootstrap.config.apidoc.SwaggerConfiguration;
+import ro.teamnet.bootstrap.config.metrics.JHipsterHealthIndicatorConfiguration;
+import ro.teamnet.bootstrap.config.metrics.JavaMailHealthIndicator;
+import ro.teamnet.bootstrap.service.MailService;
 import ro.teamnet.scheduler.config.QuartzConfiguration;
 import ro.teamnet.scheduler.service.QuartzSchedulingService;
 
@@ -18,7 +22,12 @@ import ro.teamnet.scheduler.service.QuartzSchedulingService;
         basePackages = {"ro.teamnet.bootstrap", "ro.teamnet"},
         excludeFilters = @ComponentScan.Filter(
                 type = FilterType.ASSIGNABLE_TYPE,
-                value = {QuartzConfiguration.class, QuartzSchedulingService.class}
+                value = {QuartzConfiguration.class, QuartzSchedulingService.class,
+                        MetricsConfiguration.class, SwaggerConfiguration.class, WebConfigurer.class,
+                        ThymeleafConfiguration.class, MailConfiguration.class, MailService.class, JavaMailHealthIndicator.class,
+                        CacheConfiguration.class, AsyncConfiguration.class, LoggingAspectConfiguration.class,
+                        JHipsterHealthIndicatorConfiguration.class, CloudDatabaseConfiguration.class, LocaleConfiguration.class
+                }
         )
 )
 @EnableAutoConfiguration(exclude = DatabaseConfiguration.class)

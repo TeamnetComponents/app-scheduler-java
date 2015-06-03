@@ -1,6 +1,7 @@
 package ro.teamnet.scheduler.web.rest;
 
 
+import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -54,8 +55,6 @@ public class ScheduleResourceTest {
 
     private static final Boolean DEFAULT_RECURRENT = false;
     private static final Boolean UPDATED_RECURRENT = true;
-    private static final String DEFAULT_CRON = "SAMPLE_TEXT";
-    private static final String UPDATED_CRON = "UPDATED_TEXT";
 
     private static final DateTime DEFAULT_START_TIME = new DateTime(0L);
     private static final DateTime UPDATED_START_TIME = new DateTime().withMillisOfSecond(0);
@@ -96,11 +95,11 @@ public class ScheduleResourceTest {
         schedule = new Schedule();
         schedule.setActive(DEFAULT_ACTIVE);
         schedule.setRecurrent(DEFAULT_RECURRENT);
-        schedule.setCron(DEFAULT_CRON);
         schedule.setStartTime(DEFAULT_START_TIME);
         schedule.setEndTime(DEFAULT_END_TIME);
         schedule.setRepetitions(DEFAULT_REPETITIONS);
     }
+
     @Test
     @Transactional
     public void createSchedule() throws Exception {
@@ -119,7 +118,7 @@ public class ScheduleResourceTest {
         Schedule testSchedule = schedules.iterator().next();
         assertThat(testSchedule.getActive()).isEqualTo(DEFAULT_ACTIVE);
         assertThat(testSchedule.getRecurrent()).isEqualTo(DEFAULT_RECURRENT);
-        assertThat(testSchedule.getCron()).isEqualTo(DEFAULT_CRON);
+        assertThat(testSchedule.getCron()).endsWith("1 1 ? 1970");
         assertThat(testSchedule.getStartTime()).isEqualTo(DEFAULT_START_TIME);
         assertThat(testSchedule.getEndTime()).isEqualTo(DEFAULT_END_TIME);
         assertThat(testSchedule.getRepetitions()).isEqualTo(DEFAULT_REPETITIONS);
@@ -147,7 +146,7 @@ public class ScheduleResourceTest {
         Schedule testSchedule = schedules.iterator().next();
         assertThat(testSchedule.getActive()).isEqualTo(DEFAULT_ACTIVE);
         assertThat(testSchedule.getRecurrent()).isEqualTo(DEFAULT_RECURRENT);
-        assertThat(testSchedule.getCron()).isEqualTo(DEFAULT_CRON);
+        assertThat(testSchedule.getCron()).endsWith("1 1 ? 1970");
         assertThat(testSchedule.getStartTime()).isEqualTo(DEFAULT_START_TIME);
         assertThat(testSchedule.getEndTime()).isEqualTo(DEFAULT_END_TIME);
         assertThat(testSchedule.getRepetitions()).isEqualTo(DEFAULT_REPETITIONS);
@@ -174,7 +173,7 @@ public class ScheduleResourceTest {
     @Transactional
     public void getAllSchedules() throws Exception {
         // Initialize the database
-        scheduleRepository.saveAndFlush(schedule);
+        service.save(schedule);
 
         // Get all the schedules
         restScheduleMockMvc.perform(get("/app/rest/schedule"))
@@ -182,7 +181,7 @@ public class ScheduleResourceTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.[0].active").value(DEFAULT_ACTIVE.booleanValue()))
                 .andExpect(jsonPath("$.[0].recurrent").value(DEFAULT_RECURRENT.booleanValue()))
-                .andExpect(jsonPath("$.[0].cron").value(DEFAULT_CRON.toString()))
+                .andExpect(jsonPath("$.[0].cron", Matchers.endsWith("1 1 ? 1970")))
                 .andExpect(jsonPath("$.[0].startTime").value(DEFAULT_START_TIME_STR))
                 .andExpect(jsonPath("$.[0].endTime").value(DEFAULT_END_TIME_STR))
                 .andExpect(jsonPath("$.[0].repetitions").value(DEFAULT_REPETITIONS.intValue()))
@@ -194,7 +193,7 @@ public class ScheduleResourceTest {
     @Transactional
     public void getSchedule() throws Exception {
         // Initialize the database
-        Schedule schedule = scheduleRepository.saveAndFlush(this.schedule);
+        Schedule schedule = service.save(this.schedule);
 
         // Get the schedule
         restScheduleMockMvc.perform(get("/app/rest/schedule/{id}", schedule.getId()))
@@ -203,7 +202,7 @@ public class ScheduleResourceTest {
                 .andExpect(jsonPath("$.id").value(schedule.getId().intValue()))
                 .andExpect(jsonPath("$.active").value(DEFAULT_ACTIVE.booleanValue()))
                 .andExpect(jsonPath("$.recurrent").value(DEFAULT_RECURRENT.booleanValue()))
-                .andExpect(jsonPath("$.cron").value(DEFAULT_CRON.toString()))
+                .andExpect(jsonPath("$.cron", Matchers.endsWith("1 1 ? 1970")))
                 .andExpect(jsonPath("$.startTime").value(DEFAULT_START_TIME_STR))
                 .andExpect(jsonPath("$.endTime").value(DEFAULT_END_TIME_STR))
                 .andExpect(jsonPath("$.repetitions").value(DEFAULT_REPETITIONS.intValue()))
@@ -224,11 +223,11 @@ public class ScheduleResourceTest {
     public void updateSchedule() throws Exception {
         // Initialize the database
         Schedule schedule = scheduleRepository.saveAndFlush(this.schedule);
+        String initialCron = schedule.getCron();
 
         // Update the schedule
         schedule.setActive(UPDATED_ACTIVE);
         schedule.setRecurrent(UPDATED_RECURRENT);
-        schedule.setCron(UPDATED_CRON);
         schedule.setStartTime(UPDATED_START_TIME);
         schedule.setEndTime(UPDATED_END_TIME);
         schedule.setRepetitions(UPDATED_REPETITIONS);
@@ -245,7 +244,8 @@ public class ScheduleResourceTest {
         Schedule testSchedule = schedules.iterator().next();
         assertThat(testSchedule.getActive()).isEqualTo(UPDATED_ACTIVE);
         assertThat(testSchedule.getRecurrent()).isEqualTo(UPDATED_RECURRENT);
-        assertThat(testSchedule.getCron()).isEqualTo(UPDATED_CRON);
+        assertThat(testSchedule.getCron()).isNotNull();
+        assertThat(testSchedule.getCron()).isNotEqualTo(initialCron);
         assertThat(testSchedule.getStartTime()).isEqualTo(UPDATED_START_TIME);
         assertThat(testSchedule.getEndTime()).isEqualTo(UPDATED_END_TIME);
         assertThat(testSchedule.getRepetitions()).isEqualTo(UPDATED_REPETITIONS);
@@ -261,11 +261,11 @@ public class ScheduleResourceTest {
         add3RecurrentTimeUnits(schedule);
         schedule = scheduleRepository.saveAndFlush(schedule);
         assertThat(schedule.getRecurrentTimeUnits().size()).isEqualTo(3);
+        String initialCron = schedule.getCron();
 
         // Update the schedule
         schedule.setActive(UPDATED_ACTIVE);
         schedule.setRecurrent(UPDATED_RECURRENT);
-        schedule.setCron(UPDATED_CRON);
         schedule.setStartTime(UPDATED_START_TIME);
         schedule.setEndTime(UPDATED_END_TIME);
         schedule.setRepetitions(UPDATED_REPETITIONS);
@@ -290,7 +290,8 @@ public class ScheduleResourceTest {
         Schedule testSchedule = schedules.iterator().next();
         assertThat(testSchedule.getActive()).isEqualTo(UPDATED_ACTIVE);
         assertThat(testSchedule.getRecurrent()).isEqualTo(UPDATED_RECURRENT);
-        assertThat(testSchedule.getCron()).isEqualTo(UPDATED_CRON);
+        assertThat(testSchedule.getCron()).isNotNull();
+        assertThat(testSchedule.getCron()).isNotEqualTo(initialCron);
         assertThat(testSchedule.getStartTime()).isEqualTo(UPDATED_START_TIME);
         assertThat(testSchedule.getEndTime()).isEqualTo(UPDATED_END_TIME);
         assertThat(testSchedule.getRepetitions()).isEqualTo(UPDATED_REPETITIONS);

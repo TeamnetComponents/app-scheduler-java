@@ -147,6 +147,9 @@ public class CronExpressionServiceImpl implements CronExpressionService {
         StringBuilder sb = new StringBuilder();
 
         for (RecurrentTimeUnit recurrentTimeUnit : recurrentTimeUnitSet) {
+            if (recurrentTimeUnit.getTimeUnit() == null || recurrentTimeUnit.getTimeUnit().getCode() == null) {
+                continue;
+            }
             if (recurrentTimeUnit.getTimeUnit().getCode().equals(codeOfTimeUnit)) {
                 if (recurrentTimeUnit.getValue() == -1) {
                     sb.append("? ");
@@ -165,6 +168,9 @@ public class CronExpressionServiceImpl implements CronExpressionService {
         StringBuilder sb = new StringBuilder();
 
         for (RecurrentTimeUnit recurrentTimeUnit : recurrentTimeUnitSet) {
+            if (recurrentTimeUnit.getTimeUnit() == null || recurrentTimeUnit.getTimeUnit().getCode() == null) {
+                continue;
+            }
             if (recurrentTimeUnit.getTimeUnit().getCode().equals(codeOfTimeUnit)) {
                 if (recurrentTimeUnit.getValue() == -1) {
                     sb.append("* ");
