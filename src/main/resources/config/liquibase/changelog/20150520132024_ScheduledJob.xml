@@ -125,4 +125,10 @@
 
     </changeSet>
 
+    <changeSet id="20150603170000" author="oanam">
+        <dropColumn tableName="T_SCHEDULEDJOB" columnName="next_scheduled_execution"/>
+        <dropColumn tableName="T_SCHEDULEDJOB" columnName="last_execution_time"/>
+        <dropColumn tableName="T_SCHEDULEDJOB" columnName="last_execution_state"/>
+    </changeSet>
+
 </databaseChangeLog>

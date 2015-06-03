@@ -1,7 +1,6 @@
 package ro.teamnet.scheduler.web.rest;
 
 
-import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.junit.Before;
@@ -54,16 +53,6 @@ public class ScheduledJobResourceTest {
     private static final String DEFAULT_QUARTZ_JOB_CLASS_NAME = "SAMPLE_TEXT";
     private static final String UPDATED_QUARTZ_JOB_CLASS_NAME = "UPDATED_TEXT";
 
-    private static final DateTime DEFAULT_NEXT_SCHEDULED_EXECUTION = new DateTime(0L);
-    private static final DateTime UPDATED_NEXT_SCHEDULED_EXECUTION = new DateTime().withMillisOfSecond(0);
-    private static final String DEFAULT_NEXT_SCHEDULED_EXECUTION_STR = dateTimeFormatter.print(DEFAULT_NEXT_SCHEDULED_EXECUTION);
-
-    private static final DateTime DEFAULT_LAST_EXECUTION_TIME = new DateTime(0L);
-    private static final DateTime UPDATED_LAST_EXECUTION_TIME = new DateTime().withMillisOfSecond(0);
-    private static final String DEFAULT_LAST_EXECUTION_TIME_STR = dateTimeFormatter.print(DEFAULT_LAST_EXECUTION_TIME);
-    private static final String DEFAULT_LAST_EXECUTION_STATE = "SAMPLE_TEXT";
-    private static final String UPDATED_LAST_EXECUTION_STATE = "UPDATED_TEXT";
-
     private static final Long DEFAULT_VERSION = 0L;
     private static final Long UPDATED_VERSION = 1L;
 
@@ -94,9 +83,6 @@ public class ScheduledJobResourceTest {
         scheduledJob.setDescription(DEFAULT_DESCRIPTION);
         scheduledJob.setType(DEFAULT_TYPE);
         scheduledJob.setQuartzJobClassName(DEFAULT_QUARTZ_JOB_CLASS_NAME);
-        scheduledJob.setNextScheduledExecution(DEFAULT_NEXT_SCHEDULED_EXECUTION);
-        scheduledJob.setLastExecutionTime(DEFAULT_LAST_EXECUTION_TIME);
-        scheduledJob.setLastExecutionState(DEFAULT_LAST_EXECUTION_STATE);
     }
 
     @Test
@@ -119,9 +105,6 @@ public class ScheduledJobResourceTest {
         assertThat(testScheduledJob.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
         assertThat(testScheduledJob.getType()).isEqualTo(DEFAULT_TYPE);
         assertThat(testScheduledJob.getQuartzJobClassName()).isEqualTo(DEFAULT_QUARTZ_JOB_CLASS_NAME);
-        assertThat(testScheduledJob.getNextScheduledExecution()).isEqualTo(DEFAULT_NEXT_SCHEDULED_EXECUTION);
-        assertThat(testScheduledJob.getLastExecutionTime()).isEqualTo(DEFAULT_LAST_EXECUTION_TIME);
-        assertThat(testScheduledJob.getLastExecutionState()).isEqualTo(DEFAULT_LAST_EXECUTION_STATE);
         assertThat(testScheduledJob.getVersion()).isEqualTo(DEFAULT_VERSION);
         assertThat(testScheduledJob.getDeleted()).isEqualTo(DEFAULT_DELETED);
     }
@@ -140,9 +123,6 @@ public class ScheduledJobResourceTest {
                 .andExpect(jsonPath("$.[0].description").value(DEFAULT_DESCRIPTION.toString()))
                 .andExpect(jsonPath("$.[0].type").value(DEFAULT_TYPE.toString()))
                 .andExpect(jsonPath("$.[0].quartzJobClassName").value(DEFAULT_QUARTZ_JOB_CLASS_NAME.toString()))
-                .andExpect(jsonPath("$.[0].nextScheduledExecution").value(DEFAULT_NEXT_SCHEDULED_EXECUTION_STR))
-                .andExpect(jsonPath("$.[0].lastExecutionTime").value(DEFAULT_LAST_EXECUTION_TIME_STR))
-                .andExpect(jsonPath("$.[0].lastExecutionState").value(DEFAULT_LAST_EXECUTION_STATE.toString()))
                 .andExpect(jsonPath("$.[0].version").value(DEFAULT_VERSION.intValue()))
                 .andExpect(jsonPath("$.[0].deleted").value(DEFAULT_DELETED.booleanValue()));
     }
@@ -162,9 +142,6 @@ public class ScheduledJobResourceTest {
                 .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()))
                 .andExpect(jsonPath("$.type").value(DEFAULT_TYPE.toString()))
                 .andExpect(jsonPath("$.quartzJobClassName").value(DEFAULT_QUARTZ_JOB_CLASS_NAME.toString()))
-                .andExpect(jsonPath("$.nextScheduledExecution").value(DEFAULT_NEXT_SCHEDULED_EXECUTION_STR))
-                .andExpect(jsonPath("$.lastExecutionTime").value(DEFAULT_LAST_EXECUTION_TIME_STR))
-                .andExpect(jsonPath("$.lastExecutionState").value(DEFAULT_LAST_EXECUTION_STATE.toString()))
                 .andExpect(jsonPath("$.version").value(DEFAULT_VERSION.intValue()))
                 .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED.booleanValue()));
     }
@@ -188,9 +165,6 @@ public class ScheduledJobResourceTest {
         scheduledJob.setDescription(UPDATED_DESCRIPTION);
         scheduledJob.setType(UPDATED_TYPE);
         scheduledJob.setQuartzJobClassName(UPDATED_QUARTZ_JOB_CLASS_NAME);
-        scheduledJob.setNextScheduledExecution(UPDATED_NEXT_SCHEDULED_EXECUTION);
-        scheduledJob.setLastExecutionTime(UPDATED_LAST_EXECUTION_TIME);
-        scheduledJob.setLastExecutionState(UPDATED_LAST_EXECUTION_STATE);
         scheduledJob.setDeleted(UPDATED_DELETED);
         restScheduledJobMockMvc.perform(post("/app/rest/scheduledJob")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -205,9 +179,6 @@ public class ScheduledJobResourceTest {
         assertThat(testScheduledJob.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
         assertThat(testScheduledJob.getType()).isEqualTo(UPDATED_TYPE);
         assertThat(testScheduledJob.getQuartzJobClassName()).isEqualTo(UPDATED_QUARTZ_JOB_CLASS_NAME);
-        assertThat(testScheduledJob.getNextScheduledExecution()).isEqualTo(UPDATED_NEXT_SCHEDULED_EXECUTION);
-        assertThat(testScheduledJob.getLastExecutionTime()).isEqualTo(UPDATED_LAST_EXECUTION_TIME);
-        assertThat(testScheduledJob.getLastExecutionState()).isEqualTo(UPDATED_LAST_EXECUTION_STATE);
         assertThat(testScheduledJob.getVersion()).isEqualTo(UPDATED_VERSION);
         assertThat(testScheduledJob.getDeleted()).isEqualTo(UPDATED_DELETED);
     }

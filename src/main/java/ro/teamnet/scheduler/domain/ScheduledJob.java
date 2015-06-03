@@ -39,21 +39,6 @@ public class ScheduledJob implements Serializable {
     @Column(name = "quartz_job_class_name")
     private String quartzJobClassName;
 
-    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
-    @JsonSerialize(using = CustomDateTimeSerializer.class)
-    @JsonDeserialize(using = CustomDateTimeDeserializer.class)
-    @Column(name = "next_scheduled_execution", nullable = true)
-    private DateTime nextScheduledExecution;
-
-    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
-    @JsonSerialize(using = CustomDateTimeSerializer.class)
-    @JsonDeserialize(using = CustomDateTimeDeserializer.class)
-    @Column(name = "last_execution_time", nullable = true)
-    private DateTime lastExecutionTime;
-
-    @Column(name = "last_execution_state")
-    private String lastExecutionState;
-
     @Version
     @Column(name = "version")
     private Long version;
@@ -129,30 +114,6 @@ public class ScheduledJob implements Serializable {
 
     public void setQuartzJobClassName(String quartzJobClassName) {
         this.quartzJobClassName = quartzJobClassName;
-    }
-
-    public DateTime getNextScheduledExecution() {
-        return nextScheduledExecution;
-    }
-
-    public void setNextScheduledExecution(DateTime nextScheduledExecution) {
-        this.nextScheduledExecution = nextScheduledExecution;
-    }
-
-    public DateTime getLastExecutionTime() {
-        return lastExecutionTime;
-    }
-
-    public void setLastExecutionTime(DateTime lastExecutionTime) {
-        this.lastExecutionTime = lastExecutionTime;
-    }
-
-    public String getLastExecutionState() {
-        return lastExecutionState;
-    }
-
-    public void setLastExecutionState(String lastExecutionState) {
-        this.lastExecutionState = lastExecutionState;
     }
 
     public Long getVersion() {
