@@ -12,6 +12,7 @@ import java.util.*;
 @Service
 public class CronExpressionServiceImpl implements CronExpressionService {
 
+    @Override
     public String buildCronExpressionForRecurrentFalse(Schedule schedule) {
 
         return createStringBuilderForRecurrentFalse(schedule.getStartTime()).toString();
@@ -36,6 +37,7 @@ public class CronExpressionServiceImpl implements CronExpressionService {
     }
 
 
+    @Override
     public String buildCronExpressionForRecurrentTrueWithTimeInterval(Schedule schedule) {
 
         return createStringBuilderForRegularIntervals(schedule.getStartTime(), schedule.getTimeInterval(),
@@ -44,6 +46,7 @@ public class CronExpressionServiceImpl implements CronExpressionService {
 
     private StringBuilder createStringBuilderForRegularIntervals(DateTime startDate, TimeInterval timeInterval, TimeUnit timeUnit) {
         StringBuilder stringBuilder = new StringBuilder();
+        boolean checkDaysOfWeek = timeUnit.getCode().equals("W");
 
         if (timeUnit.getCode().equals("SEC")) {
             stringBuilder.append(startDate.getSecondOfMinute());
@@ -80,8 +83,15 @@ public class CronExpressionServiceImpl implements CronExpressionService {
             stringBuilder.append(timeInterval.getInterval());
             stringBuilder.append(" ");
         } else {
-            stringBuilder.append(startDate.getDayOfMonth());
-            stringBuilder.append(" ");
+            if (checkDaysOfWeek) {
+                stringBuilder.append(startDate.getDayOfMonth());
+                stringBuilder.append("/");
+                stringBuilder.append(timeInterval.getInterval() * 7);
+                stringBuilder.append(" ");
+            } else {
+                stringBuilder.append(startDate.getDayOfMonth());
+                stringBuilder.append(" ");
+            }
         }
 
         if (timeUnit.getCode().equals("MON")) {
@@ -94,12 +104,7 @@ public class CronExpressionServiceImpl implements CronExpressionService {
             stringBuilder.append(" ");
         }
 
-        if (timeUnit.getCode().equals("W")) {
-            Integer cronWeekDayValue = startDate.getDayOfWeek();
-            Integer cronWeekDayCode = getCronWeekDayCode(cronWeekDayValue);
-            stringBuilder.append(cronWeekDayCode);
-            stringBuilder.append("/7 ");
-        } else {
+        if (checkDaysOfWeek || !checkDaysOfWeek) {
             stringBuilder.append("? ");
         }
 
@@ -115,6 +120,7 @@ public class CronExpressionServiceImpl implements CronExpressionService {
     }
 
 
+    @Override
     public String buildCronExpressionForRecurrentTrueWithRecurrentTimeUnit(Schedule schedule) {
 
         return createStringBuilderForTimeUnit(schedule);
@@ -228,6 +234,7 @@ public class CronExpressionServiceImpl implements CronExpressionService {
     }
 
 
+    @Override
     public int getCronWeekDayCode(Integer dateWeekDayCode) {
 
         return ((dateWeekDayCode + 1) % 7) != 0 ? ((dateWeekDayCode + 1) % 7) : 7;

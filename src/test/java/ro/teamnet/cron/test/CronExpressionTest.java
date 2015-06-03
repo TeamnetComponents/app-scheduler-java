@@ -88,10 +88,10 @@ public class CronExpressionTest {
     public void testCronWithTimeIntervalNotNull() {
 
         Schedule schedule = createSchedule(true);
-        schedule.setTimeInterval(createTimeInterval("Saptamanal", createTimeUnit("W"), 7l));
+        schedule.setTimeInterval(createTimeInterval("Saptamanal", createTimeUnit("W"), 1l));
 
         String expression = cronExpressionService.buildCronExpressionForRecurrentTrueWithTimeInterval(schedule);
-        assertEquals("Cron expression with time interval: different", "0 55 13 3 2 4/7 2016", expression);
+        assertEquals("Cron expression with time interval: different", "0 55 13 3/7 2 ? 2016", expression);
 
         log.info("Cron expression with time interval: {}", expression);
     }
@@ -118,7 +118,7 @@ public class CronExpressionTest {
         schedule.setRecurrentTimeUnits(recurrentTimeUnitHashSet);
 
         String expression = cronExpressionService.buildCronExpressionForRecurrentTrueWithRecurrentTimeUnit(schedule);
-        assertEquals("Cron expression with time interval: different", "12,14 55 2 13 2 4 *", expression);
+        assertEquals("Cron expression with time interval: different", "12,14 55 2 13 2 ? *", expression);
 
         log.info("Cron expression with recurrent time unit: {}", expression);
     }
@@ -171,7 +171,7 @@ public class CronExpressionTest {
         schedule.setRecurrentTimeUnits(recurrentTimeUnitHashSet);
 
         String expression = cronExpressionService.buildCronExpressionForRecurrentTrueWithRecurrentTimeUnit(schedule);
-        assertEquals("Cron expression with time interval: different", "0 55 * * * 7 *", expression);
+        assertEquals("Cron expression with time interval: different", "0 55 * ? * 7 *", expression);
 
         log.info("Cron expression with recurrent time unit: {}", expression);
     }
@@ -297,7 +297,7 @@ public class CronExpressionTest {
         schedule.setRecurrentTimeUnits(recurrentTimeUnitHashSet);
 
         String expression = cronExpressionService.buildCronExpressionForRecurrentTrueWithRecurrentTimeUnit(schedule);
-        assertEquals("Cron expression with time interval: different", "15,30,55 55 15,30,55 15,30,55 2,4,6 3,5,7 *", expression);
+        assertEquals("Cron expression with time interval: different", "15,30,55 55 15,30,55 15,30,55 2,4,6 ? *", expression);
 
         log.info("Cron expression with recurrent time unit: {}", expression);
     }
