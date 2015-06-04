@@ -5,7 +5,6 @@ import org.json.JSONObject;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.springframework.stereotype.Component;
 import ro.teamnet.scheduler.constants.QuartzSchedulingConstants;
 import ro.teamnet.scheduler.domain.ScheduledJobExecution;
 import ro.teamnet.scheduler.service.ScheduledJobExecutionService;
@@ -16,7 +15,6 @@ import javax.inject.Inject;
 /**
  * Created by Oana.Mihai on 6/3/2015.
  */
-@Component
 public abstract class AppJob implements Job {
 
     private String options;
