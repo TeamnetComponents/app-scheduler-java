@@ -1,5 +1,7 @@
 package ro.teamnet.scheduler.job;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.joda.time.DateTime;
 import org.json.JSONObject;
 import org.quartz.Job;
@@ -11,6 +13,9 @@ import ro.teamnet.scheduler.service.ScheduledJobExecutionService;
 import ro.teamnet.scheduler.service.ScheduledJobService;
 
 import javax.inject.Inject;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Oana.Mihai on 6/3/2015.
@@ -18,6 +23,7 @@ import javax.inject.Inject;
 public abstract class AppJob implements Job {
 
     private String options;
+    private Map<Integer, String> taskOptions;
     private Long scheduledJobId;
 
     @Inject
@@ -30,6 +36,7 @@ public abstract class AppJob implements Job {
     @Override
     public final void execute(JobExecutionContext context) throws JobExecutionException {
         options = context.getMergedJobDataMap().getString(QuartzSchedulingConstants.JOB_OPTIONS);
+        readTaskOptions();
         scheduledJobId = context.getMergedJobDataMap().getLong(QuartzSchedulingConstants.JOB_ID);
 
         ScheduledJobExecution execution = saveExecution(context);
@@ -66,4 +73,20 @@ public abstract class AppJob implements Job {
         return options;
     }
 
+    private void readTaskOptions() {
+        taskOptions = new HashMap<>();
+
+        //convert JSON string to Map
+        try {
+            taskOptions = new ObjectMapper().readValue(getOptions(),
+                    new TypeReference<HashMap<Integer, String>>() {
+                    });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Map<Integer, String> getTaskOptions() {
+        return taskOptions;
+    }
 }
