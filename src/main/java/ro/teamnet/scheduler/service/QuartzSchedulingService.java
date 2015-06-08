@@ -45,7 +45,7 @@ public class QuartzSchedulingService {
      * TODO: handle failing jobs
      */
     @Scheduled(fixedRate = JOB_SCHEDULING_INTERVAL)
-    private void setupScheduledJobs() throws SchedulerException, ClassNotFoundException {
+    private void setupScheduledJobs() throws SchedulerException {
         List<ScheduledJob> scheduledJobs = scheduledJobService.findAll();
         Set<JobKey> jobKeys = scheduler.getJobKeys(GroupMatcher.<JobKey>groupEquals(JOB_GROUP));
         log.info("Current jobs: " + jobKeys);
@@ -54,10 +54,14 @@ public class QuartzSchedulingService {
             log.info("Begin setup of job: " + scheduledJob);
             JobKey jobKey = new JobKey(scheduledJob.getJobName(), JOB_GROUP);
             Map<Integer, String> taskOptions = taskService.getTaskOptionsByQueuePosition(scheduledJob.getId());
-            if (!jobKeys.contains(jobKey)) {
-                createAndScheduleNewJob(scheduledJob, jobKey, taskOptions);
-            } else {
-                updateAndScheduleExistingJob(scheduledJob, jobKey, taskOptions);
+            try {
+                if (!jobKeys.contains(jobKey)) {
+                    createAndScheduleNewJob(scheduledJob, jobKey, taskOptions);
+                } else {
+                    updateAndScheduleExistingJob(scheduledJob, jobKey, taskOptions);
+                }
+            } catch (ClassNotFoundException e) {
+                log.error("Clasa inexistenta: ", e);
             }
         }
     }
