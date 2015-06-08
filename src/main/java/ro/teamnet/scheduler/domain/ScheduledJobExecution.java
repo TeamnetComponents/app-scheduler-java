@@ -5,6 +5,7 @@ package ro.teamnet.scheduler.domain;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 import ro.teamnet.bootstrap.domain.util.CustomDateTimeDeserializer;
@@ -19,7 +20,7 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "T_SCHEDULEDJOBEXECUTION")
-public class ScheduledJobExecution implements Serializable {
+public class ScheduledJobExecution implements Serializable, Comparable<ScheduledJobExecution> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -129,5 +130,45 @@ public class ScheduledJobExecution implements Serializable {
 
 
     //other entity methods relations
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
+        ScheduledJobExecution scheduledJobExecution = (ScheduledJobExecution) o;
+
+        if (id != null ? !id.equals(scheduledJobExecution.id) : scheduledJobExecution.id!= null) return false;
+        if (lastFireTime != null ? !lastFireTime.equals(scheduledJobExecution.lastFireTime) : scheduledJobExecution.lastFireTime!= null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(id)
+                .append(lastFireTime)
+                .toHashCode();
+    }
+
+    @Override
+    public int compareTo(ScheduledJobExecution obj) {
+        if(this.getLastFireTime().compareTo(obj.getLastFireTime()) < 0) {
+            return 1;
+        } else if(this.getLastFireTime().compareTo(obj.getLastFireTime()) > 0) {
+            return -1;
+        } else {
+            if(this.getId() < obj.getId()) {
+                return 1;
+            } else if(this.getId() > obj.getId()) {
+                return -1;
+            } else {
+                return 0;
+            }
+        }
+    }
 }

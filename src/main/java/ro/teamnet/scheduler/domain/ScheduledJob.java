@@ -4,8 +4,10 @@ package ro.teamnet.scheduler.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.hibernate.annotations.SortNatural;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 import ro.teamnet.bootstrap.domain.util.CustomDateTimeDeserializer;
@@ -13,8 +15,7 @@ import ro.teamnet.bootstrap.domain.util.CustomDateTimeSerializer;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A ScheduledJob.
@@ -71,7 +72,8 @@ public class ScheduledJob implements Serializable {
 
     @OneToMany(mappedBy = "scheduledJob", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonManagedReference
-    private Set<ScheduledJobExecution> scheduledJobExecutions = new HashSet<>();
+    @SortNatural
+    private SortedSet<ScheduledJobExecution> scheduledJobExecutions = new TreeSet<>();
 
 
     //other entity fields relations
@@ -176,10 +178,14 @@ public class ScheduledJob implements Serializable {
         return scheduledJobExecutions;
     }
 
-    public void setScheduledJobExecutions(Set<ScheduledJobExecution> scheduledJobExecutions) {
+    public void setScheduledJobExecutions(SortedSet<ScheduledJobExecution> scheduledJobExecutions) {
         this.scheduledJobExecutions = scheduledJobExecutions;
     }
 
+    @JsonProperty
+    public ScheduledJobExecution getScheduledJobExecution() {
+        return scheduledJobExecutions.iterator().next();
+    }
 
     //other entity methods relations
 
@@ -207,5 +213,4 @@ public class ScheduledJob implements Serializable {
     public String getTriggerGroup(){
         return getJobName();
     }
-
 }
