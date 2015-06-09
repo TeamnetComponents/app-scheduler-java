@@ -184,7 +184,11 @@ public class ScheduledJob implements Serializable {
 
     @JsonProperty
     public ScheduledJobExecution getScheduledJobExecution() {
-        return scheduledJobExecutions.iterator().next();
+        if(scheduledJobExecutions.iterator().hasNext()) {
+            return scheduledJobExecutions.iterator().next();
+        } else {
+            return null;
+        }
     }
 
     //other entity methods relations
