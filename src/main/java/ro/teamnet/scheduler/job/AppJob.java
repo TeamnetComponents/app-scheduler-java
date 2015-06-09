@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.springframework.transaction.annotation.Transactional;
 import ro.teamnet.scheduler.constants.QuartzSchedulingConstants;
 import ro.teamnet.scheduler.domain.ScheduledJobExecution;
 import ro.teamnet.scheduler.service.ScheduledJobExecutionService;
@@ -40,21 +41,25 @@ public abstract class AppJob implements Job {
         scheduledJobId = context.getMergedJobDataMap().getLong(QuartzSchedulingConstants.JOB_ID);
 
         ScheduledJobExecution execution = saveExecution(context);
-
+        JobExecutionStatus status = execution.getStatus();
         try {
             run(context);
-            updateExecutionStatus(execution, JobExecutionStatus.FINISHED);
+            status = JobExecutionStatus.FINISHED;
         } catch (RuntimeException e) {
-            updateExecutionStatus(execution, JobExecutionStatus.FAILED);
-            throw new JobExecutionException(e);
+            status = JobExecutionStatus.FAILED;
+            e.printStackTrace();
+        } finally {
+            updateExecutionStatus(execution, status);
         }
     }
 
+    @Transactional
     private void updateExecutionStatus(ScheduledJobExecution execution, JobExecutionStatus status) {
         execution.setStatus(status);
         scheduledJobExecutionService.save(execution);
     }
 
+    @Transactional
     private ScheduledJobExecution saveExecution(JobExecutionContext context) {
         ScheduledJobExecution execution = new ScheduledJobExecution();
         execution.setActualFireTime(new DateTime(context.getFireTime()));
