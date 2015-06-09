@@ -66,6 +66,16 @@ public class QuartzSchedulingService {
         }
     }
 
+    private boolean isJobRunning(JobKey jobKey) throws SchedulerException {
+        for (JobExecutionContext jobCtx : scheduler.getCurrentlyExecutingJobs()) {
+            if (jobCtx.getJobDetail().getKey().equals(jobKey)) {
+                log.warn("the job is already running - do nothing");
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Creates and schedules a new job.
      *
@@ -94,6 +104,9 @@ public class QuartzSchedulingService {
      */
     private void updateAndScheduleExistingJob(ScheduledJob scheduledJob, JobKey jobKey, Map<Integer, String> taskOptions) throws SchedulerException, ClassNotFoundException {
         log.info("Update existing job : " + jobKey);
+        if (isJobRunning(jobKey)) {
+            return;
+        }
         if (scheduledJob.getDeleted()) {
             unscheduleJob(scheduledJob);
             scheduler.deleteJob(jobKey);
