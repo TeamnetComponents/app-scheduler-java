@@ -8,7 +8,6 @@ import ro.teamnet.scheduler.domain.RecurrentTimeUnit;
 import ro.teamnet.scheduler.domain.Schedule;
 import ro.teamnet.scheduler.domain.TimeUnit;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -21,6 +20,8 @@ public interface RecurrentTimeUnitRepository extends AppRepository<RecurrentTime
     @Query("select recurrentTimeUnit from RecurrentTimeUnit recurrentTimeUnit left join fetch recurrentTimeUnit.timeUnit left join fetch recurrentTimeUnit.schedule where recurrentTimeUnit.id =:id")
     RecurrentTimeUnit findOne(@Param("id") Long id);
 
-    RecurrentTimeUnit findByTimeUnitAndValueAndSchedule(TimeUnit timeUnit, Integer value, Schedule schedule);
+    RecurrentTimeUnit findByTimeUnitAndValue(TimeUnit timeUnit, Integer value);
     Set<RecurrentTimeUnit> findByScheduleAndTimeUnit(Schedule schedule, TimeUnit timeUnit);
+
+    Set<RecurrentTimeUnit> findByScheduleId(Long id);
 }

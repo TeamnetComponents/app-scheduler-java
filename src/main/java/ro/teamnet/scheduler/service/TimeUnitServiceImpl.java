@@ -22,4 +22,9 @@ public class TimeUnitServiceImpl extends AbstractServiceImpl<TimeUnit, Long> imp
     public TimeUnitServiceImpl(TimeUnitRepository repository) {
         super(repository);
     }
+
+    @Override
+    public TimeUnit findByCode(String code) {
+        return timeUnitRepository.findByCode(code);
+    }
 }

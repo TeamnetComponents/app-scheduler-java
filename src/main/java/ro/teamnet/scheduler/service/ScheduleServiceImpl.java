@@ -8,11 +8,13 @@ import ro.teamnet.bootstrap.extend.AppPage;
 import ro.teamnet.bootstrap.extend.AppPageable;
 import ro.teamnet.bootstrap.extend.Filter;
 import ro.teamnet.bootstrap.service.AbstractServiceImpl;
+import ro.teamnet.scheduler.domain.RecurrentTimeUnit;
 import ro.teamnet.scheduler.domain.Schedule;
 import ro.teamnet.scheduler.repository.ScheduleRepository;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ScheduleServiceImpl extends AbstractServiceImpl<Schedule, Long> implements ScheduleService {
@@ -21,6 +23,9 @@ public class ScheduleServiceImpl extends AbstractServiceImpl<Schedule, Long> imp
 
     @Inject
     private ScheduleRepository scheduleRepository;
+
+    @Inject
+    private RecurrentTimeUnitService recurrentTimeUnitService;
 
     @Inject
     private CronExpressionService cronExpressionService;
@@ -62,7 +67,25 @@ public class ScheduleServiceImpl extends AbstractServiceImpl<Schedule, Long> imp
     @Override
     public Schedule save(Schedule schedule) {
         schedule.setCron(getCronExpression(schedule));
+        if (schedule.getId() != null) {
+            Set<RecurrentTimeUnit> byScheduleId = recurrentTimeUnitService.findByScheduleId(schedule.getId());
+            for (RecurrentTimeUnit oldRTU : byScheduleId) {
+                if (!isFoundOnSchedule(schedule, oldRTU)) {
+                    recurrentTimeUnitService.delete(oldRTU.getId());
+                }
+            }
+        }
+
         return super.save(schedule);
+    }
+
+    private boolean isFoundOnSchedule(Schedule schedule, RecurrentTimeUnit rtu) {
+        for (RecurrentTimeUnit newRTU : schedule.getRecurrentTimeUnits()) {
+            if (rtu.getId().equals(newRTU.getId())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private String getCronExpression(Schedule schedule) {

@@ -1,0 +1,15 @@
+spring:
+    profiles:
+        active: test-postgres
+
+    datasource:
+        dataSourceClassName: org.postgresql.ds.PGSimpleDataSource
+        url:  jdbc:postgresql://localhost:5432/poc
+        databaseName: poc
+        serverName: localhost
+        username: poc
+        password: poc
+        cachePrepStmts: true
+        prepStmtCacheSize: 250
+        prepStmtCacheSqlLimit: 2048
+        useServerPrepStmts: true
