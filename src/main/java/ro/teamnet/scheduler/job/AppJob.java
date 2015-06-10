@@ -45,7 +45,7 @@ public abstract class AppJob implements Job {
         try {
             run(context);
             status = JobExecutionStatus.FINISHED;
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             status = JobExecutionStatus.FAILED;
             e.printStackTrace();
         } finally {
