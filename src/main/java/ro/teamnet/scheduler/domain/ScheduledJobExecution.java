@@ -57,7 +57,7 @@ public class ScheduledJobExecution implements Serializable, Comparable<Scheduled
     @Enumerated(value = EnumType.STRING)
     private JobExecutionStatus status;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JsonBackReference
     private ScheduledJob scheduledJob;
 
@@ -157,18 +157,18 @@ public class ScheduledJobExecution implements Serializable, Comparable<Scheduled
 
     @Override
     public int compareTo(ScheduledJobExecution obj) {
-        if(this.getLastFireTime().compareTo(obj.getLastFireTime()) < 0) {
+        if (obj == null || obj.getId() == null) {
             return 1;
-        } else if(this.getLastFireTime().compareTo(obj.getLastFireTime()) > 0) {
-            return -1;
-        } else {
-            if(this.getId() < obj.getId()) {
-                return 1;
-            } else if(this.getId() > obj.getId()) {
-                return -1;
-            } else {
-                return 0;
-            }
         }
+
+        if (id == null) {
+            return -1;
+        }
+
+        if (this.getLastFireTime() == null || obj.getLastFireTime() == null) {
+            return obj.getId().compareTo(id);
+        }
+
+        return obj.getLastFireTime().compareTo(lastFireTime);
     }
 }

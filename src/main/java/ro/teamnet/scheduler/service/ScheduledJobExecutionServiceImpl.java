@@ -2,16 +2,15 @@
 package ro.teamnet.scheduler.service;
 
 
-import ro.teamnet.bootstrap.service.AbstractServiceImpl;
-import org.springframework.stereotype.Service;
-
-import ro.teamnet.scheduler.domain.ScheduledJobExecution;
-import ro.teamnet.scheduler.repository.ScheduledJobExecutionRepository;
-import org.springframework.transaction.annotation.Transactional;
-import javax.inject.Inject;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import ro.teamnet.bootstrap.service.AbstractServiceImpl;
+import ro.teamnet.scheduler.domain.ScheduledJobExecution;
+import ro.teamnet.scheduler.job.JobExecutionStatus;
+import ro.teamnet.scheduler.repository.ScheduledJobExecutionRepository;
+
+import javax.inject.Inject;
 
 @Service
 public class ScheduledJobExecutionServiceImpl extends AbstractServiceImpl<ScheduledJobExecution,Long> implements ScheduledJobExecutionService {
@@ -27,5 +26,16 @@ public class ScheduledJobExecutionServiceImpl extends AbstractServiceImpl<Schedu
     }
 
 
-
+    @Override
+    public void updateExecutionStatus(Long executionId, JobExecutionStatus status) {
+        if (status == null) {
+            return;
+        }
+        ScheduledJobExecution execution = findOne(executionId);
+        if (status.equals(execution.getStatus())) {
+            return;
+        }
+        execution.setStatus(status);
+        save(execution);
+    }
 }

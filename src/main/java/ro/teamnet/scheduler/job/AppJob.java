@@ -7,8 +7,8 @@ import org.json.JSONObject;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.springframework.transaction.annotation.Transactional;
 import ro.teamnet.scheduler.constants.QuartzSchedulingConstants;
+import ro.teamnet.scheduler.domain.ScheduledJob;
 import ro.teamnet.scheduler.domain.ScheduledJobExecution;
 import ro.teamnet.scheduler.service.ScheduledJobExecutionService;
 import ro.teamnet.scheduler.service.ScheduledJobService;
@@ -29,8 +29,6 @@ public abstract class AppJob implements Job {
 
     @Inject
     private ScheduledJobService scheduledJobService;
-
-
     @Inject
     private ScheduledJobExecutionService scheduledJobExecutionService;
 
@@ -39,9 +37,11 @@ public abstract class AppJob implements Job {
         options = context.getMergedJobDataMap().getString(QuartzSchedulingConstants.JOB_OPTIONS);
         readTaskOptions();
         scheduledJobId = context.getMergedJobDataMap().getLong(QuartzSchedulingConstants.JOB_ID);
+        ScheduledJob scheduledJob = scheduledJobService.findOne(scheduledJobId);
+        ScheduledJobExecution execution = createExecution(context, scheduledJob);
+        Long executionId = scheduledJobExecutionService.save(execution).getId();
 
-        ScheduledJobExecution execution = saveExecution(context);
-        JobExecutionStatus status = execution.getStatus();
+        JobExecutionStatus status = null;
         try {
             run(context);
             status = JobExecutionStatus.FINISHED;
@@ -49,18 +49,11 @@ public abstract class AppJob implements Job {
             status = JobExecutionStatus.FAILED;
             e.printStackTrace();
         } finally {
-            updateExecutionStatus(execution, status);
+            scheduledJobExecutionService.updateExecutionStatus(executionId, status);
         }
     }
 
-    @Transactional
-    private void updateExecutionStatus(ScheduledJobExecution execution, JobExecutionStatus status) {
-        execution.setStatus(status);
-        scheduledJobExecutionService.save(execution);
-    }
-
-    @Transactional
-    private ScheduledJobExecution saveExecution(JobExecutionContext context) {
+    private ScheduledJobExecution createExecution(JobExecutionContext context, ScheduledJob scheduledJob) {
         ScheduledJobExecution execution = new ScheduledJobExecution();
         execution.setActualFireTime(new DateTime(context.getFireTime()));
         execution.setScheduledFireTime(new DateTime(context.getScheduledFireTime()));
@@ -68,8 +61,8 @@ public abstract class AppJob implements Job {
         execution.setNextFireTime(new DateTime(context.getNextFireTime()));
         execution.setState(new JSONObject(context.getMergedJobDataMap()).toString());
         execution.setStatus(JobExecutionStatus.RUNNING);
-        execution.setScheduledJob(scheduledJobService.findOne(scheduledJobId));
-        return scheduledJobExecutionService.save(execution);
+        execution.setScheduledJob(scheduledJob);
+        return execution;
     }
 
     protected abstract void run(JobExecutionContext context);
