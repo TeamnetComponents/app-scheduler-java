@@ -26,49 +26,53 @@ public abstract class AppJob implements Job {
     private String options;
     private Map<Integer, String> taskOptions;
     private Long scheduledJobId;
+    private JobExecutionContext context;
+    private Long executionId;
 
     @Inject
     private ScheduledJobService scheduledJobService;
     @Inject
     private ScheduledJobExecutionService scheduledJobExecutionService;
 
+    /**
+     * @inheritDoc
+     * @param context
+     * @throws JobExecutionException
+     */
     @Override
     public final void execute(JobExecutionContext context) throws JobExecutionException {
-        options = context.getMergedJobDataMap().getString(QuartzSchedulingConstants.JOB_OPTIONS);
-        readTaskOptions();
-        scheduledJobId = context.getMergedJobDataMap().getLong(QuartzSchedulingConstants.JOB_ID);
+        this.context = context;
+        readContextData();
         ScheduledJob scheduledJob = scheduledJobService.findOne(scheduledJobId);
-        ScheduledJobExecution execution = createExecution(context, scheduledJob);
-        Long executionId = scheduledJobExecutionService.save(execution).getId();
+        ScheduledJobExecution execution = createExecution(scheduledJob);
+        executionId = scheduledJobExecutionService.save(execution).getId();
 
         JobExecutionStatus status = null;
         try {
-            run(context);
-            status = JobExecutionStatus.FINISHED;
+            status =  run();
         } catch (Exception e) {
             status = JobExecutionStatus.FAILED;
             e.printStackTrace();
+            throw new JobExecutionException(e);
         } finally {
-            scheduledJobExecutionService.updateExecutionStatus(executionId, status);
+            updateExecutionStatus(status);
         }
     }
 
-    private ScheduledJobExecution createExecution(JobExecutionContext context, ScheduledJob scheduledJob) {
-        ScheduledJobExecution execution = new ScheduledJobExecution();
-        execution.setActualFireTime(new DateTime(context.getFireTime()));
-        execution.setScheduledFireTime(new DateTime(context.getScheduledFireTime()));
-        execution.setLastFireTime(new DateTime(context.getPreviousFireTime()));
-        execution.setNextFireTime(new DateTime(context.getNextFireTime()));
-        execution.setState(new JSONObject(context.getMergedJobDataMap()).toString());
-        execution.setStatus(JobExecutionStatus.RUNNING);
-        execution.setScheduledJob(scheduledJob);
-        return execution;
+    protected void updateExecutionStatus(JobExecutionStatus status) {
+        scheduledJobExecutionService.updateExecutionStatus(executionId, status);
     }
 
-    protected abstract void run(JobExecutionContext context);
+    /**
+     *
+     * @return a post-run status
+     */
+    protected abstract JobExecutionStatus run();
 
-    public String getOptions() {
-        return options;
+    private void readContextData() {
+        options = context.getMergedJobDataMap().getString(QuartzSchedulingConstants.JOB_OPTIONS);
+        readTaskOptions();
+        scheduledJobId = context.getMergedJobDataMap().getLong(QuartzSchedulingConstants.JOB_ID);
     }
 
     private void readTaskOptions() {
@@ -76,15 +80,34 @@ public abstract class AppJob implements Job {
 
         //convert JSON string to Map
         try {
-            taskOptions = new ObjectMapper().readValue(getOptions(),
-                    new TypeReference<HashMap<Integer, String>>() {
-                    });
+            taskOptions = new ObjectMapper().readValue(getOptions(), new TypeReference<HashMap<Integer, String>>() {});
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    private ScheduledJobExecution createExecution(ScheduledJob scheduledJob) {
+        ScheduledJobExecution execution = new ScheduledJobExecution();
+        execution.setActualFireTime(new DateTime(context.getFireTime()));
+        execution.setScheduledFireTime(new DateTime(context.getScheduledFireTime()));
+        execution.setLastFireTime(new DateTime(context.getPreviousFireTime()));
+        execution.setNextFireTime(new DateTime(context.getNextFireTime()));
+        execution.setState(new JSONObject(context.getMergedJobDataMap()).toString());
+        execution.setStatus(JobExecutionStatus.WAITING);
+        execution.setScheduledJob(scheduledJob);
+        return execution;
+    }
+
+
+    public String getOptions() {
+        return options;
+    }
+
     public Map<Integer, String> getTaskOptions() {
         return taskOptions;
+    }
+
+    public JobExecutionContext getContext() {
+        return context;
     }
 }
