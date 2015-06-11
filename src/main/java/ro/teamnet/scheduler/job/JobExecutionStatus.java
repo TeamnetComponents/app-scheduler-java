@@ -7,6 +7,7 @@ public enum JobExecutionStatus {
     WAITING("Waiting"),
     RUNNING("Running"),
     FINISHED("Finished"),
+    FINISHED_WITH_ERRORS("Finished (with errors)"),
     FAILED("Failed"),
     CANCELLED("Cancelled");
 
@@ -16,7 +17,7 @@ public enum JobExecutionStatus {
         this.statusName = statusName;
     }
 
-    public JobExecutionStatus findByName(String statusName) {
+    public static JobExecutionStatus findByName(String statusName) {
         for (JobExecutionStatus status : values()) {
             if (status.statusName.equals(statusName)){
                 return status;
