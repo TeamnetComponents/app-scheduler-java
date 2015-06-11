@@ -38,7 +38,7 @@ public class ScheduleServiceImpl extends AbstractServiceImpl<Schedule, Long> imp
 
     @Override
     public List<Schedule> findByScheduledJobId(Long scheduledJobId) {
-        return scheduleRepository.findByDeletedFalseAndScheduledJobId(scheduledJobId);
+        return scheduleRepository.findByScheduledJobId(scheduledJobId);
     }
 
     /**

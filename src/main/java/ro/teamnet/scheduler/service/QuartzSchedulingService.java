@@ -40,36 +40,70 @@ public class QuartzSchedulingService {
     private TaskService taskService;
 
     /**
-     * Scans the db for jobs and schedules them.
-     * TODO: handle exceptions
-     * TODO: handle failing jobs
+     * Scans the database for jobs and schedules them at a fixed interval.
      */
-    @Scheduled(fixedRate = JOB_SCHEDULING_INTERVAL)
-    private void setupScheduledJobs() throws SchedulerException {
-        List<ScheduledJob> scheduledJobs = scheduledJobService.findAll();
-        Set<JobKey> jobKeys = scheduler.getJobKeys(GroupMatcher.<JobKey>groupEquals(JOB_GROUP));
-        log.info("Current jobs: " + jobKeys);
-
+    @Scheduled(fixedDelay = JOB_SCHEDULING_INTERVAL)
+    private void setupScheduledJobs() {
+        List<ScheduledJob> scheduledJobs = scheduledJobService.findAllWithDeleted();
         for (ScheduledJob scheduledJob : scheduledJobs) {
-            log.info("Begin setup of job: " + scheduledJob);
-            JobKey jobKey = new JobKey(scheduledJob.getJobName(), JOB_GROUP);
-            Map<Integer, String> taskOptions = taskService.getTaskOptionsByQueuePosition(scheduledJob.getId());
-            try {
-                if (!jobKeys.contains(jobKey)) {
-                    createAndScheduleNewJob(scheduledJob, jobKey, taskOptions);
-                } else {
-                    updateAndScheduleExistingJob(scheduledJob, jobKey, taskOptions);
-                }
-            } catch (ClassNotFoundException e) {
-                log.error("Clasa inexistenta: ", e);
+            setupJob(scheduledJob);
+        }
+        // TODO: handle exceptions
+        // TODO: handle failing jobs
+    }
+
+    /**
+     * Schedules the given job.
+     *
+     * @param scheduledJob
+     */
+    public void setupJob(ScheduledJob scheduledJob) {
+        log.info("Begin setup of job: " + scheduledJob);
+        JobKey jobKey = new JobKey(scheduledJob.getJobName(), JOB_GROUP);
+        try {
+            scheduler.pauseJob(jobKey);
+            if (isJobRunning(jobKey)) {
+                log.warn("A job with key " + jobKey + " is already running - do nothing");
+                scheduler.resumeJob(jobKey);
+                return;
             }
+            Map<Integer, String> taskOptions = taskService.getTaskOptionsByQueuePosition(scheduledJob.getId());
+
+            if (!getJobKeys().contains(jobKey)) {
+                createAndScheduleNewJob(scheduledJob, jobKey, taskOptions);
+            } else {
+                updateAndScheduleExistingJob(scheduledJob, jobKey, taskOptions);
+            }
+            scheduler.resumeJob(jobKey);
+        } catch (SchedulerException e) {
+            log.error("Scheduler encountered an exception: ", e);
+        } catch (ClassNotFoundException e) {
+            log.error("Clasa job-ului nu a fost gasita: ", e);
         }
     }
 
+    /**
+     * Retrieves all job keys registered by the scheduler.
+     *
+     * @return a set of job keys
+     * @throws SchedulerException
+     */
+    private Set<JobKey> getJobKeys() throws SchedulerException {
+        Set<JobKey> currentJobKeys = scheduler.getJobKeys(GroupMatcher.<JobKey>groupEquals(JOB_GROUP));
+        log.info("Current jobs: " + currentJobKeys);
+        return currentJobKeys;
+    }
+
+    /**
+     * Checks if a job with the given key is currently running on the scheduler.
+     *
+     * @param jobKey the job key
+     * @return {@code true} if a job with the given key is currently running on the scheduler.
+     * @throws SchedulerException
+     */
     private boolean isJobRunning(JobKey jobKey) throws SchedulerException {
         for (JobExecutionContext jobCtx : scheduler.getCurrentlyExecutingJobs()) {
             if (jobCtx.getJobDetail().getKey().equals(jobKey)) {
-                log.warn("the job is already running - do nothing");
                 return true;
             }
         }
@@ -87,7 +121,7 @@ public class QuartzSchedulingService {
      */
     private void createAndScheduleNewJob(ScheduledJob scheduledJob, JobKey jobKey, Map<Integer, String> taskOptions) throws ClassNotFoundException, SchedulerException {
         if (!scheduledJob.getDeleted()) {
-            log.info("Create new job : " + jobKey);
+            log.info("Create a new job with key : " + jobKey);
             createOrUpdateJob(scheduledJob, jobKey, taskOptions);
             scheduleJob(scheduledJob, jobKey);
         }
@@ -104,16 +138,15 @@ public class QuartzSchedulingService {
      */
     private void updateAndScheduleExistingJob(ScheduledJob scheduledJob, JobKey jobKey, Map<Integer, String> taskOptions) throws SchedulerException, ClassNotFoundException {
         log.info("Update existing job : " + jobKey);
-        if (isJobRunning(jobKey)) {
-            return;
-        }
         if (scheduledJob.getDeleted()) {
+            log.info("Job will be deleted.");
             unscheduleJob(scheduledJob);
             scheduler.deleteJob(jobKey);
             return;
         }
 
         if (jobVersionChanged(scheduledJob, jobKey)) {
+            log.info("Job version has changed.");
             unscheduleJob(scheduledJob);
             createOrUpdateJob(scheduledJob, jobKey, taskOptions);
         }
