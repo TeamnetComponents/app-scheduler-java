@@ -219,7 +219,6 @@ public class ScheduleResourceTest {
     }
 
     @Test
-    @Transactional
     public void updateSchedule() throws Exception {
         // Initialize the database
         Schedule schedule = scheduleRepository.saveAndFlush(this.schedule);
@@ -251,15 +250,15 @@ public class ScheduleResourceTest {
         assertThat(testSchedule.getRepetitions()).isEqualTo(UPDATED_REPETITIONS);
         assertThat(testSchedule.getVersion()).isEqualTo(UPDATED_VERSION);
         assertThat(testSchedule.getDeleted()).isEqualTo(UPDATED_DELETED);
+
+        scheduleRepository.delete(testSchedule);
     }
 
     @Test
-    @Transactional
     public void updateScheduleWithRecurrentTimeUnits() throws Exception {
         // Initialize the database
-        Schedule schedule = this.schedule;
         add3RecurrentTimeUnits(schedule);
-        schedule = scheduleRepository.saveAndFlush(schedule);
+        Schedule schedule = scheduleRepository.saveAndFlush(this.schedule);
         assertThat(schedule.getRecurrentTimeUnits().size()).isEqualTo(3);
         String initialCron = schedule.getCron();
 
@@ -298,6 +297,8 @@ public class ScheduleResourceTest {
         assertThat(testSchedule.getVersion()).isEqualTo(UPDATED_VERSION);
         assertThat(testSchedule.getDeleted()).isEqualTo(UPDATED_DELETED);
         assertThat(testSchedule.getRecurrentTimeUnits().size()).isEqualTo(2);
+
+        scheduleRepository.delete(testSchedule);
     }
 
     @Test

@@ -23,7 +23,7 @@ public class RecurrentTimeUnit implements Serializable {
     @ManyToOne
     private TimeUnit timeUnit;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JsonBackReference
     private Schedule schedule;
 

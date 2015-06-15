@@ -72,7 +72,7 @@ public class Schedule implements Serializable {
     @ManyToOne
     private TimeInterval timeInterval;
 
-    @OneToMany(mappedBy = "schedule", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "schedule", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private Set<RecurrentTimeUnit> recurrentTimeUnits = new HashSet<>();
 

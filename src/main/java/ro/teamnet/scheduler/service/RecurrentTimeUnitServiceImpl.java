@@ -6,11 +6,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ro.teamnet.bootstrap.service.AbstractServiceImpl;
 import ro.teamnet.scheduler.domain.RecurrentTimeUnit;
-import ro.teamnet.scheduler.domain.TimeUnit;
 import ro.teamnet.scheduler.repository.RecurrentTimeUnitRepository;
 
 import javax.inject.Inject;
-import java.util.Set;
 
 @Service
 public class RecurrentTimeUnitServiceImpl extends AbstractServiceImpl<RecurrentTimeUnit, Long> implements RecurrentTimeUnitService {
@@ -21,22 +19,12 @@ public class RecurrentTimeUnitServiceImpl extends AbstractServiceImpl<RecurrentT
     private RecurrentTimeUnitRepository recurrentTimeUnitRepository;
 
     @Inject
-    private TimeUnitService timeUnitService;
-
-    @Inject
     public RecurrentTimeUnitServiceImpl(RecurrentTimeUnitRepository repository) {
         super(repository);
     }
 
     @Override
-    public RecurrentTimeUnit findByCodeOfTimeUnitAndValue(String code, Integer value) {
-        TimeUnit timeUnit = timeUnitService.findByCode(code);
-        return recurrentTimeUnitRepository.findByTimeUnitAndValue(timeUnit, value);
-    }
-
-    @Override
-    public Set<RecurrentTimeUnit> findByScheduleId(Long id) {
-        return recurrentTimeUnitRepository.findByScheduleId(id);
-
+    public Long deleteByScheduleId(Long id) {
+        return recurrentTimeUnitRepository.deleteByScheduleId(id);
     }
 }
