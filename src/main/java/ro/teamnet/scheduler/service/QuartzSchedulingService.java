@@ -218,7 +218,9 @@ public class QuartzSchedulingService {
      */
     private List<TriggerKey> getTriggerKeysForScheduledJob(ScheduledJob scheduledJob) throws SchedulerException {
         GroupMatcher<TriggerKey> matcher = GroupMatcher.<TriggerKey>triggerGroupEquals(scheduledJob.getTriggerGroup());
-        return new ArrayList<>(scheduler.getTriggerKeys(matcher));
+        ArrayList<TriggerKey> triggerKeys = new ArrayList<>(scheduler.getTriggerKeys(matcher));
+        log.info("Job " + scheduledJob.getJobName() + " has the following triggers: " + triggerKeys);
+        return triggerKeys;
     }
 
     /**
@@ -259,7 +261,8 @@ public class QuartzSchedulingService {
         TriggerBuilder<CronTrigger> triggerBuilder = TriggerBuilder.newTrigger()
                 .forJob(jobKey)
                 .withIdentity(triggerKey)
-                .withSchedule(CronScheduleBuilder.cronSchedule(schedule.getCron()))
+                .withSchedule(CronScheduleBuilder.cronSchedule(schedule.getCron())
+                        .withMisfireHandlingInstructionDoNothing())
                 .startAt(schedule.getStartTime().toDate())
                 .usingJobData(TRIGGER_ID, schedule.getId())
                 .usingJobData(TRIGGER_VERSION, schedule.getVersion());
