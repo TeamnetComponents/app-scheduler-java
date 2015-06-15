@@ -186,8 +186,6 @@ public class RecurrentTimeUnitTest {
 
         Schedule scheduleA = getSchedule();
         test(scheduleA);
-
-
     }
     @Transactional
     @Ignore
