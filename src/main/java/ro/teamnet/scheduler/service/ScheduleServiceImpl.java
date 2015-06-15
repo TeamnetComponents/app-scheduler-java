@@ -4,6 +4,7 @@ package ro.teamnet.scheduler.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ro.teamnet.bootstrap.extend.AppPage;
 import ro.teamnet.bootstrap.extend.AppPageable;
 import ro.teamnet.bootstrap.extend.Filter;
@@ -63,6 +64,7 @@ public class ScheduleServiceImpl extends AbstractServiceImpl<Schedule, Long> imp
     }
 
     @Override
+    @Transactional
     public Schedule save(Schedule schedule) {
         if (schedule.getId() != null) {
             recurrentTimeUnitService.deleteByScheduleId(schedule.getId());
