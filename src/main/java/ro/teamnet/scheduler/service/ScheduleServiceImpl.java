@@ -49,7 +49,7 @@ public class ScheduleServiceImpl extends AbstractServiceImpl<Schedule, Long> imp
     public void delete(Long id) {
         Schedule schedule = findOne(id);
         schedule.setDeleted(true);
-        save(schedule);
+        super.save(schedule);
     }
 
     @Override
