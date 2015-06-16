@@ -12,6 +12,7 @@ import ro.teamnet.bootstrap.config.metrics.JHipsterHealthIndicatorConfiguration;
 import ro.teamnet.bootstrap.config.metrics.JavaMailHealthIndicator;
 import ro.teamnet.bootstrap.service.MailService;
 import ro.teamnet.scheduler.config.QuartzConfiguration;
+import ro.teamnet.scheduler.service.JobSchedulingServiceImpl;
 import ro.teamnet.scheduler.service.QuartzSchedulingService;
 
 /**
@@ -22,7 +23,7 @@ import ro.teamnet.scheduler.service.QuartzSchedulingService;
         basePackages = {"ro.teamnet.bootstrap", "ro.teamnet"},
         excludeFilters = @ComponentScan.Filter(
                 type = FilterType.ASSIGNABLE_TYPE,
-                value = {QuartzConfiguration.class, QuartzSchedulingService.class,
+                value = {QuartzConfiguration.class, QuartzSchedulingService.class, JobSchedulingServiceImpl.class,
                         MetricsConfiguration.class, SwaggerConfiguration.class, WebConfigurer.class,
                         ThymeleafConfiguration.class, MailConfiguration.class, MailService.class, JavaMailHealthIndicator.class,
                         CacheConfiguration.class, AsyncConfiguration.class, LoggingAspectConfiguration.class,
