@@ -57,7 +57,6 @@ public class SchedulerTestApplication {
     protected static void addDefaultProfile(SpringApplication app, SimpleCommandLinePropertySource source) {
         if (!source.containsProperty("spring.profiles.active")) {
             app.setAdditionalProfiles("test-scheduler");
-            app.setAdditionalProfiles("test-postgres");
         }
     }
 
