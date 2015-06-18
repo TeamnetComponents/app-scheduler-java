@@ -35,9 +35,7 @@ public abstract class AppJob implements Job {
     private ScheduledJobExecutionService scheduledJobExecutionService;
 
     /**
-     * @inheritDoc
-     * @param context
-     * @throws JobExecutionException
+     * {@inheritDoc}
      */
     @Override
     public final void execute(JobExecutionContext context) throws JobExecutionException {

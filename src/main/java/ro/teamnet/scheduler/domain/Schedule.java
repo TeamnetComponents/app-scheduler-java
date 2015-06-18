@@ -1,14 +1,14 @@
 package ro.teamnet.scheduler.domain;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 import ro.teamnet.bootstrap.domain.util.CustomDateTimeDeserializer;
 import ro.teamnet.bootstrap.domain.util.CustomDateTimeSerializer;
+import ro.teamnet.scheduler.constants.MisfirePolicy;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -68,6 +68,11 @@ public class Schedule implements Serializable {
 
     @Column(name = "deleted")
     private Boolean deleted;
+
+    @Column(name = "misfire_policy")
+    @Enumerated(value = EnumType.STRING)
+    @JsonProperty("misfire_policy")
+    private MisfirePolicy misfirePolicy;
 
     @ManyToOne
     private TimeInterval timeInterval;
@@ -168,6 +173,14 @@ public class Schedule implements Serializable {
 
     public void setDeleted(Boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public MisfirePolicy getMisfire() {
+        return misfirePolicy;
+    }
+
+    public void setMisfire(MisfirePolicy misfirePolicy) {
+        this.misfirePolicy = misfirePolicy;
     }
 
     public TimeInterval getTimeInterval() {
