@@ -47,6 +47,7 @@ public class ScheduleServiceImpl extends AbstractServiceImpl<Schedule, Long> imp
      */
     @Override
     public void delete(Long id) {
+        log.info("Performing logical delete of schedule with id: " + id);
         Schedule schedule = findOne(id);
         schedule.setDeleted(true);
         super.save(schedule);

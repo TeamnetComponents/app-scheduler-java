@@ -72,8 +72,7 @@ public class Schedule implements Serializable {
 
     @Column(name = "misfire_policy")
     @Enumerated(value = EnumType.STRING)
-    @JsonProperty("misfire_policy")
-    private MisfirePolicy misfirePolicy;
+    private MisfirePolicy misfirePolicy = MisfirePolicy.DO_NOTHING;
 
     @ManyToOne
     private TimeInterval timeInterval;
@@ -176,11 +175,11 @@ public class Schedule implements Serializable {
         this.deleted = deleted;
     }
 
-    public MisfirePolicy getMisfire() {
+    public MisfirePolicy getMisfirePolicy() {
         return misfirePolicy;
     }
 
-    public void setMisfire(MisfirePolicy misfirePolicy) {
+    public void setMisfirePolicy(MisfirePolicy misfirePolicy) {
         this.misfirePolicy = misfirePolicy;
     }
 

@@ -41,6 +41,7 @@ public class TaskServiceImpl extends AbstractServiceImpl<Task, Long> implements 
      */
     @Override
     public void delete(Long id) {
+        log.info("Performing logical delete of task with id: " + id);
         Task task = findOne(id);
         task.setDeleted(true);
         save(task);
@@ -69,6 +70,7 @@ public class TaskServiceImpl extends AbstractServiceImpl<Task, Long> implements 
 
     @Override
     public Task save(Task task) {
+        log.info("Saving task");
         return super.save(task);
     }
 }

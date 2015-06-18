@@ -34,6 +34,7 @@ public class ScheduledJobServiceImpl extends AbstractServiceImpl<ScheduledJob, L
      */
     @Override
     public void delete(Long id) {
+        log.info("Performing logical delete of scheduled job with id: " + id);
         ScheduledJob scheduledJob = findOne(id);
         scheduledJob.setDeleted(true);
         save(scheduledJob);
@@ -57,6 +58,7 @@ public class ScheduledJobServiceImpl extends AbstractServiceImpl<ScheduledJob, L
 
     @Override
     public ScheduledJob save(ScheduledJob scheduledJob) {
+        log.info("Saving scheduled job");
         return super.save(scheduledJob);
     }
 }

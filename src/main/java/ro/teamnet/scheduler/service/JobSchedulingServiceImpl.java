@@ -227,16 +227,16 @@ public class JobSchedulingServiceImpl implements JobSchedulingService {
         if (repetitions == null || repetitions <= 0) {
             return endDate;
         }
-
+        long repetitionCountdown = repetitions;
         Date nextValidTime = startDate;
 
         if (cronExpression.isSatisfiedBy(startDate)) {
-            repetitions--;
+            repetitionCountdown--;
         }
 
-        while (repetitions > 0) {
+        while (repetitionCountdown > 0) {
             nextValidTime = cronExpression.getNextValidTimeAfter(nextValidTime);
-            repetitions--;
+            repetitionCountdown--;
         }
 
         if (nextValidTime == null || (endDate != null && endDate.before(nextValidTime))) {
@@ -247,7 +247,11 @@ public class JobSchedulingServiceImpl implements JobSchedulingService {
     }
 
     private CronScheduleBuilder applyMisfireInstruction(CronScheduleBuilder scheduleBuilder, Schedule schedule) {
-        //TODO read MisfirePolicy from schedule and apply to scheduleBuilder
-        return scheduleBuilder.withMisfireHandlingInstructionDoNothing();
+        switch (schedule.getMisfirePolicy()){
+            case FIRE_ONCE: return scheduleBuilder.withMisfireHandlingInstructionFireAndProceed();
+            case FIRE_ALL: return scheduleBuilder.withMisfireHandlingInstructionIgnoreMisfires();
+            default:
+                return scheduleBuilder.withMisfireHandlingInstructionDoNothing();
+        }
     }
 }

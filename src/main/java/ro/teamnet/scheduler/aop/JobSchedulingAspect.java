@@ -17,7 +17,7 @@ public class JobSchedulingAspect {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Inject
-    JobSchedulingService jobSchedulingService;
+    private JobSchedulingService jobSchedulingService;
 
     @AfterReturning(pointcut = "execution(public * ro.teamnet.scheduler.service.ScheduledJobService+.save(..))",
             returning = "job")

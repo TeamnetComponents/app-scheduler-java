@@ -116,5 +116,20 @@
 
     </changeSet>
 
+    <changeSet id="20150616095912#1" author="teamnet">
+
+        <addColumn tableName="T_SCHEDULE">
+            <column name="misfire_policy" type="varchar(255)"/>
+        </addColumn>
+
+    </changeSet>
+
+    <changeSet id="20150616173600#1" author="oanam">
+        <addNotNullConstraint
+                tableName="T_SCHEDULE"
+                columnName="misfire_policy"
+                columnDataType="varchar(255)"
+                defaultNullValue="DO_NOTHING"/>
+    </changeSet>
 
 </databaseChangeLog>
