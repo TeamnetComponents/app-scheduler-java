@@ -3,6 +3,7 @@ package ro.teamnet.scheduler.service;
 import org.springframework.stereotype.Service;
 import ro.teamnet.scheduler.domain.Schedule;
 import ro.teamnet.scheduler.domain.ScheduledJob;
+import ro.teamnet.scheduler.domain.Task;
 
 /**
  * Created by Oana.Mihai on 6/16/2015.
@@ -10,28 +11,34 @@ import ro.teamnet.scheduler.domain.ScheduledJob;
 @Service
 public class JobSchedulingServiceMockImpl implements JobSchedulingService {
 
+
     @Override
-    public void createJob(ScheduledJob job) {
+    public void onScheduledJobSave(ScheduledJob job) {
 
     }
 
     @Override
-    public void updateJob(ScheduledJob job) {
+    public void onScheduledJobDelete(Long jobId) {
 
     }
 
     @Override
-    public void deleteJob(ScheduledJob job) {
+    public void onScheduleSave(Schedule schedule) {
 
     }
 
     @Override
-    public void addTrigger(Schedule schedule) {
+    public void onScheduleDelete(Long scheduleId) {
 
     }
 
     @Override
-    public void deleteTrigger(Schedule schedule) {
+    public void onTaskSave(Task task) {
+
+    }
+
+    @Override
+    public void onTaskDelete(Long taskId) {
 
     }
 }

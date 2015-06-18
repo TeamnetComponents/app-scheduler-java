@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.hibernate.annotations.SortNatural;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
+import org.quartz.JobKey;
 import ro.teamnet.bootstrap.domain.util.CustomDateTimeDeserializer;
 import ro.teamnet.bootstrap.domain.util.CustomDateTimeSerializer;
 
@@ -184,7 +185,7 @@ public class ScheduledJob implements Serializable {
 
     @JsonProperty
     public ScheduledJobExecution getScheduledJobExecution() {
-        if(scheduledJobExecutions.iterator().hasNext()) {
+        if (scheduledJobExecutions.iterator().hasNext()) {
             return scheduledJobExecutions.iterator().next();
         } else {
             return null;
@@ -194,7 +195,7 @@ public class ScheduledJob implements Serializable {
     //other entity methods relations
 
     @PrePersist
-    private void prePersist(){
+    private void prePersist() {
         DateTime currentTime = new DateTime();
         setCreated(currentTime);
         setLastUpdated(currentTime);
@@ -208,13 +209,19 @@ public class ScheduledJob implements Serializable {
 
     @Transient
     @JsonIgnore
-    public String getJobName(){
+    public String getJobGroup() {
         return "Job_" + id;
     }
 
     @Transient
     @JsonIgnore
-    public String getTriggerGroup(){
-        return getJobName();
+    public String getJobName() {
+        return "Job_" + id + "_V_" + version;
+    }
+
+    @Transient
+    @JsonIgnore
+    public JobKey getJobKey() {
+        return new JobKey(getJobName(), getJobGroup());
     }
 }

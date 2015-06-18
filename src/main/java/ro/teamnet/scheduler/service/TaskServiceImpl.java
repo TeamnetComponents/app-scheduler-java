@@ -66,4 +66,9 @@ public class TaskServiceImpl extends AbstractServiceImpl<Task, Long> implements 
         }
         return taskOptions;
     }
+
+    @Override
+    public Task save(Task task) {
+        return super.save(task);
+    }
 }

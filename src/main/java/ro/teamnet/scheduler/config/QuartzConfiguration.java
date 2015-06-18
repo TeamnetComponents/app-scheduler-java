@@ -48,7 +48,7 @@ public class QuartzConfiguration {
         quartzScheduler.setJobFactory(jobFactory);
 
         quartzScheduler.setSchedulerName("app-scheduler");
-        quartzScheduler.setOverwriteExistingJobs(true);
+        quartzScheduler.setOverwriteExistingJobs(false);
         quartzScheduler.setDataSource(dataSource);
         quartzScheduler.setTransactionManager(transactionManager);
         quartzScheduler.setQuartzProperties(getQuartzProperties());
