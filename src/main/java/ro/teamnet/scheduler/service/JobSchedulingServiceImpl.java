@@ -74,7 +74,6 @@ public class JobSchedulingServiceImpl implements JobSchedulingService {
             scheduler.unscheduleJobs(new ArrayList<TriggerKey>(triggerKeys));
             scheduleJob(jobKey, schedule);
         } catch (SchedulerException e) {
-            e.printStackTrace();
             log.error("Error on scheduling " + schedule.getTriggerKey(), e);
         }
     }
