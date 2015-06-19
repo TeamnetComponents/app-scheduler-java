@@ -2,6 +2,7 @@ package ro.teamnet.scheduler.domain;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import ro.teamnet.scheduler.constants.TimeUnitCode;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -20,7 +21,8 @@ public class TimeUnit implements Serializable {
     private Long id;
 
     @Column(name = "code")
-    private String code;
+    @Enumerated(value = EnumType.STRING)
+    private TimeUnitCode code;
 
     @Column(name = "name")
     private String name;
@@ -50,11 +52,11 @@ public class TimeUnit implements Serializable {
         this.id = id;
     }
 
-    public String getCode() {
+    public TimeUnitCode getCode() {
         return code;
     }
 
-    public void setCode(String code) {
+    public void setCode(TimeUnitCode code) {
         this.code = code;
     }
 

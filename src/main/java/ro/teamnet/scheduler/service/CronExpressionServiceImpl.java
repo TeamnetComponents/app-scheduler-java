@@ -2,6 +2,7 @@ package ro.teamnet.scheduler.service;
 
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Service;
+import ro.teamnet.scheduler.constants.TimeUnitCode;
 import ro.teamnet.scheduler.domain.RecurrentTimeUnit;
 import ro.teamnet.scheduler.domain.Schedule;
 import ro.teamnet.scheduler.domain.TimeInterval;
@@ -63,64 +64,64 @@ public class CronExpressionServiceImpl implements CronExpressionService {
     private StringBuilder createStringBuilderForRegularIntervals(DateTime startDate, TimeInterval timeInterval, TimeUnit timeUnit) {
         StringBuilder stringBuilder = new StringBuilder();
 
-        if (timeUnit.getCode().equals("SEC")) {
-            stringBuilder.append(startDate.getSecondOfMinute()).append("/")
+        if (timeUnit.getCode().equals(TimeUnitCode.SEC)) {
+            stringBuilder.append("*").append("/")
                     .append(timeInterval.getInterval()).append(" ")
                     .append("* * * * ? *");
         }
 
-        if (timeUnit.getCode().equals("MIN")) {
+        if (timeUnit.getCode().equals(TimeUnitCode.MIN)) {
             stringBuilder.append("0 ")
-                    .append(startDate.getMinuteOfHour()).append("/")
+                    .append("*").append("/")
                     .append(timeInterval.getInterval()).append(" ")
                     .append("* * * ? *");
         }
 
-        if (timeUnit.getCode().equals("H")) {
+        if (timeUnit.getCode().equals(TimeUnitCode.H)) {
             stringBuilder.append("0 ")
                     .append(startDate.getMinuteOfHour()).append(" ")
-                    .append(startDate.getHourOfDay()).append("/")
+                    .append("*").append("/")
                     .append(timeInterval.getInterval()).append(" ")
                     .append("* * ? *");
         }
 
-        if (timeUnit.getCode().equals("D")) {
+        if (timeUnit.getCode().equals(TimeUnitCode.D)) {
             stringBuilder.append("0 ")
                     .append(startDate.getMinuteOfHour()).append(" ")
                     .append(startDate.getHourOfDay()).append(" ")
-                    .append(startDate.getDayOfMonth()).append("/")
+                    .append("*").append("/")
                     .append(timeInterval.getInterval()).append(" ")
                     .append("* ? *");
         }
 
-        if (timeUnit.getCode().equals("MON")) {
+        if (timeUnit.getCode().equals(TimeUnitCode.MON)) {
             stringBuilder.append("0 ")
                     .append(startDate.getMinuteOfHour()).append(" ")
                     .append(startDate.getHourOfDay()).append(" ")
                     .append(startDate.getDayOfMonth()).append(" ")
-                    .append(startDate.getMonthOfYear()).append("/")
+                    .append("*").append("/")
                     .append(timeInterval.getInterval()).append(" ")
                     .append("? *");
         }
 
-        if(timeUnit.getCode().equals("W")) {
+        if(timeUnit.getCode().equals(TimeUnitCode.W)) {
             stringBuilder.append("0 ")
                     .append(startDate.getMinuteOfHour()).append(" ")
                     .append(startDate.getHourOfDay()).append(" ")
-                    .append(startDate.getDayOfMonth()).append("/")
+                    .append("*").append("/")
                     .append(timeInterval.getInterval() * 7).append(" ")
                     .append(startDate.getMonthOfYear()).append(" ")
                     .append("? *");
         }
 
-        if (timeUnit.getCode().equals("Y")) {
+        if (timeUnit.getCode().equals(TimeUnitCode.Y)) {
             stringBuilder.append("0 ")
                     .append(startDate.getMinuteOfHour()).append(" ")
                     .append(startDate.getHourOfDay()).append(" ")
                     .append(startDate.getDayOfMonth()).append(" ")
                     .append(startDate.getMonthOfYear()).append(" ")
                     .append("? ")
-                    .append(startDate.getYear())
+                    .append("*")
                     .append("/").append(timeInterval.getInterval());
         }
 
@@ -147,17 +148,17 @@ public class CronExpressionServiceImpl implements CronExpressionService {
      * @return the cron expression for a given schedule.
      */
     private String createStringBuilderForTimeUnit(Schedule schedule) {
-        List<String> codeOfTimeUnits = Arrays.asList("SEC", "MIN", "H", "D", "MON", "W", "Y");
+        TimeUnitCode[] codeOfTimeUnits = TimeUnitCode.values();
         Map<String, String> timeUnitIntervals = new HashMap<>();
         Set<RecurrentTimeUnit> recurrentTimeUnitSet = schedule.getRecurrentTimeUnits();
         StringBuilder cronExpressionForOneTimeUnit = new StringBuilder();
 
-        for (String codeOfTimeUnit : codeOfTimeUnits) {
+        for (TimeUnitCode codeOfTimeUnit : codeOfTimeUnits) {
             buildStringBuilderForEveryTimeUnits(recurrentTimeUnitSet, cronExpressionForOneTimeUnit, codeOfTimeUnit);
             if (cronExpressionForOneTimeUnit.length() != 0) {
                 cronExpressionForOneTimeUnit.deleteCharAt(cronExpressionForOneTimeUnit.length() - 1);
             }
-            timeUnitIntervals.put(codeOfTimeUnit, cronExpressionForOneTimeUnit.toString());
+            timeUnitIntervals.put(String.valueOf(codeOfTimeUnit), cronExpressionForOneTimeUnit.toString());
             cronExpressionForOneTimeUnit.setLength(0);
         }
 
@@ -171,7 +172,7 @@ public class CronExpressionServiceImpl implements CronExpressionService {
      * @param stringBuilder to build the cron expression for the given time unit
      * @param codeOfTimeUnit the current value of the time unit
      */
-    private void buildStringBuilderForEveryTimeUnits(Set<RecurrentTimeUnit> recurrentTimeUnitSet, StringBuilder stringBuilder, String codeOfTimeUnit) {
+    private void buildStringBuilderForEveryTimeUnits(Set<RecurrentTimeUnit> recurrentTimeUnitSet, StringBuilder stringBuilder, TimeUnitCode codeOfTimeUnit) {
         StringBuilder sb = new StringBuilder();
 
         for (RecurrentTimeUnit recurrentTimeUnit : recurrentTimeUnitSet) {
@@ -182,7 +183,7 @@ public class CronExpressionServiceImpl implements CronExpressionService {
                 if (recurrentTimeUnit.getValue() == -1) {
                     sb.append("* ");
                 } else {
-                    if(codeOfTimeUnit.equals("W")) {
+                    if(codeOfTimeUnit.equals(TimeUnitCode.W)) {
                         int weekDayCode = getCronWeekDayCode(recurrentTimeUnit.getValue());
                         sb.append(weekDayCode).append(",");
                     } else {
@@ -205,28 +206,28 @@ public class CronExpressionServiceImpl implements CronExpressionService {
     private String createCronExpressionForAUnitTime(Map<String, String> timeUnitIntervals) {
         StringBuilder stringBuilder = new StringBuilder();
 
-        String dayOfWeek = timeUnitIntervals.get("W");
-        String dayOfMonth = timeUnitIntervals.get("D");
+        String dayOfWeek = timeUnitIntervals.get(String.valueOf(TimeUnitCode.W));
+        String dayOfMonth = timeUnitIntervals.get(String.valueOf(TimeUnitCode.D));
         if (dayOfMonth.equals("*") || dayOfMonth.length() == 0) {
             if (dayOfWeek.equals("*") || dayOfWeek.length() == 0) {
-                timeUnitIntervals.put("W", "?");
+                timeUnitIntervals.put(String.valueOf(TimeUnitCode.W), "?");
             } else {
-                timeUnitIntervals.put("D", "?");
+                timeUnitIntervals.put(String.valueOf(TimeUnitCode.D), "?");
             }
         } else {
-            timeUnitIntervals.put("W", "?");
+            timeUnitIntervals.put(String.valueOf(TimeUnitCode.W), "?");
         }
 
-        List<String> codeOfTimeUnits = Arrays.asList("SEC", "MIN", "H", "D", "MON", "W", "Y");
-        for (String codeOfTimeUnit : codeOfTimeUnits) {
-            if (timeUnitIntervals.containsKey(codeOfTimeUnit)) {
-                if (timeUnitIntervals.get(codeOfTimeUnit).length() != 0) {
-                    stringBuilder.append(timeUnitIntervals.get(codeOfTimeUnit)).append(" ");
+        TimeUnitCode[] codeOfTimeUnits = TimeUnitCode.values();
+        for (TimeUnitCode codeOfTimeUnit : codeOfTimeUnits) {
+            if (timeUnitIntervals.containsKey(String.valueOf(codeOfTimeUnit))) {
+                if (timeUnitIntervals.get(String.valueOf(codeOfTimeUnit)).length() != 0) {
+                    stringBuilder.append(timeUnitIntervals.get(String.valueOf(codeOfTimeUnit))).append(" ");
                 } else {
-                    buildFinalCronExpression(stringBuilder, codeOfTimeUnit);
+                    buildFinalCronExpression(stringBuilder, String.valueOf(codeOfTimeUnit));
                 }
             } else {
-                buildFinalCronExpression(stringBuilder, codeOfTimeUnit);
+                buildFinalCronExpression(stringBuilder, String.valueOf(codeOfTimeUnit));
             }
         }
         stringBuilder.deleteCharAt(stringBuilder.length() - 1);
@@ -242,9 +243,9 @@ public class CronExpressionServiceImpl implements CronExpressionService {
      * @param codeOfTimeUnit the current time unit
      */
     private void buildFinalCronExpression(StringBuilder stringBuilder, String codeOfTimeUnit) {
-        if (codeOfTimeUnit.equals("SEC")) {
+        if (codeOfTimeUnit.equals(String.valueOf(TimeUnitCode.SEC))) {
             stringBuilder.append("0 ");
-        } else if (codeOfTimeUnit.equals("MIN")) {
+        } else if (codeOfTimeUnit.equals(String.valueOf(TimeUnitCode.MIN))) {
             stringBuilder.append("0 ");
         } else {
             stringBuilder.append("* ");
@@ -261,19 +262,19 @@ public class CronExpressionServiceImpl implements CronExpressionService {
      * @param codeOfTimeUnit the current time unit
      */
     private void buildFinalCronExpressionWithoutGettingValueMinusOne(Schedule schedule, StringBuilder stringBuilder, String codeOfTimeUnit) {
-        if (codeOfTimeUnit.equals("SEC")) {
+        if (codeOfTimeUnit.equals(String.valueOf(TimeUnitCode.SEC))) {
             stringBuilder.append("0 ");
-        } else if (codeOfTimeUnit.equals("MIN")) {
+        } else if (codeOfTimeUnit.equals(String.valueOf(TimeUnitCode.MIN))) {
             stringBuilder.append(schedule.getStartTime().getMinuteOfHour()).append(" ");
-        } else if(codeOfTimeUnit.equals("H")) {
+        } else if(codeOfTimeUnit.equals(String.valueOf(TimeUnitCode.H))) {
             stringBuilder.append(schedule.getStartTime().getHourOfDay()).append(" ");
-        } else  if(codeOfTimeUnit.equals("D")) {
+        } else  if(codeOfTimeUnit.equals(String.valueOf(TimeUnitCode.D))) {
             stringBuilder.append(schedule.getStartTime().getDayOfMonth()).append(" ");
-        } else if(codeOfTimeUnit.equals("MON")) {
+        } else if(codeOfTimeUnit.equals(String.valueOf(TimeUnitCode.MON))) {
             stringBuilder.append(schedule.getStartTime().getMonthOfYear()).append(" ");
-        } else if(codeOfTimeUnit.equals("W")) {
+        } else if(codeOfTimeUnit.equals(String.valueOf(TimeUnitCode.W))) {
             stringBuilder.append(schedule.getStartTime().getDayOfWeek()).append(" ");
-        } else if(codeOfTimeUnit.equals("Y")) {
+        } else if(codeOfTimeUnit.equals(String.valueOf(TimeUnitCode.Y))) {
             stringBuilder.append(schedule.getStartTime().getYear());
         } else {
             stringBuilder.append("* ");

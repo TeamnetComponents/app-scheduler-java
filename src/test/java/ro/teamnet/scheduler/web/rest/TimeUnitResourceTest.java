@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import ro.teamnet.SchedulerTestApplication;
+import ro.teamnet.scheduler.constants.TimeUnitCode;
 import ro.teamnet.scheduler.domain.TimeUnit;
 import ro.teamnet.scheduler.repository.TimeUnitRepository;
 import ro.teamnet.scheduler.service.TimeUnitService;
@@ -43,8 +44,8 @@ public class TimeUnitResourceTest {
 
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss");
 
-    private static final String DEFAULT_CODE = "SAMPLE_TEXT";
-    private static final String UPDATED_CODE = "UPDATED_TEXT";
+    private static final TimeUnitCode DEFAULT_CODE = TimeUnitCode.SEC;
+    private static final TimeUnitCode UPDATED_CODE = TimeUnitCode.MIN;
     private static final String DEFAULT_NAME = "SAMPLE_TEXT";
     private static final String UPDATED_NAME = "UPDATED_TEXT";
     private static final String DEFAULT_DESCRIPTION = "SAMPLE_TEXT";

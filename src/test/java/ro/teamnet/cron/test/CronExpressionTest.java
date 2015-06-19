@@ -13,11 +13,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 import ro.teamnet.SchedulerTestApplication;
+import ro.teamnet.scheduler.constants.TimeUnitCode;
 import ro.teamnet.scheduler.domain.RecurrentTimeUnit;
 import ro.teamnet.scheduler.domain.Schedule;
 import ro.teamnet.scheduler.domain.TimeInterval;
 import ro.teamnet.scheduler.domain.TimeUnit;
-import ro.teamnet.scheduler.service.*;
+import ro.teamnet.scheduler.service.CronExpressionService;
 
 import javax.inject.Inject;
 import java.util.Comparator;
@@ -49,7 +50,7 @@ public class CronExpressionTest {
         return schedule;
     }
 
-    private TimeUnit createTimeUnit(String code) {
+    private TimeUnit createTimeUnit(TimeUnitCode code) {
         TimeUnit timeUnit = new TimeUnit();
         timeUnit.setCode(code);
 
@@ -88,10 +89,10 @@ public class CronExpressionTest {
     public void testCronWithTimeIntervalNotNullSeconds() {
 
         Schedule schedule = createSchedule(true);
-        schedule.setTimeInterval(createTimeInterval("Saptamanal", createTimeUnit("SEC"), 20l));
+        schedule.setTimeInterval(createTimeInterval("Saptamanal", createTimeUnit(TimeUnitCode.SEC), 20l));
 
         String expression = cronExpressionService.buildCronExpressionForRecurrentTrueWithTimeInterval(schedule);
-        assertEquals("Cron expression with time interval: different", "0/20 * * * * ? *", expression);
+        assertEquals("Cron expression with time interval: different", "*/20 * * * * ? *", expression);
 
         log.info("Cron expression with time interval: {}", expression);
     }
@@ -100,10 +101,10 @@ public class CronExpressionTest {
     public void testCronWithTimeIntervalNotNullMinutes() {
 
         Schedule schedule = createSchedule(true);
-        schedule.setTimeInterval(createTimeInterval("Saptamanal", createTimeUnit("MIN"), 15l));
+        schedule.setTimeInterval(createTimeInterval("Saptamanal", createTimeUnit(TimeUnitCode.MIN), 15l));
 
         String expression = cronExpressionService.buildCronExpressionForRecurrentTrueWithTimeInterval(schedule);
-        assertEquals("Cron expression with time interval: different", "0 55/15 * * * ? *", expression);
+        assertEquals("Cron expression with time interval: different", "0 */15 * * * ? *", expression);
 
         log.info("Cron expression with time interval: {}", expression);
     }
@@ -112,10 +113,10 @@ public class CronExpressionTest {
     public void testCronWithTimeIntervalNotNullHours() {
 
         Schedule schedule = createSchedule(true);
-        schedule.setTimeInterval(createTimeInterval("Saptamanal", createTimeUnit("H"), 2l));
+        schedule.setTimeInterval(createTimeInterval("Saptamanal", createTimeUnit(TimeUnitCode.H), 2l));
 
         String expression = cronExpressionService.buildCronExpressionForRecurrentTrueWithTimeInterval(schedule);
-        assertEquals("Cron expression with time interval: different", "0 55 13/2 * * ? *", expression);
+        assertEquals("Cron expression with time interval: different", "0 55 */2 * * ? *", expression);
 
         log.info("Cron expression with time interval: {}", expression);
     }
@@ -124,10 +125,10 @@ public class CronExpressionTest {
     public void testCronWithTimeIntervalNotNullDaysOfMonth() {
 
         Schedule schedule = createSchedule(true);
-        schedule.setTimeInterval(createTimeInterval("Saptamanal", createTimeUnit("D"), 3l));
+        schedule.setTimeInterval(createTimeInterval("Saptamanal", createTimeUnit(TimeUnitCode.D), 3l));
 
         String expression = cronExpressionService.buildCronExpressionForRecurrentTrueWithTimeInterval(schedule);
-        assertEquals("Cron expression with time interval: different", "0 55 13 3/3 * ? *", expression);
+        assertEquals("Cron expression with time interval: different", "0 55 13 */3 * ? *", expression);
 
         log.info("Cron expression with time interval: {}", expression);
     }
@@ -136,10 +137,10 @@ public class CronExpressionTest {
     public void testCronWithTimeIntervalNotNullMonths() {
 
         Schedule schedule = createSchedule(true);
-        schedule.setTimeInterval(createTimeInterval("Saptamanal", createTimeUnit("MON"), 1l));
+        schedule.setTimeInterval(createTimeInterval("Saptamanal", createTimeUnit(TimeUnitCode.MON), 1l));
 
         String expression = cronExpressionService.buildCronExpressionForRecurrentTrueWithTimeInterval(schedule);
-        assertEquals("Cron expression with time interval: different", "0 55 13 3 2/1 ? *", expression);
+        assertEquals("Cron expression with time interval: different", "0 55 13 3 */1 ? *", expression);
 
         log.info("Cron expression with time interval: {}", expression);
     }
@@ -148,10 +149,10 @@ public class CronExpressionTest {
     public void testCronWithTimeIntervalNotNullDaysOfWeek() {
 
         Schedule schedule = createSchedule(true);
-        schedule.setTimeInterval(createTimeInterval("Saptamanal", createTimeUnit("W"), 2l));
+        schedule.setTimeInterval(createTimeInterval("Saptamanal", createTimeUnit(TimeUnitCode.W), 2l));
 
         String expression = cronExpressionService.buildCronExpressionForRecurrentTrueWithTimeInterval(schedule);
-        assertEquals("Cron expression with time interval: different", "0 55 13 3/14 2 ? *", expression);
+        assertEquals("Cron expression with time interval: different", "0 55 13 */14 2 ? *", expression);
 
         log.info("Cron expression with time interval: {}", expression);
     }
@@ -160,10 +161,10 @@ public class CronExpressionTest {
     public void testCronWithTimeIntervalNotNullYears() {
 
         Schedule schedule = createSchedule(true);
-        schedule.setTimeInterval(createTimeInterval("Saptamanal", createTimeUnit("Y"), 1l));
+        schedule.setTimeInterval(createTimeInterval("Saptamanal", createTimeUnit(TimeUnitCode.Y), 1l));
 
         String expression = cronExpressionService.buildCronExpressionForRecurrentTrueWithTimeInterval(schedule);
-        assertEquals("Cron expression with time interval: different", "0 55 13 3 2 ? 2016/1", expression);
+        assertEquals("Cron expression with time interval: different", "0 55 13 3 2 ? */1", expression);
 
         log.info("Cron expression with time interval: {}", expression);
     }
@@ -173,12 +174,12 @@ public class CronExpressionTest {
 
         Schedule schedule = createSchedule(true);
 
-        RecurrentTimeUnit recurrentTimeUnit = createRecurrentTimeUnit(1l, 12, createTimeUnit("SEC"), schedule);
-        RecurrentTimeUnit recurrentTimeUnit1 = createRecurrentTimeUnit(2l, 14, createTimeUnit("SEC"), schedule);
-        RecurrentTimeUnit recurrentTimeUnit2 = createRecurrentTimeUnit(3l, 13, createTimeUnit("D"), schedule);
-        RecurrentTimeUnit recurrentTimeUnit3 = createRecurrentTimeUnit(4l, 2, createTimeUnit("H"), schedule);
-        RecurrentTimeUnit recurrentTimeUnit4 = createRecurrentTimeUnit(5l, 2, createTimeUnit("MON"), schedule);
-        RecurrentTimeUnit recurrentTimeUnit5 = createRecurrentTimeUnit(6l, 3, createTimeUnit("W"), schedule);
+        RecurrentTimeUnit recurrentTimeUnit = createRecurrentTimeUnit(1l, 12, createTimeUnit(TimeUnitCode.SEC), schedule);
+        RecurrentTimeUnit recurrentTimeUnit1 = createRecurrentTimeUnit(2l, 14, createTimeUnit(TimeUnitCode.SEC), schedule);
+        RecurrentTimeUnit recurrentTimeUnit2 = createRecurrentTimeUnit(3l, 13, createTimeUnit(TimeUnitCode.D), schedule);
+        RecurrentTimeUnit recurrentTimeUnit3 = createRecurrentTimeUnit(4l, 2, createTimeUnit(TimeUnitCode.H), schedule);
+        RecurrentTimeUnit recurrentTimeUnit4 = createRecurrentTimeUnit(5l, 2, createTimeUnit(TimeUnitCode.MON), schedule);
+        RecurrentTimeUnit recurrentTimeUnit5 = createRecurrentTimeUnit(6l, 3, createTimeUnit(TimeUnitCode.W), schedule);
 
         Set<RecurrentTimeUnit> recurrentTimeUnitHashSet = new TreeSet<>(defaultComparator);
         recurrentTimeUnitHashSet.add(recurrentTimeUnit);
@@ -219,7 +220,7 @@ public class CronExpressionTest {
 
         Schedule schedule = createSchedule(true);
 
-        RecurrentTimeUnit recurrentTimeUnit = createRecurrentTimeUnit(1l, 12, createTimeUnit("D"), schedule);
+        RecurrentTimeUnit recurrentTimeUnit = createRecurrentTimeUnit(1l, 12, createTimeUnit(TimeUnitCode.D), schedule);
 
         Set<RecurrentTimeUnit> recurrentTimeUnitHashSet = new TreeSet<>(defaultComparator);
         recurrentTimeUnitHashSet.add(recurrentTimeUnit);
@@ -236,7 +237,7 @@ public class CronExpressionTest {
 
         Schedule schedule = createSchedule(true);
 
-        RecurrentTimeUnit recurrentTimeUnit = createRecurrentTimeUnit(1l, 6, createTimeUnit("W"), schedule);
+        RecurrentTimeUnit recurrentTimeUnit = createRecurrentTimeUnit(1l, 6, createTimeUnit(TimeUnitCode.W), schedule);
 
         Set<RecurrentTimeUnit> recurrentTimeUnitHashSet = new TreeSet<>(defaultComparator);
         recurrentTimeUnitHashSet.add(recurrentTimeUnit);
@@ -253,8 +254,8 @@ public class CronExpressionTest {
 
         Schedule schedule = createSchedule(true);
 
-        RecurrentTimeUnit recurrentTimeUnit = createRecurrentTimeUnit(1l, 15, createTimeUnit("D"), schedule);
-        RecurrentTimeUnit recurrentTimeUnit1 = createRecurrentTimeUnit(2l, 5, createTimeUnit("H"), schedule);
+        RecurrentTimeUnit recurrentTimeUnit = createRecurrentTimeUnit(1l, 15, createTimeUnit(TimeUnitCode.D), schedule);
+        RecurrentTimeUnit recurrentTimeUnit1 = createRecurrentTimeUnit(2l, 5, createTimeUnit(TimeUnitCode.H), schedule);
 
         Set<RecurrentTimeUnit> recurrentTimeUnitHashSet = new TreeSet<>(defaultComparator);
         recurrentTimeUnitHashSet.add(recurrentTimeUnit);
@@ -272,9 +273,9 @@ public class CronExpressionTest {
 
         Schedule schedule = createSchedule(true);
 
-        RecurrentTimeUnit recurrentTimeUnit = createRecurrentTimeUnit(1l, 10, createTimeUnit("MON"), schedule);
-        RecurrentTimeUnit recurrentTimeUnit1 = createRecurrentTimeUnit(2l, 5, createTimeUnit("H"), schedule);
-        RecurrentTimeUnit recurrentTimeUnit2 = createRecurrentTimeUnit(3l, 21, createTimeUnit("D"), schedule);
+        RecurrentTimeUnit recurrentTimeUnit = createRecurrentTimeUnit(1l, 10, createTimeUnit(TimeUnitCode.MON), schedule);
+        RecurrentTimeUnit recurrentTimeUnit1 = createRecurrentTimeUnit(2l, 5, createTimeUnit(TimeUnitCode.H), schedule);
+        RecurrentTimeUnit recurrentTimeUnit2 = createRecurrentTimeUnit(3l, 21, createTimeUnit(TimeUnitCode.D), schedule);
 
         Set<RecurrentTimeUnit> recurrentTimeUnitHashSet = new TreeSet<>(defaultComparator);
         recurrentTimeUnitHashSet.add(recurrentTimeUnit);
@@ -293,7 +294,7 @@ public class CronExpressionTest {
 
         Schedule schedule = createSchedule(true);
 
-        RecurrentTimeUnit recurrentTimeUnit = createRecurrentTimeUnit(1l, -1, createTimeUnit("D"), schedule);
+        RecurrentTimeUnit recurrentTimeUnit = createRecurrentTimeUnit(1l, -1, createTimeUnit(TimeUnitCode.D), schedule);
 
         Set<RecurrentTimeUnit> recurrentTimeUnitHashSet = new TreeSet<>(defaultComparator);
         recurrentTimeUnitHashSet.add(recurrentTimeUnit);
@@ -310,9 +311,9 @@ public class CronExpressionTest {
 
         Schedule schedule = createSchedule(true);
 
-        RecurrentTimeUnit recurrentTimeUnitHour = createRecurrentTimeUnit(1l, 18, createTimeUnit("H"), schedule);
-        RecurrentTimeUnit recurrentTimeUnit = createRecurrentTimeUnit(2l, -1, createTimeUnit("D"), schedule);
-        RecurrentTimeUnit recurrentTimeUnitMonth = createRecurrentTimeUnit(3l, -1, createTimeUnit("MON"), schedule);
+        RecurrentTimeUnit recurrentTimeUnitHour = createRecurrentTimeUnit(1l, 18, createTimeUnit(TimeUnitCode.H), schedule);
+        RecurrentTimeUnit recurrentTimeUnit = createRecurrentTimeUnit(2l, -1, createTimeUnit(TimeUnitCode.D), schedule);
+        RecurrentTimeUnit recurrentTimeUnitMonth = createRecurrentTimeUnit(3l, -1, createTimeUnit(TimeUnitCode.MON), schedule);
 
         Set<RecurrentTimeUnit> recurrentTimeUnitHashSet = new TreeSet<>(defaultComparator);
         recurrentTimeUnitHashSet.add(recurrentTimeUnit);
@@ -330,25 +331,25 @@ public class CronExpressionTest {
     public void testCronExpressionWithManyData() {
         Schedule schedule = createSchedule(true);
 
-        RecurrentTimeUnit recurrentTimeUnitSec = createRecurrentTimeUnit(1l, 15, createTimeUnit("SEC"), schedule);
-        RecurrentTimeUnit recurrentTimeUnitSec1 = createRecurrentTimeUnit(2l, 30, createTimeUnit("SEC"), schedule);
-        RecurrentTimeUnit recurrentTimeUnitSec2 = createRecurrentTimeUnit(3l, 55, createTimeUnit("SEC"), schedule);
+        RecurrentTimeUnit recurrentTimeUnitSec = createRecurrentTimeUnit(1l, 15, createTimeUnit(TimeUnitCode.SEC), schedule);
+        RecurrentTimeUnit recurrentTimeUnitSec1 = createRecurrentTimeUnit(2l, 30, createTimeUnit(TimeUnitCode.SEC), schedule);
+        RecurrentTimeUnit recurrentTimeUnitSec2 = createRecurrentTimeUnit(3l, 55, createTimeUnit(TimeUnitCode.SEC), schedule);
 
-        RecurrentTimeUnit recurrentTimeUnitHour = createRecurrentTimeUnit(7l, 15, createTimeUnit("H"), schedule);
-        RecurrentTimeUnit recurrentTimeUnitHour1 = createRecurrentTimeUnit(8l, 30, createTimeUnit("H"), schedule);
-        RecurrentTimeUnit recurrentTimeUnitHour2 = createRecurrentTimeUnit(9l, 55, createTimeUnit("H"), schedule);
+        RecurrentTimeUnit recurrentTimeUnitHour = createRecurrentTimeUnit(7l, 15, createTimeUnit(TimeUnitCode.H), schedule);
+        RecurrentTimeUnit recurrentTimeUnitHour1 = createRecurrentTimeUnit(8l, 30, createTimeUnit(TimeUnitCode.H), schedule);
+        RecurrentTimeUnit recurrentTimeUnitHour2 = createRecurrentTimeUnit(9l, 55, createTimeUnit(TimeUnitCode.H), schedule);
 
-        RecurrentTimeUnit recurrentTimeUnitDay = createRecurrentTimeUnit(10l, 15, createTimeUnit("D"), schedule);
-        RecurrentTimeUnit recurrentTimeUnitDay1 = createRecurrentTimeUnit(11l, 30, createTimeUnit("D"), schedule);
-        RecurrentTimeUnit recurrentTimeUnitDay2 = createRecurrentTimeUnit(12l, 55, createTimeUnit("D"), schedule);
+        RecurrentTimeUnit recurrentTimeUnitDay = createRecurrentTimeUnit(10l, 15, createTimeUnit(TimeUnitCode.D), schedule);
+        RecurrentTimeUnit recurrentTimeUnitDay1 = createRecurrentTimeUnit(11l, 30, createTimeUnit(TimeUnitCode.D), schedule);
+        RecurrentTimeUnit recurrentTimeUnitDay2 = createRecurrentTimeUnit(12l, 55, createTimeUnit(TimeUnitCode.D), schedule);
 
-        RecurrentTimeUnit recurrentTimeUnitMonth = createRecurrentTimeUnit(13l, 2, createTimeUnit("MON"), schedule);
-        RecurrentTimeUnit recurrentTimeUnitMonth1 = createRecurrentTimeUnit(14l, 4, createTimeUnit("MON"), schedule);
-        RecurrentTimeUnit recurrentTimeUnitMonth2 = createRecurrentTimeUnit(15l, 6, createTimeUnit("MON"), schedule);
+        RecurrentTimeUnit recurrentTimeUnitMonth = createRecurrentTimeUnit(13l, 2, createTimeUnit(TimeUnitCode.MON), schedule);
+        RecurrentTimeUnit recurrentTimeUnitMonth1 = createRecurrentTimeUnit(14l, 4, createTimeUnit(TimeUnitCode.MON), schedule);
+        RecurrentTimeUnit recurrentTimeUnitMonth2 = createRecurrentTimeUnit(15l, 6, createTimeUnit(TimeUnitCode.MON), schedule);
 
-        RecurrentTimeUnit recurrentTimeUnitWeek = createRecurrentTimeUnit(16l, 2, createTimeUnit("W"), schedule);
-        RecurrentTimeUnit recurrentTimeUnitWeek1 = createRecurrentTimeUnit(17l, 4, createTimeUnit("W"), schedule);
-        RecurrentTimeUnit recurrentTimeUnitWeek2 = createRecurrentTimeUnit(18l, 6, createTimeUnit("W"), schedule);
+        RecurrentTimeUnit recurrentTimeUnitWeek = createRecurrentTimeUnit(16l, 2, createTimeUnit(TimeUnitCode.W), schedule);
+        RecurrentTimeUnit recurrentTimeUnitWeek1 = createRecurrentTimeUnit(17l, 4, createTimeUnit(TimeUnitCode.W), schedule);
+        RecurrentTimeUnit recurrentTimeUnitWeek2 = createRecurrentTimeUnit(18l, 6, createTimeUnit(TimeUnitCode.W), schedule);
 
         Set<RecurrentTimeUnit> recurrentTimeUnitHashSet = new TreeSet<>(defaultComparator);
         recurrentTimeUnitHashSet.add(recurrentTimeUnitSec);
