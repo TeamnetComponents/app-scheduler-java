@@ -1,7 +1,5 @@
 package ro.teamnet.scheduler.web.rest;
 
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,10 +39,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test-scheduler")
 public class TimeIntervalResourceTest {
 
-    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss");
-
-    private static final String DEFAULT_NAME = "SAMPLE_TEXT";
-    private static final String UPDATED_NAME = "UPDATED_TEXT";
+    private static final String DEFAULT_NAME = "DEFAULT_NAME";
+    private static final String UPDATED_NAME = "UPDATED_NAME";
 
     private static final Boolean DEFAULT_CUSTOM = false;
     private static final Boolean UPDATED_CUSTOM = true;
@@ -113,8 +109,8 @@ public class TimeIntervalResourceTest {
         restTimeIntervalMockMvc.perform(get("/app/rest/timeInterval"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.[0].name").value(DEFAULT_NAME.toString()))
-                .andExpect(jsonPath("$.[0].custom").value(DEFAULT_CUSTOM.booleanValue()))
+                .andExpect(jsonPath("$.[0].name").value(DEFAULT_NAME))
+                .andExpect(jsonPath("$.[0].custom").value(DEFAULT_CUSTOM))
                 .andExpect(jsonPath("$.[0].intervalMillis").value(DEFAULT_INTERVAL_MILLIS.intValue()))
                 .andExpect(jsonPath("$.[0].interval").value(DEFAULT_INTERVAL.intValue()));
     }
@@ -130,8 +126,8 @@ public class TimeIntervalResourceTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(timeInterval.getId().intValue()))
-                .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
-                .andExpect(jsonPath("$.custom").value(DEFAULT_CUSTOM.booleanValue()))
+                .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
+                .andExpect(jsonPath("$.custom").value(DEFAULT_CUSTOM))
                 .andExpect(jsonPath("$.intervalMillis").value(DEFAULT_INTERVAL_MILLIS.intValue()))
                 .andExpect(jsonPath("$.interval").value(DEFAULT_INTERVAL.intValue()));
     }

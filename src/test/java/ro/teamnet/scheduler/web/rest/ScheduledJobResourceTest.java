@@ -1,8 +1,6 @@
 package ro.teamnet.scheduler.web.rest;
 
 
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,16 +40,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test-scheduler")
 public class ScheduledJobResourceTest {
 
-    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss");
-
-    private static final String DEFAULT_NAME = "SAMPLE_TEXT";
-    private static final String UPDATED_NAME = "UPDATED_TEXT";
-    private static final String DEFAULT_DESCRIPTION = "SAMPLE_TEXT";
-    private static final String UPDATED_DESCRIPTION = "UPDATED_TEXT";
-    private static final String DEFAULT_TYPE = "SAMPLE_TEXT";
-    private static final String UPDATED_TYPE = "UPDATED_TEXT";
-    private static final String DEFAULT_QUARTZ_JOB_CLASS_NAME = "SAMPLE_TEXT";
-    private static final String UPDATED_QUARTZ_JOB_CLASS_NAME = "UPDATED_TEXT";
+    private static final String DEFAULT_NAME = "DEFAULT_NAME";
+    private static final String UPDATED_NAME = "UPDATED_NAME";
+    private static final String DEFAULT_DESCRIPTION = "DEFAULT_DESCRIPTION";
+    private static final String UPDATED_DESCRIPTION = "UPDATED_DESCRIPTION";
+    private static final String DEFAULT_TYPE = "DEFAULT_TYPE";
+    private static final String UPDATED_TYPE = "UPDATED_TYPE";
+    private static final String DEFAULT_QUARTZ_JOB_CLASS_NAME = "DEFAULT_QUARTZ_JOB_CLASS_NAME";
+    private static final String UPDATED_QUARTZ_JOB_CLASS_NAME = "UPDATED_QUARTZ_JOB_CLASS_NAME";
 
     private static final Long DEFAULT_VERSION = 0L;
     private static final Long UPDATED_VERSION = 1L;
@@ -119,31 +115,31 @@ public class ScheduledJobResourceTest {
         restScheduledJobMockMvc.perform(get("/app/rest/scheduledJob"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.[0].name").value(DEFAULT_NAME.toString()))
-                .andExpect(jsonPath("$.[0].description").value(DEFAULT_DESCRIPTION.toString()))
-                .andExpect(jsonPath("$.[0].type").value(DEFAULT_TYPE.toString()))
-                .andExpect(jsonPath("$.[0].quartzJobClassName").value(DEFAULT_QUARTZ_JOB_CLASS_NAME.toString()))
+                .andExpect(jsonPath("$.[0].name").value(DEFAULT_NAME))
+                .andExpect(jsonPath("$.[0].description").value(DEFAULT_DESCRIPTION))
+                .andExpect(jsonPath("$.[0].type").value(DEFAULT_TYPE))
+                .andExpect(jsonPath("$.[0].quartzJobClassName").value(DEFAULT_QUARTZ_JOB_CLASS_NAME))
                 .andExpect(jsonPath("$.[0].version").value(DEFAULT_VERSION.intValue()))
-                .andExpect(jsonPath("$.[0].deleted").value(DEFAULT_DELETED.booleanValue()));
+                .andExpect(jsonPath("$.[0].deleted").value(DEFAULT_DELETED));
     }
 
     @Test
     @Transactional
     public void getScheduledJob() throws Exception {
         // Initialize the database
-        ScheduledJob scheduledJob = scheduledJobRepository.saveAndFlush(this.scheduledJob);
+        ScheduledJob initialJob = scheduledJobRepository.saveAndFlush(this.scheduledJob);
 
         // Get the scheduledJob
-        restScheduledJobMockMvc.perform(get("/app/rest/scheduledJob/{id}", scheduledJob.getId()))
+        restScheduledJobMockMvc.perform(get("/app/rest/scheduledJob/{id}", initialJob.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(scheduledJob.getId().intValue()))
-                .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
-                .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()))
-                .andExpect(jsonPath("$.type").value(DEFAULT_TYPE.toString()))
-                .andExpect(jsonPath("$.quartzJobClassName").value(DEFAULT_QUARTZ_JOB_CLASS_NAME.toString()))
+                .andExpect(jsonPath("$.id").value(initialJob.getId().intValue()))
+                .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
+                .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
+                .andExpect(jsonPath("$.type").value(DEFAULT_TYPE))
+                .andExpect(jsonPath("$.quartzJobClassName").value(DEFAULT_QUARTZ_JOB_CLASS_NAME))
                 .andExpect(jsonPath("$.version").value(DEFAULT_VERSION.intValue()))
-                .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED.booleanValue()));
+                .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED));
     }
 
     @Test
@@ -158,17 +154,17 @@ public class ScheduledJobResourceTest {
     @Transactional
     public void updateScheduledJob() throws Exception {
         // Initialize the database
-        ScheduledJob scheduledJob = scheduledJobRepository.saveAndFlush(this.scheduledJob);
+        ScheduledJob initialJob = scheduledJobRepository.saveAndFlush(this.scheduledJob);
 
         // Update the scheduledJob
-        scheduledJob.setName(UPDATED_NAME);
-        scheduledJob.setDescription(UPDATED_DESCRIPTION);
-        scheduledJob.setType(UPDATED_TYPE);
-        scheduledJob.setQuartzJobClassName(UPDATED_QUARTZ_JOB_CLASS_NAME);
-        scheduledJob.setDeleted(UPDATED_DELETED);
+        initialJob.setName(UPDATED_NAME);
+        initialJob.setDescription(UPDATED_DESCRIPTION);
+        initialJob.setType(UPDATED_TYPE);
+        initialJob.setQuartzJobClassName(UPDATED_QUARTZ_JOB_CLASS_NAME);
+        initialJob.setDeleted(UPDATED_DELETED);
         restScheduledJobMockMvc.perform(post("/app/rest/scheduledJob")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(scheduledJob)))
+                .content(TestUtil.convertObjectToJsonBytes(initialJob)))
                 .andExpect(status().isOk());
 
         // Validate the ScheduledJob in the database
@@ -187,10 +183,10 @@ public class ScheduledJobResourceTest {
     @Transactional
     public void deleteScheduledJob() throws Exception {
         // Initialize the database
-        ScheduledJob scheduledJob = scheduledJobRepository.saveAndFlush(this.scheduledJob);
+        ScheduledJob initialJob = scheduledJobRepository.saveAndFlush(this.scheduledJob);
 
         // Get the scheduledJob
-        restScheduledJobMockMvc.perform(delete("/app/rest/scheduledJob/{id}", scheduledJob.getId())
+        restScheduledJobMockMvc.perform(delete("/app/rest/scheduledJob/{id}", initialJob.getId())
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 

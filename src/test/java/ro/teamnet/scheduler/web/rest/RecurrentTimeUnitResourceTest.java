@@ -1,7 +1,5 @@
 package ro.teamnet.scheduler.web.rest;
 
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,9 +38,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @IntegrationTest
 @ActiveProfiles("test-scheduler")
 public class RecurrentTimeUnitResourceTest {
-
-    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss");
-
 
     private static final Integer DEFAULT_VALUE = 0;
     private static final Integer UPDATED_VALUE = 1;

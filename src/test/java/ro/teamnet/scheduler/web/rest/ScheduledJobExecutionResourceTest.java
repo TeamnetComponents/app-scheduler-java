@@ -1,4 +1,3 @@
-
 package ro.teamnet.scheduler.web.rest;
 
 
@@ -47,7 +46,6 @@ public class ScheduledJobExecutionResourceTest {
 
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss");
 
-
     private static final DateTime DEFAULT_SCHEDULED_FIRE_TIME = new DateTime(0L);
     private static final DateTime UPDATED_SCHEDULED_FIRE_TIME = new DateTime().withMillisOfSecond(0);
     private static final String DEFAULT_SCHEDULED_FIRE_TIME_STR = dateTimeFormatter.print(DEFAULT_SCHEDULED_FIRE_TIME);
@@ -63,8 +61,8 @@ public class ScheduledJobExecutionResourceTest {
     private static final DateTime DEFAULT_NEXT_FIRE_TIME = new DateTime(0L);
     private static final DateTime UPDATED_NEXT_FIRE_TIME = new DateTime().withMillisOfSecond(0);
     private static final String DEFAULT_NEXT_FIRE_TIME_STR = dateTimeFormatter.print(DEFAULT_NEXT_FIRE_TIME);
-    private static final String DEFAULT_STATE = "SAMPLE_TEXT";
-    private static final String UPDATED_STATE = "UPDATED_TEXT";
+    private static final String DEFAULT_STATE = "DEFAULT_STATE";
+    private static final String UPDATED_STATE = "UPDATED_STATE";
     private static final JobExecutionStatus DEFAULT_STATUS = JobExecutionStatus.RUNNING;
     private static final JobExecutionStatus UPDATED_STATUS = JobExecutionStatus.FINISHED;
 
@@ -134,7 +132,7 @@ public class ScheduledJobExecutionResourceTest {
                 .andExpect(jsonPath("$.[0].actualFireTime").value(DEFAULT_ACTUAL_FIRE_TIME_STR))
                 .andExpect(jsonPath("$.[0].lastFireTime").value(DEFAULT_LAST_FIRE_TIME_STR))
                 .andExpect(jsonPath("$.[0].nextFireTime").value(DEFAULT_NEXT_FIRE_TIME_STR))
-                .andExpect(jsonPath("$.[0].state").value(DEFAULT_STATE.toString()))
+                .andExpect(jsonPath("$.[0].state").value(DEFAULT_STATE))
                 .andExpect(jsonPath("$.[0].status").value(DEFAULT_STATUS.toString()));
     }
 
@@ -146,15 +144,15 @@ public class ScheduledJobExecutionResourceTest {
 
         // Get the scheduledJobExecution
         restScheduledJobExecutionMockMvc.perform(get("/app/rest/scheduledJobExecution/{id}", scheduledJobExecution.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.id").value(scheduledJobExecution.getId().intValue()))
-            .andExpect(jsonPath("$.scheduledFireTime").value(DEFAULT_SCHEDULED_FIRE_TIME_STR))
-            .andExpect(jsonPath("$.actualFireTime").value(DEFAULT_ACTUAL_FIRE_TIME_STR))
-            .andExpect(jsonPath("$.lastFireTime").value(DEFAULT_LAST_FIRE_TIME_STR))
-            .andExpect(jsonPath("$.nextFireTime").value(DEFAULT_NEXT_FIRE_TIME_STR))
-            .andExpect(jsonPath("$.state").value(DEFAULT_STATE.toString()))
-            .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()));
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value(scheduledJobExecution.getId().intValue()))
+                .andExpect(jsonPath("$.scheduledFireTime").value(DEFAULT_SCHEDULED_FIRE_TIME_STR))
+                .andExpect(jsonPath("$.actualFireTime").value(DEFAULT_ACTUAL_FIRE_TIME_STR))
+                .andExpect(jsonPath("$.lastFireTime").value(DEFAULT_LAST_FIRE_TIME_STR))
+                .andExpect(jsonPath("$.nextFireTime").value(DEFAULT_NEXT_FIRE_TIME_STR))
+                .andExpect(jsonPath("$.state").value(DEFAULT_STATE))
+                .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()));
     }
 
     @Test

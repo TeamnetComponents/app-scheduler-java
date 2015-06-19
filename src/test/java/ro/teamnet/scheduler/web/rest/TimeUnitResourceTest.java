@@ -1,7 +1,5 @@
 package ro.teamnet.scheduler.web.rest;
 
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,14 +40,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test-scheduler")
 public class TimeUnitResourceTest {
 
-    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss");
-
     private static final TimeUnitCode DEFAULT_CODE = TimeUnitCode.SEC;
     private static final TimeUnitCode UPDATED_CODE = TimeUnitCode.MIN;
-    private static final String DEFAULT_NAME = "SAMPLE_TEXT";
-    private static final String UPDATED_NAME = "UPDATED_TEXT";
-    private static final String DEFAULT_DESCRIPTION = "SAMPLE_TEXT";
-    private static final String UPDATED_DESCRIPTION = "UPDATED_TEXT";
+    private static final String DEFAULT_NAME = "DEFAULT_NAME";
+    private static final String UPDATED_NAME = "UPDATED_NAME";
+    private static final String DEFAULT_DESCRIPTION = "DEFAULT_DESCRIPTION";
+    private static final String UPDATED_DESCRIPTION = "UPDATED_DESCRIPTION";
 
     private static final Long DEFAULT_MILLIS = 0L;
     private static final Long UPDATED_MILLIS = 1L;
@@ -113,8 +109,8 @@ public class TimeUnitResourceTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.[0].code").value(DEFAULT_CODE.toString()))
-                .andExpect(jsonPath("$.[0].name").value(DEFAULT_NAME.toString()))
-                .andExpect(jsonPath("$.[0].description").value(DEFAULT_DESCRIPTION.toString()))
+                .andExpect(jsonPath("$.[0].name").value(DEFAULT_NAME))
+                .andExpect(jsonPath("$.[0].description").value(DEFAULT_DESCRIPTION))
                 .andExpect(jsonPath("$.[0].millis").value(DEFAULT_MILLIS.intValue()));
     }
 
@@ -130,8 +126,8 @@ public class TimeUnitResourceTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(timeUnit.getId().intValue()))
                 .andExpect(jsonPath("$.code").value(DEFAULT_CODE.toString()))
-                .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
-                .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()))
+                .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
+                .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
                 .andExpect(jsonPath("$.millis").value(DEFAULT_MILLIS.intValue()));
     }
 

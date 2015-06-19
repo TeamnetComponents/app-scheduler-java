@@ -1,8 +1,6 @@
 package ro.teamnet.scheduler.web.rest;
 
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,8 +35,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @IntegrationTest
 @ActiveProfiles("test-scheduler")
 public class ScheduleResourceUpdateTest {
-
-    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss");
 
     private static final Boolean DEFAULT_ACTIVE = false;
     private static final Boolean UPDATED_ACTIVE = true;
@@ -87,7 +83,7 @@ public class ScheduleResourceUpdateTest {
     }
 
     private void add3RecurrentTimeUnits(Schedule schedule) {
-        HashSet<RecurrentTimeUnit> recurrentTimeUnits = new HashSet<RecurrentTimeUnit>();
+        HashSet<RecurrentTimeUnit> recurrentTimeUnits = new HashSet<>();
         RecurrentTimeUnit rtu1 = new RecurrentTimeUnit();
         rtu1.setValue(1);
         recurrentTimeUnits.add(rtu1);
@@ -104,31 +100,31 @@ public class ScheduleResourceUpdateTest {
     public void updateScheduleWithRecurrentTimeUnits() throws Exception {
 
         // Initialize the database
-        Schedule schedule = this.schedule;
-        add3RecurrentTimeUnits(schedule);
-        schedule = scheduleRepository.saveAndFlush(schedule);
-        assertThat(schedule.getRecurrentTimeUnits().size()).isEqualTo(3);
-        String initialCron = schedule.getCron();
+        Schedule initialSchedule = this.schedule;
+        add3RecurrentTimeUnits(initialSchedule);
+        initialSchedule = scheduleRepository.saveAndFlush(initialSchedule);
+        assertThat(initialSchedule.getRecurrentTimeUnits().size()).isEqualTo(3);
+        String initialCron = initialSchedule.getCron();
 
         // Update the schedule
-        schedule.setActive(UPDATED_ACTIVE);
-        schedule.setRecurrent(UPDATED_RECURRENT);
-        schedule.setStartTime(UPDATED_START_TIME);
-        schedule.setEndTime(UPDATED_END_TIME);
-        schedule.setRepetitions(UPDATED_REPETITIONS);
+        initialSchedule.setActive(UPDATED_ACTIVE);
+        initialSchedule.setRecurrent(UPDATED_RECURRENT);
+        initialSchedule.setStartTime(UPDATED_START_TIME);
+        initialSchedule.setEndTime(UPDATED_END_TIME);
+        initialSchedule.setRepetitions(UPDATED_REPETITIONS);
 
         RecurrentTimeUnit recurrentTimeUnit = new RecurrentTimeUnit();
         recurrentTimeUnit.setValue(3);
 
         Set<RecurrentTimeUnit> recurrentTimeUnits = new HashSet<>();
         recurrentTimeUnits.add(recurrentTimeUnit);
-        recurrentTimeUnits.add(schedule.getRecurrentTimeUnits().iterator().next());
-        schedule.setRecurrentTimeUnits(recurrentTimeUnits);
+        recurrentTimeUnits.add(initialSchedule.getRecurrentTimeUnits().iterator().next());
+        initialSchedule.setRecurrentTimeUnits(recurrentTimeUnits);
 
-        schedule.setDeleted(UPDATED_DELETED);
+        initialSchedule.setDeleted(UPDATED_DELETED);
         restScheduleMockMvc.perform(post("/app/rest/schedule")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(schedule)))
+                .content(TestUtil.convertObjectToJsonBytes(initialSchedule)))
                 .andExpect(status().isOk());
 
         // Validate the Schedule in the database
@@ -151,20 +147,20 @@ public class ScheduleResourceUpdateTest {
     public void updateSchedule() throws Exception {
 
         // Initialize the database
-        Schedule schedule = scheduleRepository.saveAndFlush(this.schedule);
-        String initialCron = schedule.getCron();
+        Schedule initialSchedule = scheduleRepository.saveAndFlush(this.schedule);
+        String initialCron = initialSchedule.getCron();
 
         // Update the schedule
-        schedule.setActive(UPDATED_ACTIVE);
-        schedule.setRecurrent(UPDATED_RECURRENT);
-        schedule.setStartTime(UPDATED_START_TIME);
-        schedule.setEndTime(UPDATED_END_TIME);
-        schedule.setRepetitions(UPDATED_REPETITIONS);
+        initialSchedule.setActive(UPDATED_ACTIVE);
+        initialSchedule.setRecurrent(UPDATED_RECURRENT);
+        initialSchedule.setStartTime(UPDATED_START_TIME);
+        initialSchedule.setEndTime(UPDATED_END_TIME);
+        initialSchedule.setRepetitions(UPDATED_REPETITIONS);
 
-        schedule.setDeleted(UPDATED_DELETED);
+        initialSchedule.setDeleted(UPDATED_DELETED);
         restScheduleMockMvc.perform(post("/app/rest/schedule")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(schedule)))
+                .content(TestUtil.convertObjectToJsonBytes(initialSchedule)))
                 .andExpect(status().isOk());
 
         // Validate the Schedule in the database

@@ -1,8 +1,6 @@
 package ro.teamnet.scheduler.web.rest;
 
 
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,12 +40,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test-scheduler")
 public class TaskResourceTest {
 
-    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss");
-
     private static final Integer DEFAULT_QUEUE_POSITION = 0;
     private static final Integer UPDATED_QUEUE_POSITION = 1;
-    private static final String DEFAULT_OPTIONS = "SAMPLE_TEXT";
-    private static final String UPDATED_OPTIONS = "UPDATED_TEXT";
+    private static final String DEFAULT_OPTIONS = "DEFAULT_OPTIONS";
+    private static final String UPDATED_OPTIONS = "UPDATED_OPTIONS";
 
     private static final Long DEFAULT_VERSION = 0L;
     private static final Long UPDATED_VERSION = 1L;
@@ -112,26 +108,26 @@ public class TaskResourceTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.[0].queuePosition").value(DEFAULT_QUEUE_POSITION))
-                .andExpect(jsonPath("$.[0].options").value(DEFAULT_OPTIONS.toString()))
+                .andExpect(jsonPath("$.[0].options").value(DEFAULT_OPTIONS))
                 .andExpect(jsonPath("$.[0].version").value(DEFAULT_VERSION.intValue()))
-                .andExpect(jsonPath("$.[0].deleted").value(DEFAULT_DELETED.booleanValue()));
+                .andExpect(jsonPath("$.[0].deleted").value(DEFAULT_DELETED));
     }
 
     @Test
     @Transactional
     public void getTask() throws Exception {
         // Initialize the database
-        Task task = taskRepository.saveAndFlush(this.task);
+        Task initialTask = taskRepository.saveAndFlush(this.task);
 
         // Get the task
-        restTaskMockMvc.perform(get("/app/rest/task/{id}", task.getId()))
+        restTaskMockMvc.perform(get("/app/rest/task/{id}", initialTask.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(task.getId().intValue()))
+                .andExpect(jsonPath("$.id").value(initialTask.getId().intValue()))
                 .andExpect(jsonPath("$.queuePosition").value(DEFAULT_QUEUE_POSITION))
-                .andExpect(jsonPath("$.options").value(DEFAULT_OPTIONS.toString()))
+                .andExpect(jsonPath("$.options").value(DEFAULT_OPTIONS))
                 .andExpect(jsonPath("$.version").value(DEFAULT_VERSION.intValue()))
-                .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED.booleanValue()));
+                .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED));
     }
 
     @Test
@@ -146,15 +142,15 @@ public class TaskResourceTest {
     @Transactional
     public void updateTask() throws Exception {
         // Initialize the database
-        Task task = taskRepository.saveAndFlush(this.task);
+        Task initialTask = taskRepository.saveAndFlush(this.task);
 
         // Update the task
-        task.setQueuePosition(UPDATED_QUEUE_POSITION);
-        task.setOptions(UPDATED_OPTIONS);
-        task.setDeleted(UPDATED_DELETED);
+        initialTask.setQueuePosition(UPDATED_QUEUE_POSITION);
+        initialTask.setOptions(UPDATED_OPTIONS);
+        initialTask.setDeleted(UPDATED_DELETED);
         restTaskMockMvc.perform(post("/app/rest/task")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(task)))
+                .content(TestUtil.convertObjectToJsonBytes(initialTask)))
                 .andExpect(status().isOk());
 
         // Validate the Task in the database
@@ -171,10 +167,10 @@ public class TaskResourceTest {
     @Transactional
     public void deleteTask() throws Exception {
         // Initialize the database
-        Task task = taskRepository.saveAndFlush(this.task);
+        Task initialTask = taskRepository.saveAndFlush(this.task);
 
         // Get the task
-        restTaskMockMvc.perform(delete("/app/rest/task/{id}", task.getId())
+        restTaskMockMvc.perform(delete("/app/rest/task/{id}", initialTask.getId())
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 

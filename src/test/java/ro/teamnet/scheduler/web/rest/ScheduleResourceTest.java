@@ -156,7 +156,7 @@ public class ScheduleResourceTest {
     }
 
     private void add3RecurrentTimeUnits(Schedule schedule) {
-        HashSet<RecurrentTimeUnit> recurrentTimeUnits = new HashSet<RecurrentTimeUnit>();
+        HashSet<RecurrentTimeUnit> recurrentTimeUnits = new HashSet<>();
         RecurrentTimeUnit rtu1 = new RecurrentTimeUnit();
         rtu1.setValue(1);
         recurrentTimeUnits.add(rtu1);
@@ -179,35 +179,35 @@ public class ScheduleResourceTest {
         restScheduleMockMvc.perform(get("/app/rest/schedule"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.[0].active").value(DEFAULT_ACTIVE.booleanValue()))
-                .andExpect(jsonPath("$.[0].recurrent").value(DEFAULT_RECURRENT.booleanValue()))
+                .andExpect(jsonPath("$.[0].active").value(DEFAULT_ACTIVE))
+                .andExpect(jsonPath("$.[0].recurrent").value(DEFAULT_RECURRENT))
                 .andExpect(jsonPath("$.[0].cron", Matchers.endsWith("1 1 ? 1970")))
                 .andExpect(jsonPath("$.[0].startTime").value(DEFAULT_START_TIME_STR))
                 .andExpect(jsonPath("$.[0].endTime").value(DEFAULT_END_TIME_STR))
                 .andExpect(jsonPath("$.[0].repetitions").value(DEFAULT_REPETITIONS.intValue()))
                 .andExpect(jsonPath("$.[0].version").value(DEFAULT_VERSION.intValue()))
-                .andExpect(jsonPath("$.[0].deleted").value(DEFAULT_DELETED.booleanValue()));
+                .andExpect(jsonPath("$.[0].deleted").value(DEFAULT_DELETED));
     }
 
     @Test
     @Transactional
     public void getSchedule() throws Exception {
         // Initialize the database
-        Schedule schedule = service.save(this.schedule);
+        Schedule initialSchedule = service.save(this.schedule);
 
         // Get the schedule
-        restScheduleMockMvc.perform(get("/app/rest/schedule/{id}", schedule.getId()))
+        restScheduleMockMvc.perform(get("/app/rest/schedule/{id}", initialSchedule.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(schedule.getId().intValue()))
-                .andExpect(jsonPath("$.active").value(DEFAULT_ACTIVE.booleanValue()))
-                .andExpect(jsonPath("$.recurrent").value(DEFAULT_RECURRENT.booleanValue()))
+                .andExpect(jsonPath("$.id").value(initialSchedule.getId().intValue()))
+                .andExpect(jsonPath("$.active").value(DEFAULT_ACTIVE))
+                .andExpect(jsonPath("$.recurrent").value(DEFAULT_RECURRENT))
                 .andExpect(jsonPath("$.cron", Matchers.endsWith("1 1 ? 1970")))
                 .andExpect(jsonPath("$.startTime").value(DEFAULT_START_TIME_STR))
                 .andExpect(jsonPath("$.endTime").value(DEFAULT_END_TIME_STR))
                 .andExpect(jsonPath("$.repetitions").value(DEFAULT_REPETITIONS.intValue()))
                 .andExpect(jsonPath("$.version").value(DEFAULT_VERSION.intValue()))
-                .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED.booleanValue()));
+                .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED));
     }
 
     @Test
@@ -221,20 +221,20 @@ public class ScheduleResourceTest {
     @Test
     public void updateSchedule() throws Exception {
         // Initialize the database
-        Schedule schedule = scheduleRepository.saveAndFlush(this.schedule);
-        String initialCron = schedule.getCron();
+        Schedule initialSchedule = scheduleRepository.saveAndFlush(this.schedule);
+        String initialCron = initialSchedule.getCron();
 
         // Update the schedule
-        schedule.setActive(UPDATED_ACTIVE);
-        schedule.setRecurrent(UPDATED_RECURRENT);
-        schedule.setStartTime(UPDATED_START_TIME);
-        schedule.setEndTime(UPDATED_END_TIME);
-        schedule.setRepetitions(UPDATED_REPETITIONS);
+        initialSchedule.setActive(UPDATED_ACTIVE);
+        initialSchedule.setRecurrent(UPDATED_RECURRENT);
+        initialSchedule.setStartTime(UPDATED_START_TIME);
+        initialSchedule.setEndTime(UPDATED_END_TIME);
+        initialSchedule.setRepetitions(UPDATED_REPETITIONS);
 
-        schedule.setDeleted(UPDATED_DELETED);
+        initialSchedule.setDeleted(UPDATED_DELETED);
         restScheduleMockMvc.perform(post("/app/rest/schedule")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(schedule)))
+                .content(TestUtil.convertObjectToJsonBytes(initialSchedule)))
                 .andExpect(status().isOk());
 
         // Validate the Schedule in the database
@@ -258,29 +258,29 @@ public class ScheduleResourceTest {
     public void updateScheduleWithRecurrentTimeUnits() throws Exception {
         // Initialize the database
         add3RecurrentTimeUnits(schedule);
-        Schedule schedule = scheduleRepository.saveAndFlush(this.schedule);
-        assertThat(schedule.getRecurrentTimeUnits().size()).isEqualTo(3);
-        String initialCron = schedule.getCron();
+        Schedule initialSchedule = scheduleRepository.saveAndFlush(this.schedule);
+        assertThat(initialSchedule.getRecurrentTimeUnits().size()).isEqualTo(3);
+        String initialCron = initialSchedule.getCron();
 
         // Update the schedule
-        schedule.setActive(UPDATED_ACTIVE);
-        schedule.setRecurrent(UPDATED_RECURRENT);
-        schedule.setStartTime(UPDATED_START_TIME);
-        schedule.setEndTime(UPDATED_END_TIME);
-        schedule.setRepetitions(UPDATED_REPETITIONS);
+        initialSchedule.setActive(UPDATED_ACTIVE);
+        initialSchedule.setRecurrent(UPDATED_RECURRENT);
+        initialSchedule.setStartTime(UPDATED_START_TIME);
+        initialSchedule.setEndTime(UPDATED_END_TIME);
+        initialSchedule.setRepetitions(UPDATED_REPETITIONS);
 
         RecurrentTimeUnit recurrentTimeUnit = new RecurrentTimeUnit();
         recurrentTimeUnit.setValue(3);
 
         Set<RecurrentTimeUnit> recurrentTimeUnits = new HashSet<>();
         recurrentTimeUnits.add(recurrentTimeUnit);
-        recurrentTimeUnits.add(schedule.getRecurrentTimeUnits().iterator().next());
-        schedule.setRecurrentTimeUnits(recurrentTimeUnits);
+        recurrentTimeUnits.add(initialSchedule.getRecurrentTimeUnits().iterator().next());
+        initialSchedule.setRecurrentTimeUnits(recurrentTimeUnits);
 
-        schedule.setDeleted(UPDATED_DELETED);
+        initialSchedule.setDeleted(UPDATED_DELETED);
         restScheduleMockMvc.perform(post("/app/rest/schedule")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(schedule)))
+                .content(TestUtil.convertObjectToJsonBytes(initialSchedule)))
                 .andExpect(status().isOk());
 
         // Validate the Schedule in the database
@@ -305,10 +305,10 @@ public class ScheduleResourceTest {
     @Transactional
     public void deleteSchedule() throws Exception {
         // Initialize the database
-        Schedule schedule = scheduleRepository.saveAndFlush(this.schedule);
+        Schedule initialSchedule = scheduleRepository.saveAndFlush(this.schedule);
 
         // Get the schedule
-        restScheduleMockMvc.perform(delete("/app/rest/schedule/{id}", schedule.getId())
+        restScheduleMockMvc.perform(delete("/app/rest/schedule/{id}", initialSchedule.getId())
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 
