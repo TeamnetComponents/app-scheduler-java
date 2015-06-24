@@ -18,7 +18,6 @@ public interface ScheduledJobExecutionRepository extends AppRepository<Scheduled
     ScheduledJobExecution findOne(@Param("id") Long id);
 
     @Query("select scheduledJob from ScheduledJob scheduledJob, ScheduledJobExecution scheduledJobExecution where scheduledJobExecution.id =:id and scheduledJob.id = scheduledJobExecution.scheduledJob.id")
-    //@Query("select scheduledJob from ScheduledJob scheduledJob where scheduledJob.id = :id")
     ScheduledJob findJobByExecutionId(@Param("id") Long id);
 
 }
