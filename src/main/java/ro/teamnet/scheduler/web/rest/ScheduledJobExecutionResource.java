@@ -2,9 +2,11 @@
 package ro.teamnet.scheduler.web.rest;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import ro.teamnet.bootstrap.web.rest.AbstractResource;
 import com.codahale.metrics.annotation.Timed;
 
+import ro.teamnet.scheduler.domain.ScheduledJob;
 import ro.teamnet.scheduler.domain.ScheduledJobExecution;
 import ro.teamnet.scheduler.service.ScheduledJobExecutionService;
 import org.slf4j.Logger;
@@ -30,5 +32,13 @@ public class ScheduledJobExecutionResource extends AbstractResource<ScheduledJob
     @Inject
     public ScheduledJobExecutionResource(ScheduledJobExecutionService service) {
         super(service);
+    }
+
+    @Autowired
+    ScheduledJobExecutionService service;
+
+    @RequestMapping(value="/getjob/{id}", method=RequestMethod.GET)
+    public ScheduledJob findJobByExecutionId(@PathVariable Long id) {
+        return service.findJobByExecutionId(id);
     }
 }
