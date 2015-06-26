@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ro.teamnet.bootstrap.service.AbstractServiceImpl;
+import ro.teamnet.scheduler.domain.ScheduledJob;
 import ro.teamnet.scheduler.domain.ScheduledJobExecution;
 import ro.teamnet.scheduler.enums.JobExecutionStatus;
 import ro.teamnet.scheduler.repository.ScheduledJobExecutionRepository;
@@ -37,5 +38,9 @@ public class ScheduledJobExecutionServiceImpl extends AbstractServiceImpl<Schedu
         }
         execution.setStatus(status);
         save(execution);
+    }
+
+    public ScheduledJob findJobByExecutionId(Long id) {
+        return scheduledJobExecutionRepository.findJobByExecutionId(id);
     }
 }
