@@ -2,7 +2,7 @@ package ro.teamnet.scheduler.service;
 
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Service;
-import ro.teamnet.scheduler.constants.TimeUnitCode;
+import ro.teamnet.scheduler.enums.TimeUnitCode;
 import ro.teamnet.scheduler.domain.RecurrentTimeUnit;
 import ro.teamnet.scheduler.domain.Schedule;
 import ro.teamnet.scheduler.domain.TimeInterval;

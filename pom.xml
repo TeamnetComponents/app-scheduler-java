@@ -43,6 +43,11 @@
 
     <dependencies>
         <!-- Project dependencies -->
+		<dependency>
+			<groupId>ro.teamnet.scheduler</groupId>
+			<artifactId>app-scheduler-api</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
         <!--Bootstrap commons-->
         <dependency>
             <groupId>ro.teamnet.bootstrap</groupId>

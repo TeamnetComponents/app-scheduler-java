@@ -14,7 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import ro.teamnet.SchedulerTestApplication;
-import ro.teamnet.scheduler.constants.TimeUnitCode;
+import ro.teamnet.scheduler.enums.TimeUnitCode;
 import ro.teamnet.scheduler.domain.TimeUnit;
 import ro.teamnet.scheduler.repository.TimeUnitRepository;
 import ro.teamnet.scheduler.service.TimeUnitService;

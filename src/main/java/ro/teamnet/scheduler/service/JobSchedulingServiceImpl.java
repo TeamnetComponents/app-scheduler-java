@@ -120,6 +120,7 @@ public class JobSchedulingServiceImpl implements JobSchedulingService {
                         .usingJobData(JOB_CLASS, scheduledJob.getQuartzJobClassName())
                         .usingJobData(JOB_VERSION, scheduledJob.getVersion())
                         .storeDurably()
+                        .requestRecovery()
                         .build(),
                 false, false);
     }
@@ -192,7 +193,7 @@ public class JobSchedulingServiceImpl implements JobSchedulingService {
             TriggerBuilder<CronTrigger> triggerBuilder = TriggerBuilder.newTrigger()
                     .forJob(jobKey)
                     .withIdentity(triggerKey)
-                    .withSchedule(applyMisfireInstruction(cronScheduleBuilder, schedule))
+                    .withSchedule(getCronScheduleBuilder(cronExpression, schedule))
                     .startAt(triggerStartDate)
                     .endAt(triggerEndDate)
                     .usingJobData(TRIGGER_ID, schedule.getId())
@@ -245,10 +246,22 @@ public class JobSchedulingServiceImpl implements JobSchedulingService {
         return nextValidTime;
     }
 
-    private CronScheduleBuilder applyMisfireInstruction(CronScheduleBuilder scheduleBuilder, Schedule schedule) {
-        switch (schedule.getMisfirePolicy()){
-            case FIRE_ONCE: return scheduleBuilder.withMisfireHandlingInstructionFireAndProceed();
-            case FIRE_ALL: return scheduleBuilder.withMisfireHandlingInstructionIgnoreMisfires();
+    /**
+     * Creates a {@link CronScheduleBuilder} based on the given cron expression and schedule details.
+     *
+     * @param cronExpression the cron expression
+     * @param schedule       the scheduling information
+     * @return a cron schedule builder
+     */
+    private CronScheduleBuilder getCronScheduleBuilder(CronExpression cronExpression, Schedule schedule) {
+
+        CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(cronExpression);
+
+        switch (schedule.getMisfirePolicy()) {
+            case FIRE_ONCE:
+                return scheduleBuilder.withMisfireHandlingInstructionFireAndProceed();
+            case FIRE_ALL:
+                return scheduleBuilder.withMisfireHandlingInstructionIgnoreMisfires();
             default:
                 return scheduleBuilder.withMisfireHandlingInstructionDoNothing();
         }

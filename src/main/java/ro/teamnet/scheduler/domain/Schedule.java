@@ -9,7 +9,7 @@ import org.joda.time.DateTime;
 import org.quartz.TriggerKey;
 import ro.teamnet.bootstrap.domain.util.CustomDateTimeDeserializer;
 import ro.teamnet.bootstrap.domain.util.CustomDateTimeSerializer;
-import ro.teamnet.scheduler.constants.MisfirePolicy;
+import ro.teamnet.scheduler.enums.MisfirePolicy;
 
 import javax.persistence.*;
 import java.io.Serializable;

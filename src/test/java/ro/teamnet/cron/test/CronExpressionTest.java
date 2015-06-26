@@ -13,7 +13,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 import ro.teamnet.SchedulerTestApplication;
-import ro.teamnet.scheduler.constants.TimeUnitCode;
+import ro.teamnet.scheduler.enums.TimeUnitCode;
 import ro.teamnet.scheduler.domain.RecurrentTimeUnit;
 import ro.teamnet.scheduler.domain.Schedule;
 import ro.teamnet.scheduler.domain.TimeInterval;
@@ -25,7 +25,7 @@ import java.util.Comparator;
 import java.util.Set;
 import java.util.TreeSet;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = SchedulerTestApplication.class)

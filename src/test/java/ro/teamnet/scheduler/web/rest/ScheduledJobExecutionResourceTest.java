@@ -19,7 +19,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import ro.teamnet.SchedulerTestApplication;
 import ro.teamnet.scheduler.domain.ScheduledJobExecution;
-import ro.teamnet.scheduler.job.JobExecutionStatus;
+import ro.teamnet.scheduler.enums.JobExecutionStatus;
 import ro.teamnet.scheduler.repository.ScheduledJobExecutionRepository;
 import ro.teamnet.scheduler.service.ScheduledJobExecutionService;
 import ro.teamnet.web.rest.TestUtil;

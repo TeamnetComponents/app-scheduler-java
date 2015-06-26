@@ -2,7 +2,7 @@ package ro.teamnet.scheduler.domain;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import ro.teamnet.scheduler.constants.TimeUnitCode;
+import ro.teamnet.scheduler.enums.TimeUnitCode;
 
 import javax.persistence.*;
 import java.io.Serializable;

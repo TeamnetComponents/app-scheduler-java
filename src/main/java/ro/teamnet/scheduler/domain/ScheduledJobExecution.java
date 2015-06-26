@@ -9,7 +9,7 @@ import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 import ro.teamnet.bootstrap.domain.util.CustomDateTimeDeserializer;
 import ro.teamnet.bootstrap.domain.util.CustomDateTimeSerializer;
-import ro.teamnet.scheduler.job.JobExecutionStatus;
+import ro.teamnet.scheduler.enums.JobExecutionStatus;
 
 import javax.persistence.*;
 import java.io.Serializable;

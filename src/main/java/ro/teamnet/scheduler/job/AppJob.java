@@ -10,6 +10,7 @@ import org.quartz.JobExecutionException;
 import ro.teamnet.scheduler.constants.QuartzSchedulingConstants;
 import ro.teamnet.scheduler.domain.ScheduledJob;
 import ro.teamnet.scheduler.domain.ScheduledJobExecution;
+import ro.teamnet.scheduler.enums.JobExecutionStatus;
 import ro.teamnet.scheduler.service.ScheduledJobExecutionService;
 import ro.teamnet.scheduler.service.ScheduledJobService;
 

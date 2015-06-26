@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ro.teamnet.bootstrap.service.AbstractServiceImpl;
 import ro.teamnet.scheduler.domain.ScheduledJobExecution;
-import ro.teamnet.scheduler.job.JobExecutionStatus;
+import ro.teamnet.scheduler.enums.JobExecutionStatus;
 import ro.teamnet.scheduler.repository.ScheduledJobExecutionRepository;
 
 import javax.inject.Inject;
