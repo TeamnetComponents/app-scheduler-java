@@ -3,7 +3,6 @@ package ro.teamnet.scheduler.job;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.joda.time.DateTime;
-import org.json.JSONObject;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -42,9 +41,8 @@ public abstract class AppJob implements Job {
     public final void execute(JobExecutionContext context) throws JobExecutionException {
         this.context = context;
         readContextData();
-        ScheduledJob scheduledJob = scheduledJobService.findOne(scheduledJobId);
-        ScheduledJobExecution execution = createExecution(scheduledJob);
-        executionId = scheduledJobExecutionService.save(execution).getId();
+
+        createOrRecoverJobExecution();
 
         JobExecutionStatus status = null;
         try {
@@ -58,8 +56,26 @@ public abstract class AppJob implements Job {
         }
     }
 
+    private void createOrRecoverJobExecution() {
+        ScheduledJob scheduledJob = scheduledJobService.findOne(scheduledJobId);
+        if (context.isRecovering()) {
+            executionId = scheduledJob.getScheduledJobExecution().getId();
+        }
+        else {
+            executionId = scheduledJobExecutionService.save(createExecution(scheduledJob)).getId();
+        }
+    }
+
     protected void updateExecutionStatus(JobExecutionStatus status) {
         scheduledJobExecutionService.updateExecutionStatus(executionId, status);
+    }
+
+    protected void saveExecutionDetails(String updateExecutionState) {
+        scheduledJobExecutionService.updateExecutionState(executionId, updateExecutionState);
+    }
+
+    protected String getExecutionDetails() {
+        return scheduledJobExecutionService.findOne(executionId).getState();
     }
 
     /**
@@ -91,7 +107,6 @@ public abstract class AppJob implements Job {
         execution.setScheduledFireTime(new DateTime(context.getScheduledFireTime()));
         execution.setLastFireTime(new DateTime(context.getPreviousFireTime()));
         execution.setNextFireTime(new DateTime(context.getNextFireTime()));
-        execution.setState(new JSONObject(context.getMergedJobDataMap()).toString());
         execution.setStatus(JobExecutionStatus.WAITING);
         execution.setScheduledJob(scheduledJob);
         return execution;

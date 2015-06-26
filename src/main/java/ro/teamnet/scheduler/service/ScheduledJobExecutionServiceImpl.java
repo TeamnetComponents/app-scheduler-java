@@ -40,6 +40,19 @@ public class ScheduledJobExecutionServiceImpl extends AbstractServiceImpl<Schedu
         save(execution);
     }
 
+    @Override
+    public void updateExecutionState(Long executionId, String executionState) {
+        if (executionState == null) {
+            return;
+        }
+        ScheduledJobExecution execution = findOne(executionId);
+        if (executionState.equals(execution.getState())) {
+            return;
+        }
+        execution.setState(executionState);
+        save(execution);
+    }
+
     public ScheduledJob findJobByExecutionId(Long id) {
         return scheduledJobExecutionRepository.findJobByExecutionId(id);
     }
