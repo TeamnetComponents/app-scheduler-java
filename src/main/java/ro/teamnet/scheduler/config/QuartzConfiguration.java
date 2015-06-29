@@ -57,7 +57,10 @@ public class QuartzConfiguration {
 
     private Properties getQuartzProperties() {
         Properties properties = new Properties();
-        properties.put("org.quartz.jobStore.driverDelegateClass", propertyResolver.getProperty("jobStore.driverDelegateClass"));
+        String delegateClass = propertyResolver.getProperty("jobStore.driverDelegateClass");
+        if (delegateClass != null) {
+            properties.put("org.quartz.jobStore.driverDelegateClass", delegateClass);
+        }
         return properties;
     }
 
