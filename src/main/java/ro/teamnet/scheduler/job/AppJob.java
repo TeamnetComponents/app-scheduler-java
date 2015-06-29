@@ -70,8 +70,8 @@ public abstract class AppJob implements Job {
         scheduledJobExecutionService.updateExecutionStatus(executionId, status);
     }
 
-    protected void saveExecutionDetails(String updateExecutionState) {
-        scheduledJobExecutionService.updateExecutionState(executionId, updateExecutionState);
+    protected void saveExecutionDetails(String executionDetails) {
+        scheduledJobExecutionService.updateExecutionState(executionId, executionDetails);
     }
 
     protected String getExecutionDetails() {

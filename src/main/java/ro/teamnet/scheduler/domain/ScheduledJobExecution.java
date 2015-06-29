@@ -3,12 +3,14 @@ package ro.teamnet.scheduler.domain;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 import ro.teamnet.bootstrap.domain.util.CustomDateTimeDeserializer;
 import ro.teamnet.bootstrap.domain.util.CustomDateTimeSerializer;
+import ro.teamnet.scheduler.dto.JobExecutionDTO;
 import ro.teamnet.scheduler.enums.JobExecutionStatus;
 
 import javax.persistence.*;
@@ -145,5 +147,18 @@ public class ScheduledJobExecution implements Serializable, Comparable<Scheduled
         }
 
         return obj.getActualFireTime().compareTo(actualFireTime);
+    }
+
+    @Transient
+    @JsonIgnore
+    public JobExecutionDTO toDTO(){
+        JobExecutionDTO jobExecutionDTO = new JobExecutionDTO();
+        jobExecutionDTO.setStatus(this.getStatus());
+        jobExecutionDTO.setScheduledFireTime(this.getScheduledFireTime());
+        jobExecutionDTO.setActualFireTime(this.getActualFireTime());
+        jobExecutionDTO.setPreviousFireTime(this.getLastFireTime());
+        jobExecutionDTO.setNextFireTime(this.getNextFireTime());
+        jobExecutionDTO.setExecutionDetails(this.getState());
+        return jobExecutionDTO;
     }
 }
