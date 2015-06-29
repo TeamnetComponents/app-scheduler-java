@@ -1,28 +1,41 @@
 package ro.teamnet.scheduler.service;
 
-import ro.teamnet.scheduler.domain.ScheduledJob;
+import org.springframework.data.domain.Sort;
+import ro.teamnet.bootstrap.extend.*;
 import ro.teamnet.scheduler.domain.ScheduledJobExecution;
 import ro.teamnet.scheduler.dto.JobExecutionDTO;
 
 import javax.inject.Inject;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Created by Oana.Mihai on 6/29/2015.
+ * The scheduler service.
  */
 public class AppSchedulerServiceImpl implements AppSchedulerService {
 
     @Inject
     ScheduledJobService scheduledJobService;
+    @Inject
+    ScheduledJobExecutionService scheduledJobExecutionService;
 
     @Override
-    public Set<JobExecutionDTO> getJobExecutions(Long baseJobId) {
-        Set<JobExecutionDTO> jobExecutionDTOs = new HashSet<>();
-        ScheduledJob job = scheduledJobService.findOne(baseJobId);
-        for (ScheduledJobExecution jobExecution : job.getScheduledJobExecutions()) {
-            jobExecutionDTOs.add(jobExecution.toDTO());
+    public AppPage<JobExecutionDTO> findJobExecutions(AppPageable dtoPageable, Long baseJobId) {
+        Sort sort = scheduledJobExecutionService.convertDTOSortToEntitySort(dtoPageable.getSort());
+        Filters filters = scheduledJobExecutionService.convertDTOFiltersToEntityFilters(dtoPageable.getFilters());
+        filters.addFilter(new Filter("scheduledJob.id", baseJobId.toString(), Filter.FilterType.EQUAL));
+
+        AppPageRequest appPageable = new AppPageRequest(dtoPageable.getPageNumber(), dtoPageable.getPageSize(),
+                sort, filters, dtoPageable.locale());
+
+        AppPage<ScheduledJobExecution> executions = scheduledJobExecutionService.findAll(appPageable);
+
+        List<JobExecutionDTO> content = new ArrayList<>();
+        for (ScheduledJobExecution execution : executions) {
+            content.add(execution.toDTO());
         }
-        return jobExecutionDTOs;
+        AppPage<JobExecutionDTO> executionDTOs = new AppPageImpl<JobExecutionDTO>(content, dtoPageable,
+                executions.getTotalElements(), dtoPageable.getFilters());
+        return executionDTOs;
     }
 }
