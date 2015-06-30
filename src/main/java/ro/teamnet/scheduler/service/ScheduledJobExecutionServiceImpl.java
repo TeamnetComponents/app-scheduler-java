@@ -85,12 +85,12 @@ public class ScheduledJobExecutionServiceImpl extends AbstractServiceImpl<Schedu
     private Filters convertDTOFiltersToEntityFilters(Filters dtoFilters) {
         Filters filters = new Filters();
         for (Filter filter : dtoFilters) {
-            filters.addFilter(convertFilterToDTOFilter(filter));
+            filters.addFilter(convertDTOFilterToEntityFilter(filter));
         }
         return filters;
     }
 
-    private Filter convertFilterToDTOFilter(Filter filter) {
+    private Filter convertDTOFilterToEntityFilter(Filter filter) {
         if (filter.getProperty().equals("previousFireTime")) {
             filter.setProperty("lastFireTime");
         } else if (filter.getProperty().equals("executionDetails")) {
@@ -102,12 +102,12 @@ public class ScheduledJobExecutionServiceImpl extends AbstractServiceImpl<Schedu
     private Sort convertDTOSortToEntitySort(Sort dtoSort) {
         List<Sort.Order> orders = new ArrayList<>();
         for (Sort.Order order : dtoSort) {
-            orders.add(convertOrderToDTOOrder(order));
+            orders.add(convertDTOOrderToEntityOrder(order));
         }
         return new Sort(orders);
     }
 
-    private Sort.Order convertOrderToDTOOrder(Sort.Order order) {
+    private Sort.Order convertDTOOrderToEntityOrder(Sort.Order order) {
         Sort.Order newOrder = order;
 
         if (order.getProperty().equals("previousFireTime")) {
