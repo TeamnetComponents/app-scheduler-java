@@ -1,5 +1,6 @@
 package ro.teamnet.scheduler.service;
 
+import org.springframework.stereotype.Service;
 import ro.teamnet.bootstrap.extend.AppPage;
 import ro.teamnet.bootstrap.extend.AppPageable;
 import ro.teamnet.scheduler.dto.JobExecutionDTO;
@@ -9,6 +10,7 @@ import javax.inject.Inject;
 /**
  * The scheduler service.
  */
+@Service
 public class AppSchedulerServiceImpl implements AppSchedulerService {
 
     @Inject
