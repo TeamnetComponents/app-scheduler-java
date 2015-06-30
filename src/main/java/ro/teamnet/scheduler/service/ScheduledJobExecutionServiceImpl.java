@@ -100,10 +100,14 @@ public class ScheduledJobExecutionServiceImpl extends AbstractServiceImpl<Schedu
     }
 
     private Sort convertDTOSortToEntitySort(Sort dtoSort) {
+        if (dtoSort == null)
+            return null;
+
         List<Sort.Order> orders = new ArrayList<>();
         for (Sort.Order order : dtoSort) {
             orders.add(convertDTOOrderToEntityOrder(order));
         }
+
         return new Sort(orders);
     }
 
