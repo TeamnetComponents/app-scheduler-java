@@ -14,7 +14,7 @@ import javax.inject.Inject;
 public class AppSchedulerServiceImpl implements AppSchedulerService {
 
     @Inject
-    ScheduledJobExecutionService scheduledJobExecutionService;
+    private ScheduledJobExecutionService scheduledJobExecutionService;
 
     @Override
     public AppPage<JobExecutionDTO> findJobExecutions(AppPageable dtoPageable, Long baseJobId) {
