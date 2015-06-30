@@ -6,11 +6,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import ro.teamnet.bootstrap.extend.Filter;
-import ro.teamnet.bootstrap.extend.Filters;
+import ro.teamnet.bootstrap.extend.*;
 import ro.teamnet.bootstrap.service.AbstractServiceImpl;
 import ro.teamnet.scheduler.domain.ScheduledJob;
 import ro.teamnet.scheduler.domain.ScheduledJobExecution;
+import ro.teamnet.scheduler.dto.JobExecutionDTO;
 import ro.teamnet.scheduler.enums.JobExecutionStatus;
 import ro.teamnet.scheduler.repository.ScheduledJobExecutionRepository;
 
@@ -62,9 +62,27 @@ public class ScheduledJobExecutionServiceImpl extends AbstractServiceImpl<Schedu
         return scheduledJobExecutionRepository.findJobByExecutionId(id);
     }
 
-
     @Override
-    public Filters convertDTOFiltersToEntityFilters(Filters dtoFilters) {
+    public AppPage<JobExecutionDTO> findJobExecutionDTOs(AppPageable dtoPageable, Long baseJobId) {
+        Sort sort = convertDTOSortToEntitySort(dtoPageable.getSort());
+        Filters filters = convertDTOFiltersToEntityFilters(dtoPageable.getFilters());
+        filters.addFilter(new Filter("scheduledJob.id", baseJobId.toString(), Filter.FilterType.EQUAL));
+
+        AppPageRequest appPageable = new AppPageRequest(dtoPageable.getPageNumber(), dtoPageable.getPageSize(),
+                sort, filters, dtoPageable.locale());
+
+        AppPage<ScheduledJobExecution> executions = findAll(appPageable);
+
+        List<JobExecutionDTO> content = new ArrayList<>();
+        for (ScheduledJobExecution execution : executions) {
+            content.add(execution.toDTO());
+        }
+        AppPage<JobExecutionDTO> executionDTOs = new AppPageImpl<JobExecutionDTO>(content, dtoPageable,
+                executions.getTotalElements(), dtoPageable.getFilters());
+        return executionDTOs;
+    }
+
+    private Filters convertDTOFiltersToEntityFilters(Filters dtoFilters) {
         Filters filters = new Filters();
         for (Filter filter : dtoFilters) {
             filters.addFilter(convertFilterToDTOFilter(filter));
@@ -81,8 +99,7 @@ public class ScheduledJobExecutionServiceImpl extends AbstractServiceImpl<Schedu
         return filter;
     }
 
-    @Override
-    public Sort convertDTOSortToEntitySort(Sort dtoSort) {
+    private Sort convertDTOSortToEntitySort(Sort dtoSort) {
         List<Sort.Order> orders = new ArrayList<>();
         for (Sort.Order order : dtoSort) {
             orders.add(convertOrderToDTOOrder(order));
