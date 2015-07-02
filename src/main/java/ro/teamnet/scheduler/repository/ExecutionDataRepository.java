@@ -24,6 +24,8 @@ public interface ExecutionDataRepository extends AppRepository<ExecutionData,Lon
             "where executionData.configuration.configurationId =:configurationId " +
             "and executionData.configuration.type =:configurationType " +
             "and executionData.scheduledJobExecution.id =:executionId")
-    ExecutionData findByConfigurationIdAndTypeAndExecutionId(Long configurationId, String configurationType, Long executionId);
+    ExecutionData findByConfigurationIdAndTypeAndExecutionId(@Param("configurationId") Long configurationId,
+                                                             @Param("configurationType") String configurationType,
+                                                             @Param("executionId") Long executionId);
 
 }

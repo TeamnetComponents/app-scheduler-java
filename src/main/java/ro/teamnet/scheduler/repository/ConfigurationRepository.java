@@ -20,5 +20,10 @@ public interface ConfigurationRepository extends AppRepository<Configuration,Lon
 
     List<Configuration> findByScheduledJobId(Long scheduledJobId);
 
-    Configuration findByConfigurationIdAndType(Long configurationId, String type);
+    @Query("select configuration from Configuration configuration " +
+            "left join fetch configuration.scheduledJob " +
+            "where configuration.configurationId =:configurationId " +
+            "and configuration.type = :configurationType")
+    Configuration findByConfigurationIdAndType(@Param("configurationId") Long configurationId,
+                                               @Param("configurationType") String type);
 }
