@@ -131,4 +131,9 @@
         <dropColumn tableName="T_SCHEDULEDJOB" columnName="last_execution_state"/>
     </changeSet>
 
+    <changeSet id="20150630152500" author="oanam">
+        <dropColumn tableName="T_SCHEDULEDJOB" columnName="type"/>
+        <dropColumn tableName="T_SCHEDULEDJOB" columnName="quartz_job_class_name"/>
+        <dropColumn tableName="T_SCHEDULEDJOB" columnName="owner_id"/>
+    </changeSet>
 </databaseChangeLog>

@@ -5,9 +5,9 @@ package ro.teamnet.scheduler.constants;
  */
 public class QuartzSchedulingConstants {
     /**
-     * Interval (in milliseconds) for scanning the db and scheduling jobs.
+     * Interval (in milliseconds) for polling a job plugin for status updates.
      */
-    public static final long JOB_SCHEDULING_INTERVAL = 30000L;
+    public static final long JOB_POLLING_INTERVAL = 30000L;
     /**
      * Group name used for all jobs based on the ScheduledJob entity.
      */
@@ -17,21 +17,6 @@ public class QuartzSchedulingConstants {
      * Job data map property key for the scheduled job id.
      */
     public static final String JOB_ID = "JOB_ID";
-
-    /**
-     * Job data map property key for the job version.
-     */
-    public static final String JOB_VERSION = "JOB_VERSION";
-
-    /**
-     * Job data map property key for the job class.
-     */
-    public static final String JOB_CLASS = "JOB_CLASS";
-
-    /**
-     * Job data map property key for the job options.
-     */
-    public static final String JOB_OPTIONS = "JOB_OPTIONS";
 
     /**
      * Trigger data map property key for the trigger (schedule) id.

@@ -21,9 +21,6 @@ public class ScheduleServiceImpl extends AbstractServiceImpl<Schedule, Long> imp
     private final Logger log = LoggerFactory.getLogger(ScheduleServiceImpl.class);
 
     @Inject
-    private ScheduleRepository scheduleRepository;
-
-    @Inject
     private RecurrentTimeUnitService recurrentTimeUnitService;
 
     @Inject
@@ -34,10 +31,13 @@ public class ScheduleServiceImpl extends AbstractServiceImpl<Schedule, Long> imp
         super(repository);
     }
 
+    private ScheduleRepository getScheduleRepository() {
+        return (ScheduleRepository)getRepository();
+    }
 
     @Override
     public List<Schedule> findByScheduledJobId(Long scheduledJobId) {
-        return scheduleRepository.findByScheduledJobId(scheduledJobId);
+        return getScheduleRepository().findByScheduledJobId(scheduledJobId);
     }
 
     /**
@@ -55,7 +55,7 @@ public class ScheduleServiceImpl extends AbstractServiceImpl<Schedule, Long> imp
 
     @Override
     public List<Schedule> findAll() {
-        return scheduleRepository.findByDeletedFalse();
+        return getScheduleRepository().findByDeletedFalse();
     }
 
     @Override

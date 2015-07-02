@@ -1,23 +1,20 @@
 package ro.teamnet.scheduler.service;
 
-import org.json.JSONObject;
 import org.quartz.*;
-import org.quartz.impl.matchers.GroupMatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import ro.teamnet.scheduler.constants.QuartzSchedulingConstants;
 import ro.teamnet.scheduler.domain.Schedule;
 import ro.teamnet.scheduler.domain.ScheduledJob;
-import ro.teamnet.scheduler.domain.Task;
+import ro.teamnet.scheduler.job.AppJob;
 
 import javax.inject.Inject;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.Map;
-import java.util.Set;
 
-import static ro.teamnet.scheduler.constants.QuartzSchedulingConstants.*;
+import static ro.teamnet.scheduler.constants.QuartzSchedulingConstants.JOB_ID;
+import static ro.teamnet.scheduler.constants.QuartzSchedulingConstants.TRIGGER_ID;
 
 @Service
 public class JobSchedulingServiceImpl implements JobSchedulingService {
@@ -28,34 +25,52 @@ public class JobSchedulingServiceImpl implements JobSchedulingService {
     private Scheduler scheduler;
 
     @Inject
-    private ScheduledJobService scheduledJobService;
-
-    @Inject
     private ScheduleService scheduleService;
-
-    @Inject
-    private TaskService taskService;
 
     @Override
     public void onScheduledJobSave(ScheduledJob job) {
-        JobKey jobKey = job.getJobKey();
+        JobKey jobKey = getJobKey(job.getId());
         try {
-            Set<JobKey> jobKeys = scheduler.getJobKeys(GroupMatcher.<JobKey>jobGroupEquals(job.getJobGroup()));
-            scheduler.deleteJobs(new ArrayList<JobKey>(jobKeys));
+            if (scheduler.checkExists(jobKey)) {
+                if (job.getDeleted()) {
+                    scheduler.deleteJob(jobKey);
+                }
+                return;
+            }
             if (job.getDeleted()) {
                 return;
             }
-            Map<Integer, String> taskOptions = taskService.getTaskOptionsByQueuePosition(job.getId());
-            createJob(job, jobKey, taskOptions);
-            scheduleJob(job);
+            createJob(jobKey, job.getId());
+            scheduleJob(jobKey, job.getId());
         } catch (ClassNotFoundException | SchedulerException e) {
             log.error("Error on saving job " + jobKey, e);
         }
     }
 
+    /**
+     * Creates a job key for the job with the given id.
+     *
+     * @param jobId the job id
+     * @return the job key
+     */
+    private JobKey getJobKey(Long jobId) {
+        return new JobKey(getJobName(jobId), QuartzSchedulingConstants.JOB_GROUP);
+    }
+
+    /**
+     * Provides a unique name for the job with the given id.
+     *
+     * @param jobId the job id
+     * @return a unique job name to be used when creating the {@link JobKey}
+     */
+    private String getJobName(Long jobId) {
+        return "Job_" + jobId;
+    }
+
+
     @Override
     public void onScheduledJobDelete(Long jobId) {
-        JobKey jobKey = scheduledJobService.findOne(jobId).getJobKey();
+        JobKey jobKey = getJobKey(jobId);
         try {
             scheduler.deleteJob(jobKey);
         } catch (SchedulerException e) {
@@ -65,22 +80,46 @@ public class JobSchedulingServiceImpl implements JobSchedulingService {
 
     @Override
     public void onScheduleSave(Schedule schedule) {
+        JobKey jobKey = getJobKey(schedule.getScheduledJob().getId());
+        TriggerKey triggerKey = getTriggerKey(jobKey, schedule.getId());
         try {
-            JobKey jobKey = schedule.getScheduledJob().getJobKey();
             if (!scheduler.checkExists(jobKey)) {
+                log.debug("Job " + jobKey + " not found. Scheduling " + triggerKey + " was skipped.");
                 return;
             }
-            Set<TriggerKey> triggerKeys = scheduler.getTriggerKeys(GroupMatcher.triggerGroupEquals(schedule.getTriggerGroup()));
-            scheduler.unscheduleJobs(new ArrayList<TriggerKey>(triggerKeys));
-            scheduleJob(jobKey, schedule);
+            scheduleJob(jobKey, triggerKey, schedule);
         } catch (SchedulerException e) {
-            log.error("Error on scheduling " + schedule.getTriggerKey(), e);
+            log.error("Error on scheduling " + triggerKey + " for job " + jobKey, e);
         }
+    }
+
+    /**
+     * Creates a trigger key for the schedule with the given id, linked to the given job key.
+     *
+     * @param jobKey     the job key
+     * @param scheduleId the schedule id
+     * @return the trigger key
+     */
+    private TriggerKey getTriggerKey(JobKey jobKey, Long scheduleId) {
+        String triggerGroup = jobKey.getName();
+        return new TriggerKey(getTriggerName(scheduleId), triggerGroup);
+    }
+
+    /**
+     * Provides a unique trigger name for the schedule with the given id.
+     *
+     * @param scheduleId the schedule id
+     * @return a unique trigger name to be used when creating the {@link TriggerKey}
+     */
+    private String getTriggerName(Long scheduleId) {
+        return "Schedule_" + scheduleId;
     }
 
     @Override
     public void onScheduleDelete(Long scheduleId) {
-        TriggerKey triggerKey = scheduleService.findOne(scheduleId).getTriggerKey();
+        Schedule schedule = scheduleService.findOne(scheduleId);
+        JobKey jobKey = getJobKey(schedule.getScheduledJob().getId());
+        TriggerKey triggerKey = getTriggerKey(jobKey, scheduleId);
         try {
             if (scheduler.checkExists(triggerKey)) {
                 scheduler.unscheduleJob(triggerKey);
@@ -90,35 +129,20 @@ public class JobSchedulingServiceImpl implements JobSchedulingService {
         }
     }
 
-    @Override
-    public void onTaskSave(Task task) {
-        onScheduledJobSave(task.getScheduledJob());
-    }
-
-    @Override
-    public void onTaskDelete(Long taskId) {
-        onScheduledJobSave(taskService.findOne(taskId).getScheduledJob());
-    }
-
     /**
      * Creates a new Quartz job based on the given {@link ScheduledJob}.
      *
-     * @param scheduledJob the job
-     * @param jobKey       Quartz job key
-     * @param taskOptions  the task options used at execution time
+     * @param jobKey the Quartz job key
+     * @param jobId  the job id
      * @throws ClassNotFoundException
      * @throws SchedulerException
      */
-    private void createJob(ScheduledJob scheduledJob, JobKey jobKey, Map<Integer, String> taskOptions) throws ClassNotFoundException, SchedulerException {
-        Class<? extends Job> jobClass = (Class<? extends Job>) Class.forName(scheduledJob.getQuartzJobClassName());
+    private void createJob(JobKey jobKey, Long jobId) throws ClassNotFoundException, SchedulerException {
         scheduler.addJob(
                 JobBuilder.newJob()
-                        .ofType(jobClass)
+                        .ofType(AppJob.class)
                         .withIdentity(jobKey)
-                        .usingJobData(JOB_ID, scheduledJob.getId())
-                        .usingJobData(JOB_OPTIONS, new JSONObject(taskOptions).toString())
-                        .usingJobData(JOB_CLASS, scheduledJob.getQuartzJobClassName())
-                        .usingJobData(JOB_VERSION, scheduledJob.getVersion())
+                        .usingJobData(JOB_ID, jobId)
                         .storeDurably()
                         .requestRecovery()
                         .build(),
@@ -129,16 +153,16 @@ public class JobSchedulingServiceImpl implements JobSchedulingService {
     /**
      * Schedules the given job based on the {@link Schedule} definitions linked to it.
      *
-     * @param job the job to be scheduled
-     * @throws SchedulerException
+     * @param jobKey the Quartz job key
+     * @param jobId  the job id
      */
-    private void scheduleJob(ScheduledJob job) {
-        JobKey jobKey = job.getJobKey();
-        for (Schedule schedule : scheduleService.findByScheduledJobId(job.getId())) {
+    private void scheduleJob(JobKey jobKey, Long jobId) {
+        for (Schedule schedule : scheduleService.findByScheduledJobId(jobId)) {
+            TriggerKey triggerKey = getTriggerKey(jobKey, schedule.getId());
             try {
-                scheduleJob(jobKey, schedule);
+                scheduleJob(jobKey, triggerKey, schedule);
             } catch (SchedulerException e) {
-                log.error("Error on scheduling " + schedule.getTriggerKey(), e);
+                log.error("Error on scheduling " + triggerKey, e);
             }
         }
     }
@@ -146,15 +170,18 @@ public class JobSchedulingServiceImpl implements JobSchedulingService {
     /**
      * Schedules the job with the given key using the given {@link Schedule} definition.
      *
-     * @param jobKey   Quartz job key
-     * @param schedule the schedule definition
+     * @param jobKey     Quartz job key
+     * @param triggerKey Quartz trigger key
+     * @param schedule   the schedule definition
      * @throws SchedulerException
      */
-    private void scheduleJob(JobKey jobKey, Schedule schedule) throws SchedulerException {
+    private void scheduleJob(JobKey jobKey, TriggerKey triggerKey, Schedule schedule) throws SchedulerException {
         if (!schedule.isValid()) {
+            if (scheduler.checkExists(triggerKey)) {
+                scheduler.unscheduleJob(triggerKey);
+            }
             return;
         }
-        TriggerKey triggerKey = schedule.getTriggerKey();
         CronTrigger trigger = createTrigger(schedule, jobKey, triggerKey);
 
         if (trigger == null) {
@@ -181,14 +208,13 @@ public class JobSchedulingServiceImpl implements JobSchedulingService {
         try {
             CronExpression cronExpression = new CronExpression(schedule.getCron());
             Date triggerStartDate = getTriggerStartDate(schedule);
-            if (!cronExpression.isSatisfiedBy(triggerStartDate) && cronExpression.getNextValidTimeAfter(triggerStartDate) == null) {
+            if (!cronExpression.isSatisfiedBy(triggerStartDate)
+                    && cronExpression.getNextValidTimeAfter(triggerStartDate) == null) {
                 return null;
             }
 
-            Date triggerEndDate = getTriggerEndDate(cronExpression, triggerStartDate, schedule.getEndTime() == null ? null : schedule.getEndTime().toDate(),
-                    schedule.getRepetitions());
-
-            CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(cronExpression);
+            Date scheduleEndDate = schedule.getEndTime() == null ? null : schedule.getEndTime().toDate();
+            Date triggerEndDate = getTriggerEndDate(cronExpression, triggerStartDate, scheduleEndDate, schedule.getRepetitions());
 
             TriggerBuilder<CronTrigger> triggerBuilder = TriggerBuilder.newTrigger()
                     .forJob(jobKey)
@@ -196,8 +222,7 @@ public class JobSchedulingServiceImpl implements JobSchedulingService {
                     .withSchedule(getCronScheduleBuilder(cronExpression, schedule))
                     .startAt(triggerStartDate)
                     .endAt(triggerEndDate)
-                    .usingJobData(TRIGGER_ID, schedule.getId())
-                    .usingJobData(TRIGGER_VERSION, schedule.getVersion());
+                    .usingJobData(TRIGGER_ID, schedule.getId());
 
             return triggerBuilder.build();
         } catch (ParseException e) {

@@ -51,9 +51,6 @@ public class ScheduledJobExecution implements Serializable, Comparable<Scheduled
     @Column(name = "next_fire_time", nullable = false)
     private DateTime nextFireTime;
 
-    @Column(name = "state")
-    private String state;
-
     @Column(name = "status")
     @Enumerated(value = EnumType.STRING)
     private JobExecutionStatus status;
@@ -105,14 +102,6 @@ public class ScheduledJobExecution implements Serializable, Comparable<Scheduled
         this.nextFireTime = nextFireTime;
     }
 
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
     public JobExecutionStatus getStatus() {
         return status;
     }
@@ -154,11 +143,8 @@ public class ScheduledJobExecution implements Serializable, Comparable<Scheduled
     public JobExecutionDTO toDTO(){
         JobExecutionDTO jobExecutionDTO = new JobExecutionDTO();
         jobExecutionDTO.setStatus(this.getStatus());
-        jobExecutionDTO.setScheduledFireTime(this.getScheduledFireTime());
         jobExecutionDTO.setActualFireTime(this.getActualFireTime());
-        jobExecutionDTO.setPreviousFireTime(this.getLastFireTime());
         jobExecutionDTO.setNextFireTime(this.getNextFireTime());
-        jobExecutionDTO.setExecutionDetails(this.getState());
         return jobExecutionDTO;
     }
 }

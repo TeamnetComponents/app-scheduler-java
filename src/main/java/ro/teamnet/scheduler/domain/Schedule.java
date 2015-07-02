@@ -1,12 +1,12 @@
 package ro.teamnet.scheduler.domain;
 
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
-import org.quartz.TriggerKey;
 import ro.teamnet.bootstrap.domain.util.CustomDateTimeDeserializer;
 import ro.teamnet.bootstrap.domain.util.CustomDateTimeSerializer;
 import ro.teamnet.scheduler.enums.MisfirePolicy;
@@ -222,24 +222,6 @@ public class Schedule implements Serializable {
     @PreUpdate
     private void preUpdate() {
         setLastUpdated(new DateTime());
-    }
-
-    @Transient
-    @JsonIgnore
-    public String getTriggerName() {
-        return "Schedule_" + id + "_V_" + version;
-    }
-
-    @Transient
-    @JsonIgnore
-    public String getTriggerGroup() {
-        return "Schedule_" + id;
-    }
-
-    @Transient
-    @JsonIgnore
-    public TriggerKey getTriggerKey() {
-        return new TriggerKey(getTriggerName(), getTriggerGroup());
     }
 
     @Transient

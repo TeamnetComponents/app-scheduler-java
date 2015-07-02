@@ -20,11 +20,12 @@ public class ScheduledJobServiceImpl extends AbstractServiceImpl<ScheduledJob, L
     private final Logger log = LoggerFactory.getLogger(ScheduledJobServiceImpl.class);
 
     @Inject
-    private ScheduledJobRepository scheduledJobRepository;
-
-    @Inject
     public ScheduledJobServiceImpl(ScheduledJobRepository repository) {
         super(repository);
+    }
+
+    private ScheduledJobRepository getScheduledJobRepository() {
+        return (ScheduledJobRepository) getRepository();
     }
 
     /**
@@ -42,7 +43,7 @@ public class ScheduledJobServiceImpl extends AbstractServiceImpl<ScheduledJob, L
 
     @Override
     public List<ScheduledJob> findAll() {
-        return scheduledJobRepository.findByDeletedFalse();
+        return getScheduledJobRepository().findByDeletedFalse();
     }
 
     @Override
@@ -53,7 +54,7 @@ public class ScheduledJobServiceImpl extends AbstractServiceImpl<ScheduledJob, L
 
     @Override
     public List<ScheduledJob> findAllWithDeleted() {
-        return scheduledJobRepository.findAll();
+        return getScheduledJobRepository().findAll();
     }
 
     @Override

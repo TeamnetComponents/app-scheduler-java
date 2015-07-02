@@ -44,10 +44,6 @@ public class ScheduledJobResourceTest {
     private static final String UPDATED_NAME = "UPDATED_NAME";
     private static final String DEFAULT_DESCRIPTION = "DEFAULT_DESCRIPTION";
     private static final String UPDATED_DESCRIPTION = "UPDATED_DESCRIPTION";
-    private static final String DEFAULT_TYPE = "DEFAULT_TYPE";
-    private static final String UPDATED_TYPE = "UPDATED_TYPE";
-    private static final String DEFAULT_QUARTZ_JOB_CLASS_NAME = "DEFAULT_QUARTZ_JOB_CLASS_NAME";
-    private static final String UPDATED_QUARTZ_JOB_CLASS_NAME = "UPDATED_QUARTZ_JOB_CLASS_NAME";
 
     private static final Long DEFAULT_VERSION = 0L;
     private static final Long UPDATED_VERSION = 1L;
@@ -77,8 +73,6 @@ public class ScheduledJobResourceTest {
         scheduledJob = new ScheduledJob();
         scheduledJob.setName(DEFAULT_NAME);
         scheduledJob.setDescription(DEFAULT_DESCRIPTION);
-        scheduledJob.setType(DEFAULT_TYPE);
-        scheduledJob.setQuartzJobClassName(DEFAULT_QUARTZ_JOB_CLASS_NAME);
     }
 
     @Test
@@ -99,8 +93,6 @@ public class ScheduledJobResourceTest {
         ScheduledJob testScheduledJob = scheduledJobs.iterator().next();
         assertThat(testScheduledJob.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testScheduledJob.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
-        assertThat(testScheduledJob.getType()).isEqualTo(DEFAULT_TYPE);
-        assertThat(testScheduledJob.getQuartzJobClassName()).isEqualTo(DEFAULT_QUARTZ_JOB_CLASS_NAME);
         assertThat(testScheduledJob.getVersion()).isEqualTo(DEFAULT_VERSION);
         assertThat(testScheduledJob.getDeleted()).isEqualTo(DEFAULT_DELETED);
     }
@@ -117,8 +109,6 @@ public class ScheduledJobResourceTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.[0].name").value(DEFAULT_NAME))
                 .andExpect(jsonPath("$.[0].description").value(DEFAULT_DESCRIPTION))
-                .andExpect(jsonPath("$.[0].type").value(DEFAULT_TYPE))
-                .andExpect(jsonPath("$.[0].quartzJobClassName").value(DEFAULT_QUARTZ_JOB_CLASS_NAME))
                 .andExpect(jsonPath("$.[0].version").value(DEFAULT_VERSION.intValue()))
                 .andExpect(jsonPath("$.[0].deleted").value(DEFAULT_DELETED));
     }
@@ -136,8 +126,6 @@ public class ScheduledJobResourceTest {
                 .andExpect(jsonPath("$.id").value(initialJob.getId().intValue()))
                 .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
                 .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
-                .andExpect(jsonPath("$.type").value(DEFAULT_TYPE))
-                .andExpect(jsonPath("$.quartzJobClassName").value(DEFAULT_QUARTZ_JOB_CLASS_NAME))
                 .andExpect(jsonPath("$.version").value(DEFAULT_VERSION.intValue()))
                 .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED));
     }
@@ -159,8 +147,6 @@ public class ScheduledJobResourceTest {
         // Update the scheduledJob
         initialJob.setName(UPDATED_NAME);
         initialJob.setDescription(UPDATED_DESCRIPTION);
-        initialJob.setType(UPDATED_TYPE);
-        initialJob.setQuartzJobClassName(UPDATED_QUARTZ_JOB_CLASS_NAME);
         initialJob.setDeleted(UPDATED_DELETED);
         restScheduledJobMockMvc.perform(post("/app/rest/scheduledJob")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -173,8 +159,6 @@ public class ScheduledJobResourceTest {
         ScheduledJob testScheduledJob = scheduledJobs.iterator().next();
         assertThat(testScheduledJob.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testScheduledJob.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
-        assertThat(testScheduledJob.getType()).isEqualTo(UPDATED_TYPE);
-        assertThat(testScheduledJob.getQuartzJobClassName()).isEqualTo(UPDATED_QUARTZ_JOB_CLASS_NAME);
         assertThat(testScheduledJob.getVersion()).isEqualTo(UPDATED_VERSION);
         assertThat(testScheduledJob.getDeleted()).isEqualTo(UPDATED_DELETED);
     }

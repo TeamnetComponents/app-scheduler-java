@@ -97,7 +97,6 @@ public class TimeInterval implements Serializable {
         this.schedules = schedules;
     }
 
-
     //other entity methods relations
 
 }

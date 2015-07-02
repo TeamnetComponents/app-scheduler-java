@@ -61,8 +61,7 @@ public class ScheduledJobExecutionResourceTest {
     private static final DateTime DEFAULT_NEXT_FIRE_TIME = new DateTime(0L);
     private static final DateTime UPDATED_NEXT_FIRE_TIME = new DateTime().withMillisOfSecond(0);
     private static final String DEFAULT_NEXT_FIRE_TIME_STR = dateTimeFormatter.print(DEFAULT_NEXT_FIRE_TIME);
-    private static final String DEFAULT_STATE = "DEFAULT_STATE";
-    private static final String UPDATED_STATE = "UPDATED_STATE";
+
     private static final JobExecutionStatus DEFAULT_STATUS = JobExecutionStatus.RUNNING;
     private static final JobExecutionStatus UPDATED_STATUS = JobExecutionStatus.FINISHED;
 
@@ -90,7 +89,6 @@ public class ScheduledJobExecutionResourceTest {
         scheduledJobExecution.setActualFireTime(DEFAULT_ACTUAL_FIRE_TIME);
         scheduledJobExecution.setLastFireTime(DEFAULT_LAST_FIRE_TIME);
         scheduledJobExecution.setNextFireTime(DEFAULT_NEXT_FIRE_TIME);
-        scheduledJobExecution.setState(DEFAULT_STATE);
         scheduledJobExecution.setStatus(DEFAULT_STATUS);
     }
 
@@ -114,7 +112,6 @@ public class ScheduledJobExecutionResourceTest {
         assertThat(testScheduledJobExecution.getActualFireTime()).isEqualTo(DEFAULT_ACTUAL_FIRE_TIME);
         assertThat(testScheduledJobExecution.getLastFireTime()).isEqualTo(DEFAULT_LAST_FIRE_TIME);
         assertThat(testScheduledJobExecution.getNextFireTime()).isEqualTo(DEFAULT_NEXT_FIRE_TIME);
-        assertThat(testScheduledJobExecution.getState()).isEqualTo(DEFAULT_STATE);
         assertThat(testScheduledJobExecution.getStatus()).isEqualTo(DEFAULT_STATUS);
     }
 
@@ -132,7 +129,6 @@ public class ScheduledJobExecutionResourceTest {
                 .andExpect(jsonPath("$.[0].actualFireTime").value(DEFAULT_ACTUAL_FIRE_TIME_STR))
                 .andExpect(jsonPath("$.[0].lastFireTime").value(DEFAULT_LAST_FIRE_TIME_STR))
                 .andExpect(jsonPath("$.[0].nextFireTime").value(DEFAULT_NEXT_FIRE_TIME_STR))
-                .andExpect(jsonPath("$.[0].state").value(DEFAULT_STATE))
                 .andExpect(jsonPath("$.[0].status").value(DEFAULT_STATUS.toString()));
     }
 
@@ -151,7 +147,6 @@ public class ScheduledJobExecutionResourceTest {
                 .andExpect(jsonPath("$.actualFireTime").value(DEFAULT_ACTUAL_FIRE_TIME_STR))
                 .andExpect(jsonPath("$.lastFireTime").value(DEFAULT_LAST_FIRE_TIME_STR))
                 .andExpect(jsonPath("$.nextFireTime").value(DEFAULT_NEXT_FIRE_TIME_STR))
-                .andExpect(jsonPath("$.state").value(DEFAULT_STATE))
                 .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()));
     }
 
@@ -174,7 +169,6 @@ public class ScheduledJobExecutionResourceTest {
         scheduledJobExecution.setActualFireTime(UPDATED_ACTUAL_FIRE_TIME);
         scheduledJobExecution.setLastFireTime(UPDATED_LAST_FIRE_TIME);
         scheduledJobExecution.setNextFireTime(UPDATED_NEXT_FIRE_TIME);
-        scheduledJobExecution.setState(UPDATED_STATE);
         scheduledJobExecution.setStatus(UPDATED_STATUS);
         restScheduledJobExecutionMockMvc.perform(post("/app/rest/scheduledJobExecution")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -189,7 +183,6 @@ public class ScheduledJobExecutionResourceTest {
         assertThat(testScheduledJobExecution.getActualFireTime()).isEqualTo(UPDATED_ACTUAL_FIRE_TIME);
         assertThat(testScheduledJobExecution.getLastFireTime()).isEqualTo(UPDATED_LAST_FIRE_TIME);
         assertThat(testScheduledJobExecution.getNextFireTime()).isEqualTo(UPDATED_NEXT_FIRE_TIME);
-        assertThat(testScheduledJobExecution.getState()).isEqualTo(UPDATED_STATE);
         assertThat(testScheduledJobExecution.getStatus()).isEqualTo(UPDATED_STATUS);
     }
 

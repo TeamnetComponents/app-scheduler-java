@@ -76,6 +76,9 @@
 
     </changeSet>
 
-    
+
+    <changeSet id="20150702113500" author="oanam">
+        <dropColumn tableName="T_SCHEDULEDJOBEXECUTION" columnName="state"/>
+    </changeSet>
 
 </databaseChangeLog>

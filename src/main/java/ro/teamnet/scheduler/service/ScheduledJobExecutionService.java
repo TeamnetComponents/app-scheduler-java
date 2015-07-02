@@ -14,7 +14,6 @@ import ro.teamnet.scheduler.enums.JobExecutionStatus;
 public interface ScheduledJobExecutionService extends AbstractService<ScheduledJobExecution, Long> {
 
     void updateExecutionStatus(Long executionId, JobExecutionStatus status);
-    void updateExecutionState(Long executionId, String executionState);
     ScheduledJob findJobByExecutionId(Long id);
     AppPage<JobExecutionDTO> findJobExecutionDTOs(AppPageable appPageable, Long baseJobId);
 }

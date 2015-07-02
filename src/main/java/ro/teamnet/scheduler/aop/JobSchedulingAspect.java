@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.teamnet.scheduler.domain.Schedule;
 import ro.teamnet.scheduler.domain.ScheduledJob;
-import ro.teamnet.scheduler.domain.Task;
 import ro.teamnet.scheduler.service.JobSchedulingService;
 
 import javax.inject.Inject;
@@ -33,12 +32,6 @@ public class JobSchedulingAspect {
         jobSchedulingService.onScheduleSave(schedule);
     }
 
-    @AfterReturning(pointcut = "execution(public * ro.teamnet.scheduler.service.TaskService+.save(..))",
-            returning = "task")
-    public void afterTaskSave(Task task) {
-        log.info("afterTaskSave");
-        jobSchedulingService.onTaskSave(task);
-    }
 
     @AfterReturning("execution(public * ro.teamnet.scheduler.service.ScheduledJobService+.delete(..)) && args(jobId,..)")
     public void afterScheduledDelete(Long jobId) {
@@ -50,12 +43,6 @@ public class JobSchedulingAspect {
     public void afterScheduleDelete(Long scheduleId) {
         log.info("afterScheduleDelete");
         jobSchedulingService.onScheduleDelete(scheduleId);
-    }
-
-    @AfterReturning("execution(public * ro.teamnet.scheduler.service.TaskService+.delete(..)) && args(taskId,..)")
-    public void afterTaskDelete(Long taskId) {
-        log.info("afterTaskDelete");
-        jobSchedulingService.onTaskDelete(taskId);
     }
 }
 

@@ -10,13 +10,15 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.hibernate.annotations.SortNatural;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
-import org.quartz.JobKey;
 import ro.teamnet.bootstrap.domain.util.CustomDateTimeDeserializer;
 import ro.teamnet.bootstrap.domain.util.CustomDateTimeSerializer;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * A ScheduledJob.
@@ -34,12 +36,6 @@ public class ScheduledJob implements Serializable {
 
     @Column(name = "description")
     private String description;
-
-    @Column(name = "type")
-    private String type;
-
-    @Column(name = "quartz_job_class_name")
-    private String quartzJobClassName;
 
     @Version
     @Column(name = "version")
@@ -60,22 +56,14 @@ public class ScheduledJob implements Serializable {
     @Column(name = "deleted")
     private Boolean deleted;
 
-    @Column(name = "owner_id")
-    private Long ownerId;
-
     @OneToMany(mappedBy = "scheduledJob", fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<Schedule> schedules = new HashSet<>();
-
-    @OneToMany(mappedBy = "scheduledJob", fetch = FetchType.LAZY)
-    @JsonIgnore
-    private Set<Task> tasks = new HashSet<>();
 
     @OneToMany(mappedBy = "scheduledJob", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonManagedReference
     @SortNatural
     private SortedSet<ScheduledJobExecution> scheduledJobExecutions = new TreeSet<>();
-
 
     //other entity fields relations
 
@@ -101,22 +89,6 @@ public class ScheduledJob implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getQuartzJobClassName() {
-        return quartzJobClassName;
-    }
-
-    public void setQuartzJobClassName(String quartzJobClassName) {
-        this.quartzJobClassName = quartzJobClassName;
     }
 
     public Long getVersion() {
@@ -151,28 +123,12 @@ public class ScheduledJob implements Serializable {
         this.deleted = deleted;
     }
 
-    public Long getOwnerId() {
-        return ownerId;
-    }
-
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
-    }
-
     public Set<Schedule> getSchedules() {
         return schedules;
     }
 
     public void setSchedules(Set<Schedule> schedules) {
         this.schedules = schedules;
-    }
-
-    public Set<Task> getTasks() {
-        return tasks;
-    }
-
-    public void setTasks(Set<Task> tasks) {
-        this.tasks = tasks;
     }
 
     public Set<ScheduledJobExecution> getScheduledJobExecutions() {
@@ -205,23 +161,5 @@ public class ScheduledJob implements Serializable {
     @PreUpdate
     private void preUpdate() {
         setLastUpdated(new DateTime());
-    }
-
-    @Transient
-    @JsonIgnore
-    public String getJobGroup() {
-        return "Job_" + id;
-    }
-
-    @Transient
-    @JsonIgnore
-    public String getJobName() {
-        return "Job_" + id + "_V_" + version;
-    }
-
-    @Transient
-    @JsonIgnore
-    public JobKey getJobKey() {
-        return new JobKey(getJobName(), getJobGroup());
     }
 }
