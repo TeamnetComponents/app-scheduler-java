@@ -50,6 +50,9 @@ public class AppPageableDTOConverter {
     }
 
     private Sort convertDTOSortToEntitySort(Sort dtoSort) {
+        if (dtoSort == null) {
+            return null;
+        }
         List<Sort.Order> orders = new ArrayList<>();
         for (Sort.Order order : dtoSort) {
             orders.add(convertDTOOrderToEntityOrder(order));
