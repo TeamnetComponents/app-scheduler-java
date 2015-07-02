@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+
+    <changeSet id="20150702124307" author="teamnet">
+
+        <addColumn tableName="T_CONFIGURATION">
+            <column name="scheduledjob_id" type="bigint"/>
+        </addColumn>
+
+        <addForeignKeyConstraint baseColumnNames="scheduledjob_id"
+                                 baseTableName="T_CONFIGURATION"
+                                 constraintName="fk_configuration_scheduledjob_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="T_SCHEDULEDJOB"/>
+    </changeSet>
+
+</databaseChangeLog>
