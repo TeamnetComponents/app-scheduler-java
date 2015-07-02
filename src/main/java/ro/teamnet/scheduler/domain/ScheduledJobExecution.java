@@ -142,6 +142,7 @@ public class ScheduledJobExecution implements Serializable, Comparable<Scheduled
     @JsonIgnore
     public JobExecutionDTO toDTO(){
         JobExecutionDTO jobExecutionDTO = new JobExecutionDTO();
+        jobExecutionDTO.setId(this.getId());
         jobExecutionDTO.setStatus(this.getStatus());
         jobExecutionDTO.setActualFireTime(this.getActualFireTime());
         jobExecutionDTO.setNextFireTime(this.getNextFireTime());
