@@ -25,7 +25,9 @@ public class PublicSchedulingService implements SchedulingService {
 
     @Override
     public void deleteJob(ConfigurationDTO configurationDTO) {
-        scheduledJobService.delete(getSchedulingId(configurationDTO));
+        Long baseJobId = getSchedulingId(configurationDTO);
+        configurationService.delete(configurationDTO.getConfigurationId());
+        scheduledJobService.delete(baseJobId);
     }
 
     @Override
