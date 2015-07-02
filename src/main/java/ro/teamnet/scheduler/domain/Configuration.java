@@ -2,6 +2,8 @@
 package ro.teamnet.scheduler.domain;
         
 
+import ro.teamnet.scheduler.dto.ConfigurationDTO;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -24,6 +26,15 @@ public class Configuration implements Serializable {
 
     @ManyToOne
     private ScheduledJob scheduledJob;
+
+    public Configuration() {
+
+    }
+
+    public Configuration(ConfigurationDTO dto) {
+        configurationId = dto.getConfigurationId();
+        type = dto.getType();
+    }
 
     //other entity fields relations
 
