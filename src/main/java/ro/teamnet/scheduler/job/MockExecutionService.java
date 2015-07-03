@@ -16,6 +16,11 @@ public class MockExecutionService implements ExecutionService {
     }
 
     @Override
+    public void recover(Long dataId) {
+
+    }
+
+    @Override
     public JobExecutionStatus getStatus(Long dataId) {
         return JobExecutionStatus.FINISHED;
     }

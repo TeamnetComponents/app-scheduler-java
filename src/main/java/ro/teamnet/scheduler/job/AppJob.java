@@ -1,14 +1,18 @@
 package ro.teamnet.scheduler.job;
 
 import org.joda.time.DateTime;
-import org.quartz.Job;
+import org.quartz.InterruptableJob;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.quartz.UnableToInterruptJobException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.plugin.core.OrderAwarePluginRegistry;
 import org.springframework.plugin.core.PluginRegistry;
-import ro.teamnet.scheduler.domain.*;
+import ro.teamnet.scheduler.domain.Configuration;
+import ro.teamnet.scheduler.domain.ExecutionData;
+import ro.teamnet.scheduler.domain.ScheduledJob;
+import ro.teamnet.scheduler.domain.ScheduledJobExecution;
 import ro.teamnet.scheduler.enums.JobExecutionStatus;
 import ro.teamnet.scheduler.service.*;
 
@@ -24,7 +28,7 @@ import static ro.teamnet.scheduler.enums.JobExecutionStatus.*;
 /**
  * A schedulable job.
  */
-public class AppJob implements Job {
+public class AppJob implements InterruptableJob {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -47,43 +51,78 @@ public class AppJob implements Job {
 
     private ScheduledJobExecution jobExecution;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public final void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         context = jobExecutionContext;
         scheduledJobId = context.getMergedJobDataMap().getLong(JOB_ID);
 
         ScheduledJob job = scheduledJobService.findOne(scheduledJobId);
-        createOrRecoverJobExecution(job);
-        JobExecutionException jobExecutionException = null;
-        JobExecutionStatus status = null;
-        for (Map.Entry<Configuration, ExecutionService> plugins : getSupportedExecutionServicePlugins().entrySet()) {
+        jobExecution = context.isRecovering()
+                ? job.getScheduledJobExecution()
+                : scheduledJobExecutionService.save(createExecution(job));
+
+        try {
+            startOrRecoverJob();
+        } catch (Exception e) {
+            try {
+                interrupt();
+            } catch (UnableToInterruptJobException interruptException) {
+                log.error("Unable to interrupt", interruptException);
+            }
+            throw new JobExecutionException(e);
+        }
+    }
+
+    @Override
+    public void interrupt() throws UnableToInterruptJobException {
+        updateExecutionStatus(FAILED);
+    }
+
+    private void startOrRecoverJob() throws InterruptedException {
+        JobExecutionStatus globalStatus = null;
+        Map<Configuration, ExecutionService> supportedExecutionPlugins = getSupportedExecutionPlugins();
+        for (Map.Entry<Configuration, ExecutionService> plugins : supportedExecutionPlugins.entrySet()) {
             Configuration configuration = plugins.getKey();
             ExecutionService executionService = plugins.getValue();
-            try {
-                Long dataId = executionService.start(configuration.getConfigurationId());
-                saveExecutionData(configuration, dataId);
-                JobExecutionStatus pluginStatus = JobExecutionStatus.WAITING;
-                while (pluginStatus.isTemporary()) {
-                    pluginStatus = executionService.getStatus(dataId);
-                    updateExecutionStatus(pluginStatus);
-                    Thread.sleep(JOB_POLLING_INTERVAL);
-                }
-                status = combineStatuses(status, pluginStatus);
-            } catch (Exception e) {
-                log.error("An error was encountered while running job plugin " + executionService.toString(), e);
-                status = FAILED;
-                jobExecutionException = new JobExecutionException(e);
-                break;
-            }
-        }
-        updateExecutionStatus(status);
+            Long dataId;
 
-        if (jobExecutionException != null) {
-            throw jobExecutionException;
+            if (context.isRecovering()) {
+                dataId = recoverJob(configuration, executionService);
+            } else {
+                dataId = startJob(configuration, executionService);
+            }
+
+            JobExecutionStatus status = poll(executionService, dataId);
+
+            globalStatus = combineStatuses(globalStatus, status);
+            updateExecutionStatus(globalStatus);
         }
+    }
+
+    private Long startJob(Configuration configuration, ExecutionService executionService) {
+        Long dataId;
+        dataId = executionService.start(configuration.getConfigurationId());
+        saveExecutionData(configuration, dataId);
+        return dataId;
+    }
+
+    private Long recoverJob(Configuration configuration, ExecutionService executionService) {
+        Long dataId;
+        dataId = executionDataService.findByConfigurationIdAndTypeAndExecutionId(
+                configuration.getConfigurationId(), configuration.getType(), jobExecution.getId()).getDataId();
+        executionService.recover(dataId);
+        return dataId;
+    }
+
+    private JobExecutionStatus poll(ExecutionService executionService, Long dataId) throws InterruptedException {
+        JobExecutionStatus status = executionService.getStatus(dataId);
+        updateExecutionStatus(status);
+        while (status.isTemporary()) {
+            Thread.sleep(JOB_POLLING_INTERVAL);
+            status = executionService.getStatus(dataId);
+            updateExecutionStatus(status);
+        }
+        return status;
     }
 
     private ExecutionData saveExecutionData(Configuration configuration, Long dataId) {
@@ -111,15 +150,7 @@ public class AppJob implements Job {
         return newStatus;
     }
 
-    private void createOrRecoverJobExecution(ScheduledJob scheduledJob) {
-        if (context.isRecovering()) {
-            jobExecution = scheduledJob.getScheduledJobExecution();
-        } else {
-            jobExecution = scheduledJobExecutionService.save(createExecution(scheduledJob));
-        }
-    }
-
-    private Map<Configuration, ExecutionService> getSupportedExecutionServicePlugins() {
+    private Map<Configuration, ExecutionService> getSupportedExecutionPlugins() {
         // TODO handle multiple execution service implementations supporting the same configuration type?
         PluginRegistry<ExecutionService, String> pluginRegistry = OrderAwarePluginRegistry.create(allExecutionServices);
         Map<Configuration, ExecutionService> supportedJobPlugins = new HashMap<>();
