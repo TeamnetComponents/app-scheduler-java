@@ -30,7 +30,7 @@ public class ExecutionHistoryServiceImpl implements ExecutionHistoryService {
     }
 
     @Override
-    public Long getExecutionInstanceId(ConfigurationDTO configurationDTO, Long jobExecutionId) {
+    public Long getExecutionDataId(ConfigurationDTO configurationDTO, Long jobExecutionId) {
         return executionDataService.findByConfigurationIdAndTypeAndExecutionId(configurationDTO.getConfigurationId(),
                 configurationDTO.getType(), jobExecutionId).getDataId();
     }
