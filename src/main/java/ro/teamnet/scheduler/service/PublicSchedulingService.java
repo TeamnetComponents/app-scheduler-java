@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import ro.teamnet.scheduler.domain.Configuration;
 import ro.teamnet.scheduler.domain.ScheduledJob;
 import ro.teamnet.scheduler.dto.ConfigurationDTO;
+import ro.teamnet.scheduler.dto.SchedulingDTO;
 
 import javax.inject.Inject;
 
@@ -25,13 +26,16 @@ public class PublicSchedulingService implements SchedulingService {
 
     @Override
     public void deleteJob(ConfigurationDTO configurationDTO) {
-        Long baseJobId = getSchedulingId(configurationDTO);
+        Long baseJobId = getSchedulingId(configurationDTO).getId();
         configurationService.delete(configurationDTO.getConfigurationId());
         scheduledJobService.delete(baseJobId);
     }
 
     @Override
-    public Long getSchedulingId(ConfigurationDTO configurationDTO) {
-        return configurationService.findBaseJobByConfiguration(configurationDTO).getId();
+    public SchedulingDTO getSchedulingId(ConfigurationDTO configurationDTO) {
+
+        ScheduledJob job = configurationService.findBaseJobByConfiguration(configurationDTO);
+
+        return new SchedulingDTO(job.getId(), job.getVersion());
     }
 }
