@@ -12,27 +12,19 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import org.joda.time.LocalDate;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-import java.math.BigDecimal;
-import java.util.List;
-
 import ro.teamnet.SchedulerTestApplication;
-
 import ro.teamnet.scheduler.domain.Configuration;
 import ro.teamnet.scheduler.repository.ConfigurationRepository;
 import ro.teamnet.scheduler.service.ConfigurationService;
-import ro.teamnet.scheduler.web.rest.ConfigurationResource; 
 import ro.teamnet.web.rest.TestUtil;
+
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -48,9 +40,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @IntegrationTest
 @ActiveProfiles("test-scheduler")
 public class ConfigurationResourceTest {
-
-    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss");
-
 
     private static final Long DEFAULT_CONFIGURATION_ID = 0L;
     private static final Long UPDATED_CONFIGURATION_ID = 1L;
@@ -123,11 +112,11 @@ public class ConfigurationResourceTest {
 
         // Get the configuration
         restConfigurationMockMvc.perform(get("/app/rest/configuration/{id}", configuration.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.id").value(configuration.getId().intValue()))
-            .andExpect(jsonPath("$.configurationId").value(DEFAULT_CONFIGURATION_ID.intValue()))
-            .andExpect(jsonPath("$.type").value(DEFAULT_TYPE.toString()));
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value(configuration.getId().intValue()))
+                .andExpect(jsonPath("$.configurationId").value(DEFAULT_CONFIGURATION_ID.intValue()))
+                .andExpect(jsonPath("$.type").value(DEFAULT_TYPE.toString()));
     }
 
     @Test

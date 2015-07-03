@@ -47,7 +47,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test-scheduler")
 public class ScheduleResourceTest {
 
-    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss");
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss");
 
 
     private static final Boolean DEFAULT_ACTIVE = false;
@@ -58,11 +58,11 @@ public class ScheduleResourceTest {
 
     private static final DateTime DEFAULT_START_TIME = new DateTime(0L);
     private static final DateTime UPDATED_START_TIME = new DateTime().withMillisOfSecond(0);
-    private static final String DEFAULT_START_TIME_STR = dateTimeFormatter.print(DEFAULT_START_TIME);
+    private static final String DEFAULT_START_TIME_STR = DATE_TIME_FORMATTER.print(DEFAULT_START_TIME);
 
     private static final DateTime DEFAULT_END_TIME = new DateTime(0L);
     private static final DateTime UPDATED_END_TIME = new DateTime().withMillisOfSecond(0);
-    private static final String DEFAULT_END_TIME_STR = dateTimeFormatter.print(DEFAULT_END_TIME);
+    private static final String DEFAULT_END_TIME_STR = DATE_TIME_FORMATTER.print(DEFAULT_END_TIME);
 
     private static final Long DEFAULT_REPETITIONS = 0L;
     private static final Long UPDATED_REPETITIONS = 1L;

@@ -44,23 +44,23 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test-scheduler")
 public class ScheduledJobExecutionResourceTest {
 
-    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss");
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss");
 
     private static final DateTime DEFAULT_SCHEDULED_FIRE_TIME = new DateTime(0L);
     private static final DateTime UPDATED_SCHEDULED_FIRE_TIME = new DateTime().withMillisOfSecond(0);
-    private static final String DEFAULT_SCHEDULED_FIRE_TIME_STR = dateTimeFormatter.print(DEFAULT_SCHEDULED_FIRE_TIME);
+    private static final String DEFAULT_SCHEDULED_FIRE_TIME_STR = DATE_TIME_FORMATTER.print(DEFAULT_SCHEDULED_FIRE_TIME);
 
     private static final DateTime DEFAULT_ACTUAL_FIRE_TIME = new DateTime(0L);
     private static final DateTime UPDATED_ACTUAL_FIRE_TIME = new DateTime().withMillisOfSecond(0);
-    private static final String DEFAULT_ACTUAL_FIRE_TIME_STR = dateTimeFormatter.print(DEFAULT_ACTUAL_FIRE_TIME);
+    private static final String DEFAULT_ACTUAL_FIRE_TIME_STR = DATE_TIME_FORMATTER.print(DEFAULT_ACTUAL_FIRE_TIME);
 
     private static final DateTime DEFAULT_LAST_FIRE_TIME = new DateTime(0L);
     private static final DateTime UPDATED_LAST_FIRE_TIME = new DateTime().withMillisOfSecond(0);
-    private static final String DEFAULT_LAST_FIRE_TIME_STR = dateTimeFormatter.print(DEFAULT_LAST_FIRE_TIME);
+    private static final String DEFAULT_LAST_FIRE_TIME_STR = DATE_TIME_FORMATTER.print(DEFAULT_LAST_FIRE_TIME);
 
     private static final DateTime DEFAULT_NEXT_FIRE_TIME = new DateTime(0L);
     private static final DateTime UPDATED_NEXT_FIRE_TIME = new DateTime().withMillisOfSecond(0);
-    private static final String DEFAULT_NEXT_FIRE_TIME_STR = dateTimeFormatter.print(DEFAULT_NEXT_FIRE_TIME);
+    private static final String DEFAULT_NEXT_FIRE_TIME_STR = DATE_TIME_FORMATTER.print(DEFAULT_NEXT_FIRE_TIME);
 
     private static final JobExecutionStatus DEFAULT_STATUS = JobExecutionStatus.RUNNING;
     private static final JobExecutionStatus UPDATED_STATUS = JobExecutionStatus.FINISHED;
