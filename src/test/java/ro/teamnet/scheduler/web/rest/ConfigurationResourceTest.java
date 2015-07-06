@@ -101,7 +101,7 @@ public class ConfigurationResourceTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.[0].configurationId").value(DEFAULT_CONFIGURATION_ID.intValue()))
-                .andExpect(jsonPath("$.[0].type").value(DEFAULT_TYPE.toString()));
+                .andExpect(jsonPath("$.[0].type").value(DEFAULT_TYPE));
     }
 
     @Test
@@ -116,7 +116,7 @@ public class ConfigurationResourceTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(configuration.getId().intValue()))
                 .andExpect(jsonPath("$.configurationId").value(DEFAULT_CONFIGURATION_ID.intValue()))
-                .andExpect(jsonPath("$.type").value(DEFAULT_TYPE.toString()));
+                .andExpect(jsonPath("$.type").value(DEFAULT_TYPE));
     }
 
     @Test
