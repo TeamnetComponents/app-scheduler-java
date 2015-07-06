@@ -47,7 +47,7 @@ public class ExecutionDataResourceTest {
     private ExecutionDataRepository executionDataRepository;
 
     @Inject
-    ExecutionDataService service;
+    private ExecutionDataService service;
 
     private MockMvc restExecutionDataMockMvc;
 

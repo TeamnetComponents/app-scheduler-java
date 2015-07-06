@@ -55,7 +55,7 @@ public class ScheduledJobResourceTest {
     private ScheduledJobRepository scheduledJobRepository;
 
     @Inject
-    ScheduledJobService service;
+    private ScheduledJobService service;
 
     private MockMvc restScheduledJobMockMvc;
 

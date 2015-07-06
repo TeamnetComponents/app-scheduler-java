@@ -69,7 +69,7 @@ public class ScheduledJobExecutionResourceTest {
     private ScheduledJobExecutionRepository scheduledJobExecutionRepository;
 
     @Inject
-    ScheduledJobExecutionService service;
+    private ScheduledJobExecutionService service;
 
     private MockMvc restScheduledJobExecutionMockMvc;
 

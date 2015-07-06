@@ -55,7 +55,7 @@ public class TimeIntervalResourceTest {
     private TimeIntervalRepository timeIntervalRepository;
 
     @Inject
-    TimeIntervalService service;
+    private TimeIntervalService service;
 
     private MockMvc restTimeIntervalMockMvc;
 

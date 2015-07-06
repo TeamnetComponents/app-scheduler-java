@@ -54,7 +54,7 @@ public class TimeUnitResourceTest {
     private TimeUnitRepository timeUnitRepository;
 
     @Inject
-    TimeUnitService service;
+    private TimeUnitService service;
 
     private MockMvc restTimeUnitMockMvc;
 

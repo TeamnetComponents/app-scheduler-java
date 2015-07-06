@@ -50,7 +50,7 @@ public class ConfigurationResourceTest {
     private ConfigurationRepository configurationRepository;
 
     @Inject
-    ConfigurationService service;
+    private ConfigurationService service;
 
     private MockMvc restConfigurationMockMvc;
 

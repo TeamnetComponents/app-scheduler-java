@@ -11,10 +11,10 @@ import javax.inject.Inject;
 @Service
 public class PublicSchedulingService implements SchedulingService {
     @Inject
-    ScheduledJobService scheduledJobService;
+    private ScheduledJobService scheduledJobService;
 
     @Inject
-    ConfigurationService configurationService;
+    private ConfigurationService configurationService;
 
     @Override
     public void createJob(ConfigurationDTO configurationDTO) {

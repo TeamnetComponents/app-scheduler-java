@@ -46,7 +46,7 @@ public class RecurrentTimeUnitResourceTest {
     private RecurrentTimeUnitRepository recurrentTimeUnitRepository;
 
     @Inject
-    RecurrentTimeUnitService service;
+    private RecurrentTimeUnitService service;
 
     private MockMvc restRecurrentTimeUnitMockMvc;
 

@@ -34,9 +34,11 @@ public class AppJob implements InterruptableJob {
 
     private Long scheduledJobId;
     private JobExecutionContext context;
+    private ScheduledJobExecution jobExecution;
 
     @Inject
     private ScheduledJobService scheduledJobService;
+
     @Inject
     private ScheduledJobExecutionService scheduledJobExecutionService;
 
@@ -48,8 +50,6 @@ public class AppJob implements InterruptableJob {
 
     @Inject
     private List<ExecutionService> allExecutionServices;
-
-    private ScheduledJobExecution jobExecution;
 
     @Override
     public final void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {

@@ -21,7 +21,7 @@ public class ExecutionHistoryServiceImpl implements ExecutionHistoryService {
     private ConfigurationService configurationService;
 
     @Inject
-    ExecutionDataService executionDataService;
+    private ExecutionDataService executionDataService;
 
     @Override
     public AppPage<JobExecutionDTO> findJobExecutions(AppPageable appPageable, ConfigurationDTO configurationDTO) {
