@@ -3,6 +3,7 @@ package ro.teamnet.scheduler.service;
 import org.springframework.stereotype.Service;
 import ro.teamnet.bootstrap.extend.AppPage;
 import ro.teamnet.bootstrap.extend.AppPageable;
+import ro.teamnet.scheduler.domain.ExecutionData;
 import ro.teamnet.scheduler.dto.ConfigurationDTO;
 import ro.teamnet.scheduler.dto.JobExecutionDTO;
 
@@ -31,8 +32,9 @@ public class ExecutionHistoryServiceImpl implements ExecutionHistoryService {
 
     @Override
     public Long getExecutionDataId(ConfigurationDTO configurationDTO, Long jobExecutionId) {
-        return executionDataService.findByConfigurationIdAndTypeAndExecutionId(configurationDTO.getConfigurationId(),
-                configurationDTO.getType(), jobExecutionId).getDataId();
+        ExecutionData executionData = executionDataService.findByConfigurationIdAndTypeAndExecutionId(configurationDTO.getConfigurationId(),
+                configurationDTO.getType(), jobExecutionId);
+        return executionData == null ? null : executionData.getDataId();
     }
 
 
