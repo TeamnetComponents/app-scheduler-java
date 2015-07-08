@@ -48,8 +48,8 @@ public class AppJob implements InterruptableJob {
     private ExecutionDataService executionDataService;
 
     @Inject
-    @Qualifier("executionServicePluginRegistry")
-    private PluginRegistry<ExecutionService, String> executionServicePluginRegistry;
+    @Qualifier("executionServiceRegistry")
+    private PluginRegistry<ExecutionService, String> executionServiceRegistry;
 
     @Override
     public final void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -152,7 +152,7 @@ public class AppJob implements InterruptableJob {
         // TODO handle multiple execution service implementations supporting the same confiłguration type?
         Map<Configuration, ExecutionService> supportedJobPlugins = new HashMap<>();
         for (Configuration configuration : configurationService.findByScheduledJobId(scheduledJobId)) {
-            supportedJobPlugins.put(configuration, executionServicePluginRegistry.getPluginFor(configuration.getType()));
+            supportedJobPlugins.put(configuration, executionServiceRegistry.getPluginFor(configuration.getType()));
         }
         return supportedJobPlugins;
     }
