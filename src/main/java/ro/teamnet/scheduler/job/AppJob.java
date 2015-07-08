@@ -100,17 +100,15 @@ public class AppJob implements InterruptableJob {
     }
 
     private Long startJob(Configuration configuration, ExecutionService executionService) {
-        Long dataId;
-        dataId = executionService.start(configuration.getConfigurationId());
+        Long dataId = executionService.start(configuration.getConfigurationId());
         saveExecutionData(configuration, dataId);
         return dataId;
     }
 
     private Long recoverJob(Configuration configuration, ExecutionService executionService) {
-        Long dataId;
-        dataId = executionDataService.findByConfigurationIdAndTypeAndExecutionId(
+        Long dataId = executionDataService.findByConfigurationIdAndTypeAndExecutionId(
                 configuration.getConfigurationId(), configuration.getType(), jobExecution.getId()).getDataId();
-        executionService.recover(dataId);
+        dataId = executionService.recover(configuration.getConfigurationId(), dataId);
         return dataId;
     }
 
