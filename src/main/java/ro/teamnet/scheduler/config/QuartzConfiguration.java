@@ -8,9 +8,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.plugin.core.config.EnablePluginRegistries;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import ro.teamnet.bootstrap.config.DatabaseConfiguration;
+import ro.teamnet.scheduler.service.ExecutionService;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -22,6 +24,7 @@ import java.util.Properties;
  */
 @Configuration
 @AutoConfigureAfter({DatabaseConfiguration.class})
+@EnablePluginRegistries({ExecutionService.class})
 public class QuartzConfiguration {
 
     private final Logger log = LoggerFactory.getLogger(QuartzConfiguration.class);

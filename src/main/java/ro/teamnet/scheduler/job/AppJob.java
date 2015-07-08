@@ -7,7 +7,7 @@ import org.quartz.JobExecutionException;
 import org.quartz.UnableToInterruptJobException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.plugin.core.OrderAwarePluginRegistry;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.plugin.core.PluginRegistry;
 import ro.teamnet.scheduler.domain.Configuration;
 import ro.teamnet.scheduler.domain.ExecutionData;
@@ -18,7 +18,6 @@ import ro.teamnet.scheduler.service.*;
 
 import javax.inject.Inject;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static ro.teamnet.scheduler.constants.QuartzSchedulingConstants.JOB_ID;
@@ -49,7 +48,8 @@ public class AppJob implements InterruptableJob {
     private ExecutionDataService executionDataService;
 
     @Inject
-    private List<ExecutionService> allExecutionServices;
+    @Qualifier("executionServicePluginRegistry")
+    private PluginRegistry<ExecutionService, String> executionServicePluginRegistry;
 
     @Override
     public final void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -149,11 +149,10 @@ public class AppJob implements InterruptableJob {
     }
 
     private Map<Configuration, ExecutionService> getSupportedExecutionPlugins() {
-        // TODO handle multiple execution service implementations supporting the same configuration type?
-        PluginRegistry<ExecutionService, String> pluginRegistry = OrderAwarePluginRegistry.create(allExecutionServices);
+        // TODO handle multiple execution service implementations supporting the same confiłguration type?
         Map<Configuration, ExecutionService> supportedJobPlugins = new HashMap<>();
         for (Configuration configuration : configurationService.findByScheduledJobId(scheduledJobId)) {
-            supportedJobPlugins.put(configuration, pluginRegistry.getPluginFor(configuration.getType()));
+            supportedJobPlugins.put(configuration, executionServicePluginRegistry.getPluginFor(configuration.getType()));
         }
         return supportedJobPlugins;
     }
