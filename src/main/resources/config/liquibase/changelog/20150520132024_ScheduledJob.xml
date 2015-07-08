@@ -136,4 +136,11 @@
         <dropColumn tableName="T_SCHEDULEDJOB" columnName="quartz_job_class_name"/>
         <dropColumn tableName="T_SCHEDULEDJOB" columnName="owner_id"/>
     </changeSet>
+
+    <changeSet id="20150708#4" author="oanam">
+        <update tableName="T_MODULE">
+            <column name="code" value="scheduledjob"/>
+            <where>code = 'scheduled_job'</where>
+        </update>
+    </changeSet>
 </databaseChangeLog>

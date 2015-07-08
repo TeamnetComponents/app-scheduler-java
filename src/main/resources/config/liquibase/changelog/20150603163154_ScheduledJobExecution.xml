@@ -81,4 +81,11 @@
         <dropColumn tableName="T_SCHEDULEDJOBEXECUTION" columnName="state"/>
     </changeSet>
 
+    <changeSet id="20150708#5" author="oanam">
+        <update tableName="T_MODULE">
+            <column name="code" value="scheduledjobexecution"/>
+            <where>code = 'scheduled_job_execution'</where>
+        </update>
+    </changeSet>
+
 </databaseChangeLog>

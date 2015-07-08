@@ -64,5 +64,11 @@
 
     </changeSet>
 
+    <changeSet id="20150708#3" author="oanam">
+        <update tableName="T_MODULE">
+            <column name="code" value="recurrenttimeunit"/>
+            <where>code = 'recurrent_time_unit'</where>
+        </update>
+    </changeSet>
 
 </databaseChangeLog>

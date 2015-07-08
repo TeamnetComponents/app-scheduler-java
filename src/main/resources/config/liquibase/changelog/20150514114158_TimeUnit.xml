@@ -74,4 +74,11 @@
         </loadData>
     </changeSet>
 
+    <changeSet id="20150708#1" author="oanam">
+        <update tableName="T_MODULE">
+            <column name="code" value="timeunit"/>
+            <where>code = 'time_unit'</where>
+        </update>
+    </changeSet>
+
 </databaseChangeLog>

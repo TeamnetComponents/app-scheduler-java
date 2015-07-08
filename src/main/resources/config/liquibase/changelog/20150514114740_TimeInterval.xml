@@ -65,5 +65,11 @@
 
     </changeSet>
 
+    <changeSet id="20150708#2" author="oanam">
+        <update tableName="T_MODULE">
+            <column name="code" value="timeinterval"/>
+            <where>code = 'time_interval'</where>
+        </update>
+    </changeSet>
 
 </databaseChangeLog>
