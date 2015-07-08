@@ -8,4 +8,23 @@
         <dropTable tableName="T_TASK" cascadeConstraints="true" />
     </changeSet>
 
+    <changeSet id="20150708100000" author="oanam">
+        <delete tableName="T_ACCOUNT_MODULE_RIGHTS">
+            <where>fk_module_right = (SELECT ID_MODULE_RIGHT from T_MODULE_RIGHT
+                where FK_MODULE = (SELECT ID_MODULE from T_MODULE where CODE = 'task'))</where>
+        </delete>
+        <delete tableName="T_ROLE_MODULE_RIGHTS">
+            <where>fk_module_right = (SELECT ID_MODULE_RIGHT from T_MODULE_RIGHT
+                where FK_MODULE = (SELECT ID_MODULE from T_MODULE where CODE = 'task'))</where>
+        </delete>
+        <delete tableName="T_MODULE_RIGHT">
+            <where>FK_MODULE = (SELECT ID_MODULE from T_MODULE where code = 'task')</where>
+        </delete>
+        <delete tableName="T_MENU">
+            <where>module_id = (SELECT ID_MODULE from T_MODULE where code = 'task')</where>
+        </delete>
+        <delete tableName="T_MODULE">
+            <where>code = 'task'</where>
+        </delete>
+    </changeSet>
 </databaseChangeLog>
