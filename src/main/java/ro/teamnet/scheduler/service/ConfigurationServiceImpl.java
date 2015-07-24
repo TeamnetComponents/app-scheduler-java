@@ -39,5 +39,12 @@ public class ConfigurationServiceImpl extends AbstractServiceImpl<Configuration,
                 configurationDTO.getType()).getScheduledJob();
     }
 
+    @Override
+    public void deleteByConfigurationIdAndType(Long configurationId,String type) {
+        Configuration configuration = getConfigurationRepository().findByConfigurationIdAndType(configurationId,type);
+
+        getConfigurationRepository().delete(configuration);
+    }
+
 
 }

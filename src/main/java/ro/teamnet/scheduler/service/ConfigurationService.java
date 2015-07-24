@@ -15,4 +15,6 @@ public interface ConfigurationService extends AbstractService<Configuration,Long
     List<Configuration> findByScheduledJobId(Long scheduledJobId);
 
     ScheduledJob findBaseJobByConfiguration(ConfigurationDTO configurationDTO);
+
+    void deleteByConfigurationIdAndType(Long configurationId,String type);
 }
