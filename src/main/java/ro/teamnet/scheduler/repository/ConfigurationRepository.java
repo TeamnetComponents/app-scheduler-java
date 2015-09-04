@@ -22,4 +22,10 @@ public interface ConfigurationRepository extends AppRepository<Configuration,Lon
 
     Configuration findByConfigurationIdAndType(Long configurationId,
                                                String type);
+
+    @Query("select configuration from Configuration configuration, ScheduledJob scheduledJob, ScheduledJobExecution scheduledJobExecution " +
+            "where scheduledJob = scheduledJobExecution.scheduledJob " +
+            "and configuration.scheduledJob = scheduledJob " +
+            "and scheduledJobExecution.id =:jobExecId")
+    Configuration findByJobExecId(@Param("jobExecId") Long jobExecId);
 }

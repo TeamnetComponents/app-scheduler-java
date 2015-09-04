@@ -38,4 +38,11 @@ public class PublicSchedulingService implements SchedulingService {
 
         return new SchedulingBaseDTO(job.getId(), job.getVersion());
     }
+
+    @Override
+    public ConfigurationDTO getConfigurationDTOByJobExecId(Long jobExecId) {
+        Configuration configuration = configurationService.findByJobExecId(jobExecId);
+
+        return new ConfigurationDTO(configuration.getConfigurationId(), configuration.getType());
+    }
 }

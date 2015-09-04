@@ -61,4 +61,17 @@ public class ScheduledJobExecutionServiceImpl extends AbstractServiceImpl<Schedu
                 appPageable.getFilters());
     }
 
+    @Override
+    public AppPage<JobExecutionDTO> findAllJobExecutionDTOs(AppPageable appPageable) {
+        AppPage<ScheduledJobExecution> executions = findAll(appPageable);
+
+        List<JobExecutionDTO> content = new ArrayList<>();
+        for (ScheduledJobExecution execution : executions) {
+            content.add(execution.toDTO());
+        }
+
+        return new AppPageImpl<>(content, appPageable, executions.getTotalElements(),
+                appPageable.getFilters());
+    }
+
 }

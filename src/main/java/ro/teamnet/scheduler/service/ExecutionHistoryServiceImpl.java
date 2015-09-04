@@ -31,6 +31,11 @@ public class ExecutionHistoryServiceImpl implements ExecutionHistoryService {
     }
 
     @Override
+    public AppPage<JobExecutionDTO> findAllJobExecutions(AppPageable appPageable) {
+        return scheduledJobExecutionService.findAllJobExecutionDTOs(appPageable);
+    }
+
+    @Override
     public Long getExecutionDataId(ConfigurationDTO configurationDTO, Long jobExecutionId) {
         ExecutionData executionData = executionDataService.findByConfigurationIdAndTypeAndExecutionId(configurationDTO.getConfigurationId(),
                 configurationDTO.getType(), jobExecutionId);

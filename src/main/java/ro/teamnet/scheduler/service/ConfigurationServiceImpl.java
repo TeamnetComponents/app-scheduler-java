@@ -46,5 +46,9 @@ public class ConfigurationServiceImpl extends AbstractServiceImpl<Configuration,
         getConfigurationRepository().delete(configuration);
     }
 
+    @Override
+    public Configuration findByJobExecId(Long jobExecId) {
+        return getConfigurationRepository().findByJobExecId(jobExecId);
+    }
 
 }
