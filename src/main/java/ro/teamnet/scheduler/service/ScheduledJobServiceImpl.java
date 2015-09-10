@@ -3,6 +3,7 @@ package ro.teamnet.scheduler.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import ro.teamnet.bootstrap.extend.AppPage;
 import ro.teamnet.bootstrap.extend.AppPageable;
@@ -61,5 +62,16 @@ public class ScheduledJobServiceImpl extends AbstractServiceImpl<ScheduledJob, L
     public ScheduledJob save(ScheduledJob scheduledJob) {
         log.info("Saving scheduled job");
         return super.save(scheduledJob);
+    }
+
+    @Inject
+    JobSchedulingService jobSchedulingService;
+
+    @Scheduled(cron="0 39 20 5 8 ?")
+    public void importJobTriggers() {
+        List<ScheduledJob> scheduledJobList = findAll();
+        for (ScheduledJob scheduledJob : scheduledJobList) {
+            jobSchedulingService.onScheduledJobSave(scheduledJob);
+        }
     }
 }

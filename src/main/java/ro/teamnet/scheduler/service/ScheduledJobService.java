@@ -11,4 +11,5 @@ public interface ScheduledJobService extends AbstractService<ScheduledJob, Long>
 
     List<ScheduledJob> findAllWithDeleted();
 
+    void importJobTriggers();
 }
