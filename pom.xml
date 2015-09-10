@@ -89,7 +89,7 @@
 
     <scm>
         <url>http://git-components.teamnet.ro/summary/components%2Fjava%2Fapp-scheduler-java.git</url>
-        <connection>scm:git:http://component-publisher@git-components.teamnet.ro/r/components/java/app-scheduler-java.git</connection>
+        <connection>scm:git:http://component-publisher@git-components.teamnet.ro/r/components/java/platform-extensions/app-scheduler-java.git</connection>
         <tag>HEAD</tag>
     </scm>
 	
