@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import ro.teamnet.bootstrap.extend.AppRepository;
 import ro.teamnet.scheduler.domain.TimeInterval;
+import ro.teamnet.scheduler.enums.TimeUnitCode;
 
 import java.util.List;
 
@@ -22,4 +23,6 @@ public interface TimeIntervalRepository extends AppRepository<TimeInterval, Long
     TimeInterval findOne(@Param("id") Long id);
 
     TimeInterval findByName(String name);
+
+    List<TimeInterval> findAllByIntervalAndTimeUnitCode(Long interval, TimeUnitCode timeUnitCode);
 }
