@@ -6,7 +6,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.core.env.SimpleCommandLinePropertySource;
-import ro.teamnet.bootstrap.async.FileDeleteTask;
 import ro.teamnet.bootstrap.config.*;
 import ro.teamnet.bootstrap.config.apidoc.SwaggerConfiguration;
 import ro.teamnet.bootstrap.config.metrics.JHipsterHealthIndicatorConfiguration;
@@ -30,7 +29,7 @@ import ro.teamnet.scheduler.service.JobSchedulingServiceImpl;
                 type = FilterType.ASSIGNABLE_TYPE,
                 value = {QuartzConfiguration.class, JobSchedulingServiceImpl.class,
                         FileDownloadResource.class, FileUploadResource.class, FileUploadTokenConfiguration.class,
-                        FileDeleteTask.class, FileServicePlugin.class, SavedFileService.class, UploadFileLogService.class,
+                        FileServicePlugin.class, SavedFileService.class, UploadFileLogService.class,
                         MetricsConfiguration.class, SwaggerConfiguration.class, WebConfigurer.class,
                         ThymeleafConfiguration.class, MailConfiguration.class, MailService.class, JavaMailHealthIndicator.class,
                         CacheConfiguration.class, AsyncConfiguration.class, LoggingAspectConfiguration.class,
