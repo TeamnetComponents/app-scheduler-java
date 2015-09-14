@@ -6,11 +6,17 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.core.env.SimpleCommandLinePropertySource;
+import ro.teamnet.bootstrap.async.FileDeleteTask;
 import ro.teamnet.bootstrap.config.*;
 import ro.teamnet.bootstrap.config.apidoc.SwaggerConfiguration;
 import ro.teamnet.bootstrap.config.metrics.JHipsterHealthIndicatorConfiguration;
 import ro.teamnet.bootstrap.config.metrics.JavaMailHealthIndicator;
+import ro.teamnet.bootstrap.plugin.upload.FileServicePlugin;
 import ro.teamnet.bootstrap.service.MailService;
+import ro.teamnet.bootstrap.service.SavedFileService;
+import ro.teamnet.bootstrap.service.UploadFileLogService;
+import ro.teamnet.bootstrap.web.rest.FileDownloadResource;
+import ro.teamnet.bootstrap.web.rest.FileUploadResource;
 import ro.teamnet.scheduler.config.QuartzConfiguration;
 import ro.teamnet.scheduler.service.JobSchedulingServiceImpl;
 
@@ -23,6 +29,8 @@ import ro.teamnet.scheduler.service.JobSchedulingServiceImpl;
         excludeFilters = @ComponentScan.Filter(
                 type = FilterType.ASSIGNABLE_TYPE,
                 value = {QuartzConfiguration.class, JobSchedulingServiceImpl.class,
+                        FileDownloadResource.class, FileUploadResource.class, FileUploadTokenConfiguration.class,
+                        FileDeleteTask.class, FileServicePlugin.class, SavedFileService.class, UploadFileLogService.class,
                         MetricsConfiguration.class, SwaggerConfiguration.class, WebConfigurer.class,
                         ThymeleafConfiguration.class, MailConfiguration.class, MailService.class, JavaMailHealthIndicator.class,
                         CacheConfiguration.class, AsyncConfiguration.class, LoggingAspectConfiguration.class,
