@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!--
+        Added the entity Schedule.
+    -->
+    <changeSet id="20150514113135" author="teamnet">
+        <createTable tableName="T_SCHEDULE">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="active" type="bit"/>
+            <column name="recurrent" type="bit"/>
+            <column name="cron" type="varchar(255)"/>
+            <column name="start_time" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="end_time" type="timestamp"/>
+            <column name="repetitions" type="bigint"/>
+            <column name="version" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_updated" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="deleted" type="bit"/>
+            <column name="misfire_policy" type="varchar(255)"/>
+        </createTable>
+
+    </changeSet>
+
+    <changeSet id="20150616173600#1" author="oanam">
+        <addNotNullConstraint
+                tableName="T_SCHEDULE"
+                columnName="misfire_policy"
+                columnDataType="varchar(255)"
+                defaultNullValue="DO_NOTHING"/>
+    </changeSet>
+
+</databaseChangeLog>

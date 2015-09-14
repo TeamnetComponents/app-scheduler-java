@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!--
+        Added the entity ScheduledJobExecution.
+    -->
+    <changeSet id="20150603163154" author="teamnet">
+        <createTable tableName="T_SCHEDULEDJOBEXECUTION">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="scheduled_fire_time" type="timestamp">
+                <constraints nullable="false" />
+            </column>
+            <column name="actual_fire_time" type="timestamp">
+                <constraints nullable="false" />
+            </column>
+            <column name="last_fire_time" type="timestamp">
+                <constraints nullable="false" />
+            </column>
+            <column name="next_fire_time" type="timestamp">
+                <constraints nullable="false" />
+            </column>
+            <column name="status" type="varchar(255)"/>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
