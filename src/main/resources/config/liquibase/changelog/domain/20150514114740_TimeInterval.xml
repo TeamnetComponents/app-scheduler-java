@@ -13,7 +13,7 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="name" type="varchar(255)"/>
-            <column name="custom" type="bit"/>
+            <column name="custom" type="boolean" defaultValueBoolean="false"/>
             <column name="interval_millis" type="bigint"/>
             <column name="interval" type="bigint"/>
         </createTable>
