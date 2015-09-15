@@ -4,6 +4,10 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
+    <property name="timeinterval_pk_value" value="HIBERNATE_SEQUENCE.NEXTVAL" dbms="oracle"/>
+    <property name="timeinterval_pk_value" value="nextval('T_TIMEINTERVAL_ID_SEQ')" dbms="postgresql"/>
+    <property name="timeinterval_pk_value" value="null" dbms="!oracle,!postgre"/>
+
 
     <changeSet id="20150514114838" author="teamnet">
 
@@ -20,36 +24,42 @@
 
     <changeSet id="20150519172500" author="oanam" dbms="!h2">
         <insert tableName="T_TIMEINTERVAL">
+            <column name="id" valueComputed="${timeinterval_pk_value}" />
             <column name="custom">false</column>
             <column name="name">Anual</column>
             <column name="interval">1</column>
             <column name="timeunit_id" valueComputed="(select id from T_TIMEUNIT where code ='Y')"/>
         </insert>
         <insert tableName="T_TIMEINTERVAL">
+            <column name="id" valueComputed="${timeinterval_pk_value}" />
             <column name="custom">false</column>
             <column name="name">Lunar</column>
             <column name="interval">1</column>
             <column name="timeunit_id" valueComputed="(select id from T_TIMEUNIT where code ='MON')"/>
         </insert>
         <insert tableName="T_TIMEINTERVAL">
+            <column name="id" valueComputed="${timeinterval_pk_value}" />
             <column name="custom">false</column>
             <column name="name">Saptamanal</column>
             <column name="interval">1</column>
             <column name="timeunit_id" valueComputed="(select id from T_TIMEUNIT where code ='W')"/>
         </insert>
         <insert tableName="T_TIMEINTERVAL">
+            <column name="id" valueComputed="${timeinterval_pk_value}" />
             <column name="custom">false</column>
             <column name="name">Zilnic</column>
             <column name="interval">1</column>
             <column name="timeunit_id" valueComputed="(select id from T_TIMEUNIT where code ='D')"/>
         </insert>
         <insert tableName="T_TIMEINTERVAL">
+            <column name="id" valueComputed="${timeinterval_pk_value}" />
             <column name="custom">false</column>
             <column name="name">In fiecare ora</column>
             <column name="interval">1</column>
             <column name="timeunit_id" valueComputed="(select id from T_TIMEUNIT where code ='H')"/>
         </insert>
         <insert tableName="T_TIMEINTERVAL">
+            <column name="id" valueComputed="${timeinterval_pk_value}" />
             <column name="custom">false</column>
             <column name="name">In fiecare minut</column>
             <column name="interval">1</column>
