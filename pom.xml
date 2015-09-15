@@ -16,7 +16,7 @@
 
     <groupId>ro.teamnet.scheduler</groupId>
     <artifactId>app-scheduler-java</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
 
     <distributionManagement>
@@ -44,7 +44,7 @@
 		<dependency>
 			<groupId>ro.teamnet.scheduler</groupId>
 			<artifactId>app-scheduler-api</artifactId>
-			<version>1.0.1-SNAPSHOT</version>
+			<version>1.0.1</version>
 		</dependency>
         <!--Bootstrap commons-->
         <dependency>
@@ -88,7 +88,7 @@
     <scm>
         <url>http://git-components.teamnet.ro/summary/components%2Fjava%2Fapp-scheduler-java.git</url>
         <connection>scm:git:http://component-publisher@git-components.teamnet.ro/r/components/java/platform-extensions/app-scheduler-java.git</connection>
-        <tag>HEAD</tag>
+        <tag>v1.0.1</tag>
     </scm>
 	
     <build>
