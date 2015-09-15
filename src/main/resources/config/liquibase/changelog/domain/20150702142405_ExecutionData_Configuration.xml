@@ -13,7 +13,7 @@
 
         <addForeignKeyConstraint baseColumnNames="configuration_id"
                                  baseTableName="T_EXECUTIONDATA"
-                                 constraintName="fk_executiondata_configuration_id"
+                                 constraintName="fk_execdata_cfg_id"
                                  referencedColumnNames="id"
                                  referencedTableName="T_CONFIGURATION"/>
     </changeSet>

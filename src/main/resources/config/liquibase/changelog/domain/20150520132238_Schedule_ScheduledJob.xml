@@ -13,7 +13,7 @@
 
         <addForeignKeyConstraint baseColumnNames="scheduledjob_id"
                                  baseTableName="T_SCHEDULE"
-                                 constraintName="fk_schedule_scheduledjob_id"
+                                 constraintName="fk_sch_schjob_id"
                                  referencedColumnNames="id"
                                  referencedTableName="T_SCHEDULEDJOB"/>
     </changeSet>
