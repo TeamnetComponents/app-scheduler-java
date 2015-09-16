@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ro.teamnet.bootstrap.extend.AppPage;
 import ro.teamnet.bootstrap.extend.AppPageable;
 import ro.teamnet.bootstrap.extend.Filter;
@@ -35,6 +36,7 @@ public class ScheduledJobServiceImpl extends AbstractServiceImpl<ScheduledJob, L
      * @param id - the element to delete
      */
     @Override
+    @Transactional
     public void delete(Long id) {
         log.info("Performing logical delete of scheduled job with id: " + id);
         ScheduledJob scheduledJob = findOne(id);
@@ -59,6 +61,7 @@ public class ScheduledJobServiceImpl extends AbstractServiceImpl<ScheduledJob, L
     }
 
     @Override
+    @Transactional
     public ScheduledJob save(ScheduledJob scheduledJob) {
         log.info("Saving scheduled job");
         return super.save(scheduledJob);
@@ -68,6 +71,7 @@ public class ScheduledJobServiceImpl extends AbstractServiceImpl<ScheduledJob, L
     JobSchedulingService jobSchedulingService;
 
     @Scheduled(cron="0 39 20 5 8 ?")
+    @Transactional
     public void importJobTriggers() {
         List<ScheduledJob> scheduledJobList = findAll();
         for (ScheduledJob scheduledJob : scheduledJobList) {
