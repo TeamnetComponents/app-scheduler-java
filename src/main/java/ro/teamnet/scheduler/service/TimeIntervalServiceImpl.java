@@ -2,6 +2,7 @@ package ro.teamnet.scheduler.service;
 
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ro.teamnet.bootstrap.service.AbstractServiceImpl;
 import ro.teamnet.scheduler.domain.TimeInterval;
 import ro.teamnet.scheduler.domain.TimeUnit;
@@ -27,6 +28,7 @@ public class TimeIntervalServiceImpl extends AbstractServiceImpl<TimeInterval, L
     }
 
     @Override
+    @Transactional
     public TimeInterval findOneOrCreate(TimeIntervalDTO dto) {
         List<TimeInterval> timeIntervals = getTimeIntervalRepository().findAllByIntervalAndTimeUnitCode(
                 dto.getInterval(), dto.getTimeUnit());

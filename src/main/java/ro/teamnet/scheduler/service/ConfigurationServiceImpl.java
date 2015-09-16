@@ -5,6 +5,7 @@ package ro.teamnet.scheduler.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ro.teamnet.bootstrap.service.AbstractServiceImpl;
 import ro.teamnet.scheduler.domain.Configuration;
 import ro.teamnet.scheduler.domain.ScheduledJob;
@@ -40,6 +41,7 @@ public class ConfigurationServiceImpl extends AbstractServiceImpl<Configuration,
     }
 
     @Override
+    @Transactional
     public void deleteByConfigurationIdAndType(Long configurationId,String type) {
         Configuration configuration = getConfigurationRepository().findByConfigurationIdAndType(configurationId,type);
 

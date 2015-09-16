@@ -4,6 +4,7 @@ import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ro.teamnet.scheduler.constants.QuartzSchedulingConstants;
 import ro.teamnet.scheduler.domain.Schedule;
 import ro.teamnet.scheduler.domain.ScheduledJob;
@@ -17,6 +18,7 @@ import static ro.teamnet.scheduler.constants.QuartzSchedulingConstants.JOB_ID;
 import static ro.teamnet.scheduler.constants.QuartzSchedulingConstants.TRIGGER_ID;
 
 @Service
+@Transactional
 public class JobSchedulingServiceImpl implements JobSchedulingService {
 
     private final Logger log = LoggerFactory.getLogger(getClass());

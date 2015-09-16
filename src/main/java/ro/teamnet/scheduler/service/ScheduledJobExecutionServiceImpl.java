@@ -3,6 +3,7 @@ package ro.teamnet.scheduler.service;
 
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ro.teamnet.bootstrap.extend.AppPage;
 import ro.teamnet.bootstrap.extend.AppPageImpl;
 import ro.teamnet.bootstrap.extend.AppPageable;
@@ -31,6 +32,7 @@ public class ScheduledJobExecutionServiceImpl extends AbstractServiceImpl<Schedu
     }
 
     @Override
+    @Transactional
     public void updateExecutionStatus(Long executionId, JobExecutionStatus status) {
         if (status == null) {
             return;

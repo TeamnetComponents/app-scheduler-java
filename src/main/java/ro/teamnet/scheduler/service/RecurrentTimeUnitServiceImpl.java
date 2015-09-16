@@ -2,6 +2,7 @@ package ro.teamnet.scheduler.service;
 
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ro.teamnet.bootstrap.service.AbstractServiceImpl;
 import ro.teamnet.scheduler.domain.RecurrentTimeUnit;
 import ro.teamnet.scheduler.repository.RecurrentTimeUnitRepository;
@@ -20,6 +21,7 @@ public class RecurrentTimeUnitServiceImpl extends AbstractServiceImpl<RecurrentT
     }
 
     @Override
+    @Transactional
     public Long deleteByScheduleId(Long id) {
         return recurrentTimeUnitRepository.deleteByScheduleId(id);
     }

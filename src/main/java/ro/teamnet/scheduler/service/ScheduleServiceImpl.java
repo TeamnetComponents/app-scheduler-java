@@ -46,6 +46,7 @@ public class ScheduleServiceImpl extends AbstractServiceImpl<Schedule, Long> imp
      * @param id - the element to delete
      */
     @Override
+    @Transactional
     public void delete(Long id) {
         log.info("Performing logical delete of schedule with id: " + id);
         Schedule schedule = findOne(id);
